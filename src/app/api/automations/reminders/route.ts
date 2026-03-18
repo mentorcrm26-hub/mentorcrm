@@ -1,0 +1,101 @@
+import { NextResponse } from 'next/server'
+import { createAdminClient } from '@/lib/supabase/server'
+import { sendWhatsAppMessage } from '@/lib/whatsapp-service'
+import { formatFlorida, getFloridaDate } from '@/lib/timezone'
+import { addMinutes, subMinutes } from 'date-fns'
+import { parseTemplate } from '@/lib/integrations/message-parser'
+
+export const dynamic = 'force-dynamic'
+
+export async function GET(req: Request) {
+    const supabase = await createAdminClient()
+    const now = getFloridaDate()
+
+    // 1. Fetch upcoming meetings in the next ~70 minutes
+    // IMPORTANT: status must be 'Scheduled' and meeting_at within range
+    const { data: leads, error } = await supabase
+        .from('leads')
+        .select('*, tenant:tenants(id, name)')
+        .not('meeting_at', 'is', null)
+        .eq('status', 'Scheduled')
+        .gte('meeting_at', subMinutes(now, 10).toISOString())
+        .lte('meeting_at', addMinutes(now, 70).toISOString())
+
+    if (error) {
+        console.error('CRON ERROR:', error.message)
+        return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    const results = { sent_1h: 0, sent_30m: 0, processed: leads?.length || 0 }
+
+    for (const lead of leads || []) {
+        const meetingAt = getFloridaDate(lead.meeting_at)
+        const diffMinutes = Math.round((meetingAt.getTime() - now.getTime()) / (60 * 1000))
+        const notified = lead.meeting_notified || {}
+
+        // Fetch settings for this tenant to see custom templates
+        const { data: config } = await supabase
+            .from('appointment_settings')
+            .select('*, reminder_1h:reminder_1h_template_id(content), reminder_30m:reminder_30m_template_id(content)')
+            .eq('tenant_id', lead.tenant_id)
+            .single()
+
+        // AUTOMATION: 1 HOUR BEFORE (55 - 65 min)
+        if (diffMinutes <= 65 && diffMinutes >= 55 && !notified['1h']) {
+            const templateContent = (config?.reminder_1h as any)?.content
+            await processReminder(supabase, lead, '1h', templateContent, notified, config)
+            results.sent_1h++
+        }
+
+        // AUTOMATION: 30 MINUTES BEFORE (25 - 35 min)
+        if (diffMinutes <= 35 && diffMinutes >= 25 && !notified['30m']) {
+            const templateContent = (config?.reminder_30m as any)?.content
+            await processReminder(supabase, lead, '30m', templateContent, notified, config)
+            results.sent_30m++
+        }
+    }
+
+    return NextResponse.json({
+        success: true,
+        processed: results.processed,
+        timestamp_florida: formatFlorida(now),
+        stats: results
+    })
+}
+
+async function processReminder(supabase: any, lead: any, type: string, customTemplate: string | null, notified: any, config: any) {
+    // 1. Send to Lead
+    if (lead.phone) {
+        const timeText = type === '1h' ? 'em 1 hora' : 'em 30 minutos';
+        const defaultContent = `Olá {nome_cliente}! Passando para confirmar nossa reunião de hoje às {hora_reuniao} (${timeText}). Nos vemos em breve!`;
+        
+        const parsedMessage = parseTemplate(customTemplate || defaultContent, lead);
+
+        await sendWhatsAppMessage({
+            phone: lead.phone,
+            message: parsedMessage,
+            tenantId: lead.tenant_id
+        })
+    }
+
+    // 2. Notificação Profissional (Apenas se configurado e apenas para 30m)
+    if (type === '30m' && config?.notify_professional_30m) {
+        const profPhone = config.professional_phone;
+        if (profPhone) {
+            const meetingAt = getFloridaDate(lead.meeting_at);
+            const professionalMessage = `⚠️ [LEMBRETE CRM]: Reunião de ${lead.name} às ${formatFlorida(meetingAt, 'HH:mm')} (em 30 min).`;
+            await sendWhatsAppMessage({
+                phone: profPhone,
+                message: professionalMessage,
+                tenantId: lead.tenant_id
+            })
+        }
+    }
+
+    // 3. Mark as notified in DB
+    const updatedNotified = { ...notified, [type]: true }
+    await supabase
+        .from('leads')
+        .update({ meeting_notified: updatedNotified })
+        .eq('id', lead.id)
+}

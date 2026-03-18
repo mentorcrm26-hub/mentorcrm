@@ -1,0 +1,14 @@
+[2026-03-18T20:37:00.562Z] [HIT WEBHOOK] 2026-03-18T20:37:00.562Z
+[2026-03-18T20:37:00.563Z] [EVENT] messages.upsert
+[2026-03-18T20:37:00.563Z] [INSTANCE RECEIVED] CRM
+[2026-03-18T20:37:00.563Z] [RAW EVENT] {"event":"messages.upsert","instance":"CRM","data":{"key":{"remoteJid":"5511988887777@s.whatsapp.net","fromMe":false,"id":"TEST_IN_1773866219647"},"message":{"conversation":"Teste Inbound"},"messageTimestamp":1773866219,"pushName":"Tester Inbound"}}
+[2026-03-18T20:37:00.563Z] --- WEBHOOK: messages.upsert | Instance: CRM ---
+[2026-03-18T20:37:00.838Z] [PROCESS] INBOUND | Phone: 5511988887777 | Text: "Teste Inbound..."
+[2026-03-18T20:37:01.372Z] [SUCCESS] Message b20c9906-48fe-4955-828e-a01fc2e0f6f3 (IN) saved/updated correctly.
+[2026-03-18T20:37:01.512Z] [HIT WEBHOOK] 2026-03-18T20:37:01.512Z
+[2026-03-18T20:37:01.512Z] [EVENT] messages.upsert
+[2026-03-18T20:37:01.512Z] [INSTANCE RECEIVED] CRM
+[2026-03-18T20:37:01.512Z] [RAW EVENT] {"event":"messages.upsert","instance":"CRM","data":{"key":{"remoteJid":"5511988887777@s.whatsapp.net","fromMe":true,"id":"TEST_OUT_1773866221482"},"message":{"conversation":"Teste Outbound (Sync from Phone)"},"messageTimestamp":1773866221}}
+[2026-03-18T20:37:01.513Z] --- WEBHOOK: messages.upsert | Instance: CRM ---
+[2026-03-18T20:37:01.629Z] [PROCESS] OUTBOUND | Phone: 5511988887777 | Text: "Teste Outbound (Sync from Phon..."
+[2026-03-18T20:37:01.985Z] [SUCCESS] Message 26838a2a-efeb-44dc-a6ee-ba8176990dda (OUT) saved/updated correctly.
