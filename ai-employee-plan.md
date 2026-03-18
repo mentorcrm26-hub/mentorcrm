@@ -8,7 +8,7 @@ Este plano detalha a implementação do módulo "AI Employee" para o Mentor CRM,
 ## 2. Critérios de Sucesso
 - [ ] Atendimento de Chat Web em < 2s de latência.
 - [ ] Integração de Voz (Vapi/Twilio) com transferência para humano funcional.
-- [ ] Agendamento automático no Calendário do CRM sincronizado.
+- [ ] Agendamento automático no Calendário do CRM sincronizado......
 - [ ] Treinamento de IA baseado em documentos (RAG) por Tenant.
 - [ ] Dashboard de monitoramento de custos e performance da IA.
 
