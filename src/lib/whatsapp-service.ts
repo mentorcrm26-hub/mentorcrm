@@ -31,8 +31,9 @@ export class WhatsAppService {
 
             const res = await sendEvolutionMessage(instanceName, cleanPhone, message);
 
-            // Log de histórico
-            await this.logMessage(phone, message);
+            // Log de histórico com ID retornado pela API
+            const evolutionMsgId = res.key?.id;
+            await this.logMessage(phone, message, 'outbound', evolutionMsgId);
 
             return { success: true, data: res };
         } catch (err: any) {
@@ -41,7 +42,13 @@ export class WhatsAppService {
         }
     }
 
-    private async logMessage(phone: string, message: string) {
+    public async logMessage(phone: string, message: string, direction: 'inbound' | 'outbound' = 'outbound', evolutionMsgId?: string) {
+        // HOTFIX: Não gravar se não tiver ID da Evolution para evitar mensagens fantasmas/mal direcionadas
+        if (!evolutionMsgId) {
+            console.log('[WA-LOG] Ignorando gravação local sem evolution_message_id');
+            return;
+        }
+
         const supabase = await createClient();
         try {
             const { data: lead } = await supabase
@@ -66,9 +73,11 @@ export class WhatsAppService {
                     await supabase.from('messages').insert({
                         tenant_id: this.tenantId,
                         conversation_id: conv.id,
-                        direction: 'outbound',
+                        direction: direction,
                         content: message,
-                        status: 'sent'
+                        status: direction === 'outbound' ? 'sent' : 'delivered',
+                        evolution_message_id: evolutionMsgId,
+                        source: 'whatsapp_service'
                     });
                 }
             }

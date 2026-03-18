@@ -31,8 +31,10 @@ export async function sendMediaMessage(
     const supabase = await createClient()
 
     // 1. Send via Evolution API
+    let evolutionMsgId = null
     try {
-        await sendEvolutionMedia(instanceName, phone, mediaUrl, mediaType, caption)
+        const res = await sendEvolutionMedia(instanceName, phone, mediaUrl, mediaType, caption)
+        evolutionMsgId = res.key?.id
     } catch (err: any) {
         return { success: false, error: err.message || 'Failed to send media via WhatsApp' }
     }
@@ -54,7 +56,9 @@ export async function sendMediaMessage(
             content: caption || `Sent ${mediaType}`,
             media_url: mediaUrl,
             media_type: mediaType,
-            status: 'sent'
+            status: 'sent',
+            evolution_message_id: evolutionMsgId,
+            source: 'chat_ui'
         })
         .select()
         .single()
@@ -80,8 +84,10 @@ export async function sendMessage(conversationId: string, phone: string, content
     const supabase = await createClient()
 
     // 1. Send via Evolution API
+    let evolutionMsgId = null
     try {
-        await sendEvolutionMessage(instanceName, phone, content)
+        const res = await sendEvolutionMessage(instanceName, phone, content)
+        evolutionMsgId = res.key?.id
     } catch (err: any) {
         return { success: false, error: err.message || 'Failed to send message via WhatsApp' }
     }
@@ -101,7 +107,9 @@ export async function sendMessage(conversationId: string, phone: string, content
             conversation_id: conversationId,
             direction: 'outbound',
             content: content,
-            status: 'sent'
+            status: 'sent',
+            evolution_message_id: evolutionMsgId,
+            source: 'chat_ui'
         })
         .select()
         .single()
