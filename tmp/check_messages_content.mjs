@@ -7,23 +7,18 @@ const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABA
 async function main() {
     const { data: messages, error } = await sb
         .from('messages')
-        .select('content, direction, evolution_message_id, created_at')
-        .order('created_at', { ascending: false });
+        .select('content, direction, evolution_message_id, created_at, source')
+        .order('created_at', { ascending: false })
+        .limit(20);
 
     if (error) {
         console.error('Erro:', error);
         return;
     }
 
-    const targets = ['oi', 'kkk'];
-    const results = messages.filter(m => {
-        const c = m.content?.toLowerCase() || '';
-        return targets.some(t => c === t || c.includes(t));
-    });
-
-    console.log('--- RELATÓRIO DE MENSAGENS (Oi/Kkk) ---');
-    results.forEach(m => {
-        console.log(`[${m.created_at}] Conteúdo: "${m.content}" | Direção: ${m.direction} | ID: ${m.evolution_message_id || 'NULO'}`);
+    console.log('--- ÚLTIMAS 20 MENSAGENS (DIAGNÓSTICO FINAL) ---');
+    messages.forEach(m => {
+        console.log(`[${m.created_at}] [${m.source || 'LEGADO'}] ${m.direction}: "${m.content?.substring(0, 30)}" | ID: ${m.evolution_message_id}`);
     });
 }
 
