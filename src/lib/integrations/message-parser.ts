@@ -1,6 +1,6 @@
 import { formatFlorida } from '../timezone';
 
-export function parseTemplate(content: string, lead: any): string {
+export function parseTemplate(content: string, lead: any, sender?: any): string {
   if (!content) return '';
   
   // Basic lead variables
@@ -14,6 +14,10 @@ export function parseTemplate(content: string, lead: any): string {
     '{data_hoje}': formatFlorida(new Date(), 'dd/MM/yyyy'),
     '{data_reuniao}': lead.meeting_at ? formatFlorida(new Date(lead.meeting_at), 'dd/MM/yyyy') : '...',
     '{hora_reuniao}': lead.meeting_at ? formatFlorida(new Date(lead.meeting_at), 'HH:mm') : '...',
+    
+    // Sender variables (from profile)
+    '{link_google_meet}': sender?.google_meet_link || '...',
+    '{link_reuniao}': sender?.other_meet_link || '...',
   };
 
   let parsed = content;

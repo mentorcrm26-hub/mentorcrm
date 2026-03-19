@@ -64,12 +64,21 @@ export async function GET(req: Request) {
 }
 
 async function processReminder(supabase: any, lead: any, type: string, customTemplate: string | null, notified: any, config: any) {
+    // 0. Fetch default sender for meeting links
+    const { data: defaultSender } = await supabase
+        .from('users')
+        .select('*')
+        .eq('tenant_id', lead.tenant_id)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .single();
+
     // 1. Send to Lead
     if (lead.phone) {
         const timeText = type === '1h' ? 'em 1 hora' : 'em 30 minutos';
         const defaultContent = `Olá {nome_cliente}! Passando para confirmar nossa reunião de hoje às {hora_reuniao} (${timeText}). Nos vemos em breve!`;
         
-        const parsedMessage = parseTemplate(customTemplate || defaultContent, lead);
+        const parsedMessage = parseTemplate(customTemplate || defaultContent, lead, defaultSender);
 
         await sendWhatsAppMessage({
             phone: lead.phone,

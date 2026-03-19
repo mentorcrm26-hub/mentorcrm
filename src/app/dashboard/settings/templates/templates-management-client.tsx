@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Mail, MessageSquare, Plus, Trash2, Edit2, Variable, Save, X, Info } from 'lucide-react';
 import { toast } from 'sonner';
 import { saveTemplate, deleteTemplate } from './actions';
@@ -23,6 +23,7 @@ export function TemplatesManagementClient({ initialTemplates }: { initialTemplat
         subject: ''
     });
     const [isLoading, setIsLoading] = useState(false);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -51,6 +52,27 @@ export function TemplatesManagementClient({ initialTemplates }: { initialTemplat
             toast.success('Deleted!');
             window.location.reload();
         }
+    };
+
+    const insertVariable = (variable: string) => {
+        const textarea = textareaRef.current;
+        if (!textarea) return;
+
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const content = currentTemplate.content || '';
+        const before = content.substring(0, start);
+        const after = content.substring(end);
+        
+        const newContent = before + variable + after;
+        setCurrentTemplate({ ...currentTemplate, content: newContent });
+
+        // Set focus back and move cursor after the inserted variable
+        setTimeout(() => {
+            textarea.focus();
+            const newCursorPos = start + variable.length;
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+        }, 0);
     };
 
     return (
@@ -182,11 +204,11 @@ export function TemplatesManagementClient({ initialTemplates }: { initialTemplat
                                     </div>
                                 </div>
                                 <div className="flex flex-wrap gap-1.5 mb-2">
-                                    {['{nome_cliente}', '{email_cliente}', '{origem}', '{produto}', '{data_hoje}', '{data_reuniao}', '{hora_reuniao}'].map(v => (
+                                    {['{nome_cliente}', '{email_cliente}', '{origem}', '{produto}', '{data_hoje}', '{data_reuniao}', '{hora_reuniao}', '{link_google_meet}', '{link_reuniao}'].map(v => (
                                         <button
                                             key={v}
                                             type="button"
-                                            onClick={() => setCurrentTemplate({...currentTemplate, content: (currentTemplate.content || '') + v})}
+                                            onClick={() => insertVariable(v)}
                                             className="text-[11px] px-2 py-1 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all border border-zinc-200 dark:border-zinc-700"
                                         >
                                             {v}
@@ -194,6 +216,7 @@ export function TemplatesManagementClient({ initialTemplates }: { initialTemplat
                                     ))}
                                 </div>
                                 <textarea
+                                    ref={textareaRef}
                                     required
                                     rows={8}
                                     value={currentTemplate.content}

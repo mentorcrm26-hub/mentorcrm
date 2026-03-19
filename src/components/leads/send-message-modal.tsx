@@ -32,12 +32,23 @@ export function SendMessageModal({
     const [isSuccess, setIsSuccess] = useState(false)
     const [templates, setTemplates] = useState<any[]>([])
     const [isLoadingTemplates, setIsLoadingTemplates] = useState(false)
+    const [sender, setSender] = useState<any>(null)
 
     useEffect(() => {
-        if (isOpen && type) {
-            fetchTemplates()
+        if (isOpen) {
+            fetchSender()
+            if (type) fetchTemplates()
         }
     }, [isOpen, type])
+
+    const fetchSender = async () => {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+            const { data } = await supabase.from('users').select('*').eq('id', user.id).single()
+            setSender(data)
+        }
+    }
 
     const fetchTemplates = async () => {
         setIsLoadingTemplates(true)
@@ -122,9 +133,9 @@ export function SendMessageModal({
     }
 
     const selectTemplate = (t: any) => {
-        const parsed = parseTemplate(t.content, lead)
+        const parsed = parseTemplate(t.content, lead, sender)
         if (t.type === 'email' && t.subject) {
-            const parsedSubject = parseTemplate(t.subject, lead)
+            const parsedSubject = parseTemplate(t.subject, lead, sender)
             setMessage(`Subject: ${parsedSubject}\n\n${parsed}`)
         } else {
             setMessage(parsed)

@@ -25,7 +25,16 @@ export async function triggerAutomation(event: 'new_lead' | 'status_change' | 'm
 
     // 3. Send message
     if (automation.template) {
-      const parsedContent = parseTemplate(automation.template.content, lead);
+      // Fetch a default user for this tenant to provide meeting links
+      const { data: defaultSender } = await supabase
+        .from('users')
+        .select('*')
+        .eq('tenant_id', lead.tenant_id)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .single();
+
+      const parsedContent = parseTemplate(automation.template.content, lead, defaultSender);
       
       if (automation.template.type === 'email' && lead.email) {
         await sendEmail({
@@ -60,9 +69,16 @@ export async function manualSendMessage(messageOrTemplateId: string, lead: any) 
 
     if (!template) return { success: false, error: 'Template not found' };
     
+    const { data: { user } } = await supabase.auth.getUser();
+    let sender = null;
+    if (user) {
+      const { data: profile } = await supabase.from('users').select('*').eq('id', user.id).single();
+      sender = profile;
+    }
+
     type = template.type;
-    content = parseTemplate(template.content, lead);
-    subject = template.subject ? parseTemplate(template.subject, lead) : undefined;
+    content = parseTemplate(template.content, lead, sender);
+    subject = template.subject ? parseTemplate(template.subject, lead, sender) : undefined;
   } else {
     // Se for customizado, tenta extrair o assunto se ele começar com "Subject:"
     if (type === 'email' && typeof content === 'string' && content.startsWith('Subject:')) {
