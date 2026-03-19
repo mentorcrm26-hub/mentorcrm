@@ -86,7 +86,7 @@ export function ChatClient({
         { label: '😊 Frequentes', emojis: ['😊','😂','❤️','👍','🔥','✨','🎉','💯','🙏','😍','🤔','😢','😅','🤣','😘','💪','👏','🥰','😎','🤩','😆','😁','🥳','😜','🤗'] },
         { label: '😀 Rostos', emojis: ['😀','😃','😄','😁','😆','😅','🤣','😂','🙂','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','🥲','😋','😛','😜','🤪','😝'] },
         { label: '🎭 Gestos', emojis: ['👍','👎','👊','✊','🤛','🤜','👋','🤚','🖐️','✋','🤙','💪','🦾','🤝','👐','🙌','🤲','🙏','✌️','🤞','🤟','🤘','👌','🤌','🤏'] },
-        { label: '❤️ Corações', emojis: ['❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❤️‍🔥','❤️‍🩹','💕','💞','💓','💗','💖','💘','💝','💟','☮️','✝️','☯️','🕎','🔯'] },
+        { label: '❤️ Corações', emojis: ['❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❤️‍🔥','❤️‍🩹','💕','💞','💓','💗','💖','💘','💝','💟','☮️','✝️','☯️','🔯'] },
         { label: '🎊 Celebração', emojis: ['🎉','🎊','🎈','🎁','🎀','🏆','🥇','🎖️','🏅','🎗️','🎟️','🎫','🎠','🎡','🎢','🎪','🎭','🎨','🖼️','🎬','🎤','🎵','🎶','🎸','🎯'] },
         { label: '🌟 Símbolos', emojis: ['⭐','🌟','✨','💫','⚡','🔥','🌈','☀️','🌙','❄️','💥','🎆','🎇','🌊','💨','🌸','🌺','🍀','🌴','🌿','🍃','🦋','🐝','🌻','🌷'] },
     ]
@@ -414,7 +414,7 @@ export function ChatClient({
                                     <div className="flex-1 min-w-0">
                                         <div className="flex justify-between items-center mb-1">
                                             <span className="font-semibold text-sm truncate uppercase tracking-tight">{conv.lead.name}</span>
-                                            <span className={`text-[10px] font-medium ${activeConversation?.id === conv.id ? 'text-emerald-100' : 'text-zinc-400'}`}>
+                                            <span suppressHydrationWarning className={`text-[10px] font-medium ${activeConversation?.id === conv.id ? 'text-emerald-100' : 'text-zinc-400'}`}>
                                                 {format(new Date(conv.last_message_at), 'HH:mm')}
                                             </span>
                                         </div>
@@ -526,6 +526,11 @@ export function ChatClient({
                                                             <div className="mb-2">
                                                                 {msg.media_type === 'image' ? (
                                                                     <img src={msg.media_url} alt="Media" className="max-w-full h-auto rounded-2xl cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(msg.media_url)} />
+                                                                ) : msg.media_type === 'audio' ? (
+                                                                    <div className="flex flex-col gap-2">
+                                                                        <audio src={msg.media_url} controls className="w-full h-10" />
+                                                                        <p className="text-[10px] opacity-60 px-2 italic">Audio Message</p>
+                                                                    </div>
                                                                 ) : msg.media_type === 'video' ? (
                                                                     <video src={msg.media_url} controls className="max-w-full h-auto rounded-2xl" />
                                                                 ) : (

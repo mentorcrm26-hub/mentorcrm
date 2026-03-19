@@ -184,7 +184,7 @@ export async function POST(req: NextRequest) {
       }
 
       // 5.5 Process Inbound Media (Base64 to Supabase Storage)
-      const hasBase64 = !!(content.base64 || msg.base64 || (msg.message?.imageMessage?.base64) || (msg.message?.documentMessage?.base64));
+      const hasBase64 = !!(content.base64 || msg.base64 || (msg.message?.imageMessage?.base64) || (msg.message?.documentMessage?.base64) || (msg.message?.videoMessage?.base64) || (msg.message?.audioMessage?.base64));
       
       // ACTIVE FETCH: Fetch credentials from Env Vars or DB
       const credentials = matchedIntegration?.credentials as any;
