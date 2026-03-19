@@ -502,7 +502,7 @@ export function ChatClient({
                                                                 <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-widest">Workspace Note</span>
                                                             </div>
                                                             <p className="text-sm italic font-serif leading-relaxed text-zinc-800 dark:text-amber-100/90">{msg.content}</p>
-                                                            <div className="mt-3 text-[9px] font-bold text-amber-600/60 dark:text-amber-400/40 text-right uppercase tracking-tighter">
+                                                            <div suppressHydrationWarning className="mt-3 text-[9px] font-bold text-amber-600/60 dark:text-amber-400/40 text-right uppercase tracking-tighter">
                                                                 {format(new Date(msg.created_at), 'HH:mm')}
                                                             </div>
                                                         </div>
@@ -545,7 +545,7 @@ export function ChatClient({
                                                             <p className="text-sm leading-relaxed antialiased whitespace-pre-wrap">{msg.content}</p>
                                                         )}
                                                         <div className={`flex items-center gap-1.5 mt-2 opacity-60 justify-end transition-opacity`}>
-                                                            <span className="text-[9px] font-bold uppercase tracking-tighter">
+                                                            <span suppressHydrationWarning className="text-[9px] font-bold uppercase tracking-tighter">
                                                                 {format(new Date(msg.created_at), 'HH:mm')}
                                                             </span>
                                                             {isOutbound && (
