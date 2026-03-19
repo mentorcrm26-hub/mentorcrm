@@ -64,12 +64,16 @@ Before designing an API:
 - Return inconsistent response formats
 - Expose internal errors to clients
 - Skip rate limiting
+- Use `fs.appendFileSync` in Serverless functions (Vercel) - **Causes 500 errors!**
+- Use `continue` in webhook loops without a fallback (Data loss risk)
 
 **DO:**
 - Choose API style based on context
 - Ask about client requirements
 - Document thoroughly
 - Use appropriate status codes
+- **Webhook Resilience**: Implement a "No-Continue Policy". If parsing fails, store the raw JSON.
+- **Serverless Logs**: Use `console.log` instead of file-based logging.
 
 ---
 

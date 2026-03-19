@@ -54,7 +54,7 @@ export default async function ChatPage() {
     const isConnected = integration?.credentials?.status === 'connected'
 
     return (
-        <div className="flex flex-col h-full bg-white dark:bg-zinc-950 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm flex-1">
+        <div className="flex flex-col h-full flex-1">
             <Suspense fallback={<div className="flex-1 flex items-center justify-center">Loading chat...</div>}>
                 <ChatClient 
                     initialConversations={(conversations as any) || []} 

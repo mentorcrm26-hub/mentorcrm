@@ -334,7 +334,7 @@ export function ChatClient({
 
     if (!whatsappConnected) {
         return (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-zinc-50 dark:bg-black">
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -355,7 +355,7 @@ export function ChatClient({
     }
 
     return (
-        <div className="flex h-[calc(100vh-theme(spacing.20))] w-full bg-zinc-50 dark:bg-black overflow-hidden font-sans text-zinc-900 dark:text-zinc-100 gap-6">
+        <div className="flex h-full w-full overflow-hidden font-sans text-zinc-900 dark:text-zinc-100 gap-6">
             {/* Sidebar List */}
             <div className="w-96 flex flex-col bg-gradient-to-br from-white/90 to-white/50 dark:from-zinc-900/90 dark:to-zinc-900/50 backdrop-blur-2xl border border-zinc-200 dark:border-white/10 rounded-3xl overflow-hidden shadow-sm shrink-0">
                 <div className="p-6 border-b border-zinc-200 dark:border-white/5 space-y-4">
