@@ -181,6 +181,42 @@ export async function POST(req: NextRequest) {
         continue;
       }
 
+      // 5.5 Process Inbound Media (Base64 to Supabase Storage)
+      if (content.base64 && !fromMe) {
+        try {
+          debugLog(`[MEDIA] Processing inbound base64 media for ${evolutionMsgId}`);
+          const buffer = Buffer.from(content.base64, 'base64');
+          const ext = content.mediaType === 'image' ? 'jpg' : 
+                      content.mediaType === 'video' ? 'mp4' : 
+                      content.mediaType === 'audio' ? 'ogg' : 
+                      (content.text?.split('.').pop() || 'pdf');
+                      
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
+          const filePath = `${tenantId}/${conv.id}/${fileName}`;
+          
+          const { error: uploadError } = await supabase.storage
+            .from('chat-media')
+            .upload(filePath, buffer, { 
+              contentType: content.mediaType === 'image' ? 'image/jpeg' : 
+                           content.mediaType === 'video' ? 'video/mp4' :
+                           content.mediaType === 'audio' ? 'audio/ogg' : 'application/pdf',
+              upsert: true 
+            });
+
+          if (!uploadError) {
+            const { data: { publicUrl } } = supabase.storage
+              .from('chat-media')
+              .getPublicUrl(filePath);
+            content.mediaUrl = publicUrl;
+            debugLog(`[MEDIA] Success! Replacement URL: ${content.mediaUrl}`);
+          } else {
+            debugLog(`[MEDIA ERROR] Supabase Upload: ${uploadError.message}`);
+          }
+        } catch (err: any) {
+          debugLog(`[MEDIA ERROR] Base64 Parse: ${err.message}`);
+        }
+      }
+
       // 6. Save Message & Track Result
       const { data: finalMsg, error: msgErr } = await supabase
         .from('messages')
@@ -227,6 +263,7 @@ function extractMessageContent(msg: any) {
   let text = '';
   let mediaUrl = null;
   let mediaType: 'image' | 'video' | 'audio' | 'document' | null = null;
+  let base64 = msg.base64 || null;
 
   // Baileys / Evolution v2 keys
   const msgBody = m.ephemeralMessage?.message || m.viewOnceMessage?.message || m.viewOnceMessageV2?.message || m;
@@ -241,18 +278,22 @@ function extractMessageContent(msg: any) {
     text = msgBody.imageMessage.caption || '';
     mediaUrl = msgBody.imageMessage.url || null;
     mediaType = 'image';
+    if (!base64 && msgBody.imageMessage.base64) base64 = msgBody.imageMessage.base64;
   } else if (msgBody.videoMessage) {
     text = msgBody.videoMessage.caption || '';
     mediaUrl = msgBody.videoMessage.url || null;
     mediaType = 'video';
+    if (!base64 && msgBody.videoMessage.base64) base64 = msgBody.videoMessage.base64;
   } else if (msgBody.audioMessage) {
     text = '';
     mediaUrl = msgBody.audioMessage.url || null;
     mediaType = 'audio';
+    if (!base64 && msgBody.audioMessage.base64) base64 = msgBody.audioMessage.base64;
   } else if (msgBody.documentMessage) {
     text = msgBody.documentMessage.fileName || msgBody.documentMessage.caption || '';
     mediaUrl = msgBody.documentMessage.url || null;
     mediaType = 'document';
+    if (!base64 && msgBody.documentMessage.base64) base64 = msgBody.documentMessage.base64;
   } else if (msgBody.buttonsResponseMessage) {
     text = msgBody.buttonsResponseMessage.selectedDisplayText || msgBody.buttonsResponseMessage.selectedButtonId;
   } else if (msgBody.templateButtonReplyMessage) {
@@ -263,5 +304,5 @@ function extractMessageContent(msg: any) {
     text = msgBody.text;
   }
 
-  return { text, mediaUrl, mediaType };
+  return { text, mediaUrl, mediaType, base64 };
 }
