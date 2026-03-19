@@ -183,7 +183,47 @@ export async function POST(req: NextRequest) {
 
       // 5.5 Process Inbound Media (Base64 to Supabase Storage)
       const hasBase64 = !!(content.base64 || msg.base64 || (msg.message?.imageMessage?.base64) || (msg.message?.documentMessage?.base64));
-      debugLog(`[MEDIA CHECK] msgId: ${evolutionMsgId} | hasBase64: ${hasBase64} | type: ${content.mediaType} | fromMe: ${fromMe}`);
+      
+      // ACTIVE FETCH: If media but no base64, try to fetch from Evolution API
+      const credentials = matchedIntegration?.credentials as any;
+      const apiUrl = credentials?.apiUrl || credentials?.url;
+      const apikey = credentials?.apikey || credentials?.token;
+
+      if (!hasBase64 && content.mediaType && !fromMe && apiUrl && apikey) {
+        try {
+          debugLog(`[MEDIA] Attempting active fetch for ${evolutionMsgId} from Evolution API...`);
+          const fetchRes = await fetch(`${apiUrl}/chat/getBase64FromMediaMessage/${instanceName}`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'apikey': apikey
+            },
+            body: JSON.stringify({ 
+              message: { 
+                key: { 
+                  id: evolutionMsgId,
+                  remoteJid: remoteJid,
+                  fromMe: fromMe
+                } 
+              } 
+            })
+          });
+          
+          if (fetchRes.ok) {
+            const fetchData = await fetchRes.json();
+            if (fetchData.base64) {
+              content.base64 = fetchData.base64;
+              debugLog(`[MEDIA] Active fetch SUCCESS for ${evolutionMsgId}`);
+            }
+          } else {
+            debugLog(`[MEDIA] Active fetch failed for ${evolutionMsgId}: ${fetchRes.status}`);
+          }
+        } catch (fetchErr: any) {
+          debugLog(`[MEDIA] Active fetch error: ${fetchErr.message}`);
+        }
+      }
+
+      debugLog(`[MEDIA CHECK] msgId: ${evolutionMsgId} | hasBase64: ${!!content.base64} | type: ${content.mediaType} | fromMe: ${fromMe}`);
       
       if (!content.base64 && hasBase64) {
         content.base64 = msg.base64 || msg.message?.imageMessage?.base64 || msg.message?.documentMessage?.base64 || msg.message?.videoMessage?.base64 || msg.message?.audioMessage?.base64;
@@ -193,20 +233,18 @@ export async function POST(req: NextRequest) {
         try {
           debugLog(`[MEDIA] Processing inbound base64 media for ${evolutionMsgId}`);
           const buffer = Buffer.from(content.base64, 'base64');
-          const ext = content.mediaType === 'image' ? 'jpg' : 
-                      content.mediaType === 'video' ? 'mp4' : 
-                      content.mediaType === 'audio' ? 'ogg' : 
-                      (content.text?.split('.').pop() || 'pdf');
+          const ext = content.mimetype.split('/').pop()?.split(';')[0] || 
+                      (content.mediaType === 'image' ? 'jpg' : 
+                       content.mediaType === 'video' ? 'mp4' : 
+                       content.mediaType === 'audio' ? 'ogg' : 'pdf');
                       
-          const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
+          const fileName = content.fileName || `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
           const filePath = `${tenantId}/${conv.id}/${fileName}`;
           
           const { error: uploadError } = await supabase.storage
             .from('chat-media')
             .upload(filePath, buffer, { 
-              contentType: content.mediaType === 'image' ? 'image/jpeg' : 
-                           content.mediaType === 'video' ? 'video/mp4' :
-                           content.mediaType === 'audio' ? 'audio/ogg' : 'application/pdf',
+              contentType: content.mimetype || 'application/octet-stream',
               upsert: true 
             });
 
@@ -271,6 +309,8 @@ function extractMessageContent(msg: any) {
   let mediaUrl = null;
   let mediaType: 'image' | 'video' | 'audio' | 'document' | null = null;
   let base64 = msg.base64 || null;
+  let mimetype = '';
+  let fileName = '';
 
   // Baileys / Evolution v2 keys
   const msgBody = m.ephemeralMessage?.message || m.viewOnceMessage?.message || m.viewOnceMessageV2?.message || m;
@@ -285,21 +325,26 @@ function extractMessageContent(msg: any) {
     text = msgBody.imageMessage.caption || '';
     mediaUrl = msgBody.imageMessage.url || null;
     mediaType = 'image';
+    mimetype = msgBody.imageMessage.mimetype || 'image/jpeg';
     if (!base64 && msgBody.imageMessage.base64) base64 = msgBody.imageMessage.base64;
   } else if (msgBody.videoMessage) {
     text = msgBody.videoMessage.caption || '';
     mediaUrl = msgBody.videoMessage.url || null;
     mediaType = 'video';
+    mimetype = msgBody.videoMessage.mimetype || 'video/mp4';
     if (!base64 && msgBody.videoMessage.base64) base64 = msgBody.videoMessage.base64;
   } else if (msgBody.audioMessage) {
     text = '';
     mediaUrl = msgBody.audioMessage.url || null;
     mediaType = 'audio';
+    mimetype = msgBody.audioMessage.mimetype || 'audio/ogg';
     if (!base64 && msgBody.audioMessage.base64) base64 = msgBody.audioMessage.base64;
   } else if (msgBody.documentMessage) {
     text = msgBody.documentMessage.fileName || msgBody.documentMessage.caption || '';
+    fileName = msgBody.documentMessage.fileName || '';
     mediaUrl = msgBody.documentMessage.url || null;
     mediaType = 'document';
+    mimetype = msgBody.documentMessage.mimetype || 'application/pdf';
     if (!base64 && msgBody.documentMessage.base64) base64 = msgBody.documentMessage.base64;
   } else if (msgBody.buttonsResponseMessage) {
     text = msgBody.buttonsResponseMessage.selectedDisplayText || msgBody.buttonsResponseMessage.selectedButtonId;
@@ -311,5 +356,5 @@ function extractMessageContent(msg: any) {
     text = msgBody.text;
   }
 
-  return { text, mediaUrl, mediaType, base64 };
+  return { text, mediaUrl, mediaType, base64, mimetype, fileName };
 }
