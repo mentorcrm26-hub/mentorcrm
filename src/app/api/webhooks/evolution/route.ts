@@ -182,7 +182,13 @@ export async function POST(req: NextRequest) {
       }
 
       // 5.5 Process Inbound Media (Base64 to Supabase Storage)
-      debugLog(`[MEDIA CHECK] msgId: ${evolutionMsgId} | hasBase64: ${!!content.base64} | type: ${content.mediaType} | fromMe: ${fromMe}`);
+      const hasBase64 = !!(content.base64 || msg.base64 || (msg.message?.imageMessage?.base64) || (msg.message?.documentMessage?.base64));
+      debugLog(`[MEDIA CHECK] msgId: ${evolutionMsgId} | hasBase64: ${hasBase64} | type: ${content.mediaType} | fromMe: ${fromMe}`);
+      
+      if (!content.base64 && hasBase64) {
+        content.base64 = msg.base64 || msg.message?.imageMessage?.base64 || msg.message?.documentMessage?.base64 || msg.message?.videoMessage?.base64 || msg.message?.audioMessage?.base64;
+      }
+
       if (content.base64 && !fromMe) {
         try {
           debugLog(`[MEDIA] Processing inbound base64 media for ${evolutionMsgId}`);
