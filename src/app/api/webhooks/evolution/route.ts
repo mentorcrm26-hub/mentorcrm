@@ -217,9 +217,11 @@ export async function POST(req: NextRequest) {
             }
           } else {
             debugLog(`[MEDIA] Active fetch failed for ${evolutionMsgId}: ${fetchRes.status}`);
+            content.text = `[ERROR FETCH]: ${fetchRes.status}`;
           }
         } catch (fetchErr: any) {
           debugLog(`[MEDIA] Active fetch error: ${fetchErr.message}`);
+          content.text = `[ERROR EXCEPTION]: ${fetchErr.message}`;
         }
       }
 
