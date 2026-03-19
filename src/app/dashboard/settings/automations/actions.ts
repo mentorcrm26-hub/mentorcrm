@@ -70,9 +70,11 @@ export async function toggleAutomation(id: string, isActive: boolean) {
 }
 
 export async function saveAppointmentSettings(data: {
+    reminder_0m_template_id: string | null;
     reminder_1h_template_id: string | null;
     reminder_30m_template_id: string | null;
     notify_professional_30m: boolean;
+    notify_professional_0m: boolean;
     professional_phone: string | null;
     professional_email: string | null;
 }) {
@@ -92,8 +94,13 @@ export async function saveAppointmentSettings(data: {
         .from('appointment_settings')
         .upsert({
             tenant_id: profile.tenant_id,
-            ...data,
+            reminder_0m_template_id: data.reminder_0m_template_id,
+            reminder_1h_template_id: data.reminder_1h_template_id,
+            reminder_30m_template_id: data.reminder_30m_template_id,
+            notify_professional_30m: data.notify_professional_30m,
+            notify_professional_0m: data.notify_professional_0m,
             professional_phone: data.professional_phone ? cleanPhone(data.professional_phone) : null,
+            professional_email: data.professional_email,
             updated_at: new Date().toISOString()
         });
 
@@ -110,7 +117,7 @@ export async function getAppointmentSettings() {
 
     const { data: profile } = await supabase
         .from('users')
-        .select('tenant_id')
+        .select('tenant_id, phone')
         .eq('id', user.id)
         .single();
     
@@ -122,5 +129,8 @@ export async function getAppointmentSettings() {
         .eq('tenant_id', profile.tenant_id)
         .single();
 
-    return data;
+    return {
+        ...data,
+        profile_phone: profile.phone
+    };
 }

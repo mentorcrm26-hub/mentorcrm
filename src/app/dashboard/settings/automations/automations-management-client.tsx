@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Zap, Plus, Trash2, Play, Pause, Pencil, X, Save, AlertCircle } from 'lucide-react';
+import { Zap, Plus, Trash2, Play, Pause, Pencil, X, Save, AlertCircle, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { saveAutomation, deleteAutomation, toggleAutomation, saveAppointmentSettings, getAppointmentSettings } from './actions';
 
@@ -37,6 +37,7 @@ export function AutomationsManagementClient({
     const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
     const [settings, setSettings] = useState<any>({
+        reminder_0m_template_id: '',
         reminder_1h_template_id: '',
         reminder_30m_template_id: '',
         notify_professional_30m: true,
@@ -47,7 +48,12 @@ export function AutomationsManagementClient({
     useEffect(() => {
         const loadSettings = async () => {
             const data = await getAppointmentSettings();
-            if (data) setSettings(data);
+            if (data) {
+                setSettings({
+                    ...data,
+                    professional_phone: data.professional_phone || data.profile_phone || ''
+                });
+            }
         };
         loadSettings();
     }, []);
@@ -187,7 +193,7 @@ export function AutomationsManagementClient({
                             <span>
                                 {a.trigger_event === 'new_lead' && 'A new lead is created'}
                                 {a.trigger_event === 'status_change' && 'Lead status changes'}
-                                {a.trigger_event === 'meeting_scheduled' && 'Meeting is scheduled'}
+                                {a.trigger_event === 'meeting_scheduled' && 'Immediately when scheduled'}
                                 {a.trigger_event === 'lead_birthday' && 'Lead\'s birthday'}
                                 {a.trigger_event === 'deal_closed' && 'Deal closed (Won)'}
                                 {a.trigger_event === 'holiday_christmas' && 'Christmas Day (Dec 25)'}
@@ -254,7 +260,7 @@ export function AutomationsManagementClient({
                                     >
                                         <option value="new_lead">A new lead is created</option>
                                         <option value="status_change">Lead status changes</option>
-                                        <option value="meeting_scheduled">Meeting is scheduled</option>
+                                        <option value="meeting_scheduled">Immediately when meeting scheduled</option>
                                         <option value="lead_birthday">Lead's birthday</option>
                                         <option value="deal_closed">Deal closed (Won)</option>
                                         <option value="holiday_christmas">Christmas Day</option>
@@ -324,12 +330,12 @@ export function AutomationsManagementClient({
                         <AlertCircle className="w-5 h-5" />
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-zinc-900 dark:text-white">System Appointment Reminders</h3>
-                        <p className="text-xs text-zinc-500">Configure default reminders for leads in the "Scheduled" column.</p>
+                        <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Scheduled Meeting Reminders (Auto Timeline)</h3>
+                        <p className="text-xs text-zinc-500">Configure default timeline reminders for leads in the "Scheduled" column.</p>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {/* 1 Hour Reminder */}
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
@@ -377,14 +383,80 @@ export function AutomationsManagementClient({
                                 />
                                 <label htmlFor="notify-prof" className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Notify me (Professional) as well</label>
                             </div>
-                            <input 
-                                type="text" 
-                                placeholder="Your WhatsApp (e.g. 1407...)" 
-                                value={settings.professional_phone || ''}
-                                onChange={(e) => setSettings({ ...settings, professional_phone: e.target.value })}
-                                className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-xs focus:ring-2 focus:ring-indigo-500/50 text-zinc-900 dark:text-white"
-                            />
+                            <div className="relative">
+                                <input 
+                                    type="text" 
+                                    placeholder="Your WhatsApp (e.g. 1407...)" 
+                                    value={settings.professional_phone || ''}
+                                    onChange={(e) => {
+                                        let val = e.target.value.replace(/\D/g, '');
+                                        if (val.length > 10) val = val.slice(0, 10);
+                                        
+                                        // Mask (XXX) XXX-XXXX
+                                        let masked = val;
+                                        if (val.length > 6) masked = `(${val.slice(0, 3)}) ${val.slice(3, 6)}-${val.slice(6)}`;
+                                        else if (val.length > 3) masked = `(${val.slice(0, 3)}) ${val.slice(3)}`;
+                                        else if (val.length > 0) masked = `(${val}`;
+                                        
+                                        setSettings({ ...settings, professional_phone: masked });
+                                    }}
+                                    className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-xs focus:ring-2 focus:ring-indigo-500/50 text-zinc-900 dark:text-white pr-10"
+                                />
+                                {settings.profile_phone && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            let val = settings.profile_phone.replace(/\D/g, '');
+                                            if (val.startsWith('1') && val.length > 10) val = val.slice(1);
+                                            
+                                            // Mask (XXX) XXX-XXXX
+                                            let masked = val;
+                                            if (val.length > 6) masked = `(${val.slice(0, 3)}) ${val.slice(3, 6)}-${val.slice(6)}`;
+                                            else if (val.length > 3) masked = `(${val.slice(0, 3)}) ${val.slice(3)}`;
+                                            else if (val.length > 0) masked = `(${val}`;
+
+                                            setSettings({ ...settings, professional_phone: masked });
+                                            toast.success('Phone synced from profile');
+                                        }}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-indigo-500 transition-colors"
+                                        title="Sync with Personal Profile"
+                                    >
+                                        <RefreshCw className="w-3.5 h-3.5" />
+                                    </button>
+                                )}
+                            </div>
                         </div>
+                    </div>
+
+                    {/* Exact Time Reminder */}
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Exact Time (I'm Waiting)</label>
+                            <span className="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-bold">Auto</span>
+                        </div>
+                        <select 
+                            className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500/50 text-zinc-900 dark:text-white"
+                            value={settings.reminder_0m_template_id || ''}
+                            onChange={(e) => setSettings({ ...settings, reminder_0m_template_id: e.target.value || null })}
+                        >
+                            <option value="">Default System Message</option>
+                            {templates.filter(t => t.type === 'whatsapp').map(t => (
+                                <option key={t.id} value={t.id}>{t.name}</option>
+                            ))}
+                        </select>
+                        <div className="pt-2">
+                            <div className="flex items-center gap-2">
+                                <input 
+                                    type="checkbox" 
+                                    id="notify-prof-0m" 
+                                    checked={settings.notify_professional_0m} 
+                                    onChange={(e) => setSettings({ ...settings, notify_professional_0m: e.target.checked })}
+                                    className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500" 
+                                />
+                                <label htmlFor="notify-prof-0m" className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Notify me (Professional) as well</label>
+                            </div>
+                        </div>
+                        <p className="text-[10px] text-zinc-500 italic">Sent exactly at the time of the meeting.</p>
                     </div>
                 </div>
 

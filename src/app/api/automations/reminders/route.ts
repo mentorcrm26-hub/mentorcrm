@@ -36,7 +36,7 @@ export async function GET(req: Request) {
         // Fetch settings for this tenant to see custom templates
         const { data: config } = await supabase
             .from('appointment_settings')
-            .select('*, reminder_1h:reminder_1h_template_id(content), reminder_30m:reminder_30m_template_id(content)')
+            .select('*, reminder_0m:reminder_0m_template_id(content), reminder_1h:reminder_1h_template_id(content), reminder_30m:reminder_30m_template_id(content)')
             .eq('tenant_id', lead.tenant_id)
             .single()
 
@@ -52,6 +52,13 @@ export async function GET(req: Request) {
             const templateContent = (config?.reminder_30m as any)?.content
             await processReminder(supabase, lead, '30m', templateContent, notified, config)
             results.sent_30m++
+        }
+
+        // AUTOMATION: AT MEETING TIME (-5 to +5 min)
+        if (diffMinutes <= 5 && diffMinutes >= -5 && !notified['0m']) {
+            const templateContent = (config?.reminder_0m as any)?.content
+            await processReminder(supabase, lead, '0m', templateContent, notified, config)
+            // (Optional: add to results stats)
         }
     }
 
@@ -75,8 +82,14 @@ async function processReminder(supabase: any, lead: any, type: string, customTem
 
     // 1. Send to Lead
     if (lead.phone) {
-        const timeText = type === '1h' ? 'em 1 hora' : 'em 30 minutos';
-        const defaultContent = `Olá {nome_cliente}! Passando para confirmar nossa reunião de hoje às {hora_reuniao} (${timeText}). Nos vemos em breve!`;
+        let timeText = '';
+        if (type === '1h') timeText = 'em 1 hora';
+        else if (type === '30m') timeText = 'em 30 minutos';
+        else if (type === '0m') timeText = 'neste momento';
+
+        const defaultContent = type === '0m' 
+            ? `Olá {nome_cliente}! Estou te aguardando na nossa sala de reunião.\n\nLink: {link_google_meet}`
+            : `Olá {nome_cliente}! Passando para confirmar nossa reunião de hoje às {hora_reuniao} (${timeText}). Nos vemos em breve!`;
         
         const parsedMessage = parseTemplate(customTemplate || defaultContent, lead, defaultSender);
 
@@ -87,12 +100,16 @@ async function processReminder(supabase: any, lead: any, type: string, customTem
         })
     }
 
-    // 2. Notificação Profissional (Apenas se configurado e apenas para 30m)
-    if (type === '30m' && config?.notify_professional_30m) {
+    // 2. Notificação Profissional (Apenas se configurado e apenas para 30m e 0m)
+    if ((type === '30m' && config?.notify_professional_30m) || (type === '0m' && config?.notify_professional_0m)) {
         const profPhone = config.professional_phone;
         if (profPhone) {
             const meetingAt = getFloridaDate(lead.meeting_at);
-            const professionalMessage = `⚠️ [LEMBRETE CRM]: Reunião de ${lead.name} às ${formatFlorida(meetingAt, 'HH:mm')} (em 30 min).`;
+            let timeMsg = '';
+            if (type === '30m') timeMsg = 'em 30 min';
+            else if (type === '0m') timeMsg = 'AGORA';
+            
+            const professionalMessage = `⚠️ [LEMBRETE CRM]: Reunião de ${lead.name} às ${formatFlorida(meetingAt, 'HH:mm')} (${timeMsg}).`;
             await sendWhatsAppMessage({
                 phone: profPhone,
                 message: professionalMessage,
