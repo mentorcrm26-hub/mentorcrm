@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
-import fs from 'fs';
-import path from 'path';
+// Removed fs/path imports to avoid Vercel filesystem errors
 
 function debugLog(msg: string) {
-  const logPath = path.join(process.cwd(), 'webhook_runtime_debug.log');
-  fs.appendFileSync(logPath, `[${new Date().toISOString()}] ${msg}\n`);
+  console.log(`[WH_DEBUG] ${msg}`);
 }
 
 export async function POST(req: NextRequest) {

@@ -5,11 +5,11 @@ dotenv.config({ path: '.env.local' });
 const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 async function checkSpecific() {
-    console.log('--- BUSCANDO QUALQUER "BUG-TESTE-999" ---');
+    console.log('--- BUSCANDO SIMULADO NO BANCO ---');
     const { data, error } = await sb
         .from('messages')
         .select('*')
-        .ilike('content', '%BUG-TESTE-999%');
+        .ilike('content', '%BUG-TESTE-999 (Simulado)%');
 
     if (error) {
         console.error('Erro:', error);
