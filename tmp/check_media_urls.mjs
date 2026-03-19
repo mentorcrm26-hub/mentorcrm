@@ -9,7 +9,7 @@ async function main() {
     const { data, error } = await sb
         .from('messages')
         .select('content, media_url, media_type, direction, created_at')
-        .not('media_url', 'is', null)
+        .eq('direction', 'inbound')
         .order('created_at', { ascending: false })
         .limit(5);
 

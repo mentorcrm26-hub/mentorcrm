@@ -182,6 +182,7 @@ export async function POST(req: NextRequest) {
       }
 
       // 5.5 Process Inbound Media (Base64 to Supabase Storage)
+      debugLog(`[MEDIA CHECK] msgId: ${evolutionMsgId} | hasBase64: ${!!content.base64} | type: ${content.mediaType} | fromMe: ${fromMe}`);
       if (content.base64 && !fromMe) {
         try {
           debugLog(`[MEDIA] Processing inbound base64 media for ${evolutionMsgId}`);
