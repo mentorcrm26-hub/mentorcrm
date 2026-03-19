@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, message: `Skipping event: ${eventType}` });
     }
 
-    debugLog(`--- WEBHOOK: ${eventType} | Instance: ${instanceName} ---`);
+    console.log(`[EV_WEBHOOK] HIT | Event: ${eventType} | Instance: ${instanceName}`);
 
     // 2. Identify Tenant (Multi-tenant Mapping)
     const { data: allIntegrations, error: intError } = await supabase
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       .eq('is_active', true);
 
     if (intError) {
-      debugLog(`[ERROR] Integrations lookup failed: ${intError.message}`);
+      console.error(`[EV_ERROR] Integrations lookup: ${intError.message}`);
       return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
     }
 
@@ -54,6 +54,8 @@ export async function POST(req: NextRequest) {
       const savedInstance = (typeof creds === 'object' ? (creds.instanceName || creds.instance) : String(creds)) || '';
       return savedInstance.toLowerCase() === instanceName.toLowerCase();
     });
+
+    console.log(`[EV_MATCH] instance=${instanceName} | count=${allIntegrations?.length} | matched=${!!matchedIntegration}`);
 
     let tenantId = matchedIntegration?.tenant_id;
 
@@ -188,6 +190,8 @@ export async function POST(req: NextRequest) {
       const credentials = matchedIntegration?.credentials as any;
       const apiUrl = credentials?.apiUrl || credentials?.url;
       const apikey = credentials?.apikey || credentials?.token;
+
+      console.log(`[EV_MEDIA] msgId=${evolutionMsgId} | type=${content.mediaType} | hasB64=${hasBase64} | apiUrl=${!!apiUrl} | apikey=${!!apikey}`);
 
       if (!hasBase64 && content.mediaType && !fromMe && apiUrl && apikey) {
         try {

@@ -20,9 +20,12 @@ async function main() {
     if (data && data.length > 0) {
         console.log(`--- ${data.length} NOVAS MENSAGENS ENCONTRADAS ---`);
         data.forEach((m, i) => {
+            console.log(`[${i}] Data:`, m.created_at);
             console.log(`[${i}] Direção:`, m.direction);
             console.log(`[${i}] Conteúdo:`, m.content);
             console.log(`[${i}] Media URL:`, m.media_url);
+            console.log(`[${i}] Evolution ID:`, m.evolution_message_id);
+            console.log('---');
         });
     } else {
         console.log('Nenhuma mensagem encontrada após o deploy.');
