@@ -110,10 +110,17 @@ export async function POST(req: NextRequest) {
          else if (msg.content) content.text = msg.content;
       }
 
+      // NO-CONTINUE POLICY: If parsing failed, use a fallback instead of skipping
       if (!content.text && !content.mediaUrl) {
-        debugLog(`[SKIP] Empty/unsupported content: ${evolutionMsgId} | Body keys: ${Object.keys(msg.message || {})}`);
-        continue;
+        debugLog(`[FALLBACK] Parsing failed for: ${evolutionMsgId}. Saving raw JSON.`);
+        if (typeof msg.message === 'object') {
+          content.text = `[CONTEÚDO NÃO PARSEADO]: ${JSON.stringify(msg.message).slice(0, 500)}`;
+        } else {
+          content.text = '[MENSAGEM NÃO SUPORTADA]';
+        }
       }
+
+      debugLog(`[RAW_MSG_FULL] ${JSON.stringify(msg).slice(0, 2000)}`);
 
       debugLog(`[PROCESS] ${fromMe ? 'OUTBOUND' : 'INBOUND'} | Phone: ${cleanedPhone} | Text: "${content.text?.substring(0, 30)}..."`);
 
@@ -230,6 +237,8 @@ function extractMessageContent(msg: any) {
     text = msgBody.conversation;
   } else if (msgBody.extendedTextMessage?.text) {
     text = msgBody.extendedTextMessage.text;
+  } else if (msgBody.text) {
+    text = typeof msgBody.text === 'object' ? (msgBody.text.text || '') : msgBody.text;
   } else if (msgBody.imageMessage) {
     text = msgBody.imageMessage.caption || '';
     mediaUrl = msgBody.imageMessage.url || null;
