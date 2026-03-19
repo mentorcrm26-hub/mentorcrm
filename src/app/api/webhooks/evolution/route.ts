@@ -186,10 +186,10 @@ export async function POST(req: NextRequest) {
       // 5.5 Process Inbound Media (Base64 to Supabase Storage)
       const hasBase64 = !!(content.base64 || msg.base64 || (msg.message?.imageMessage?.base64) || (msg.message?.documentMessage?.base64));
       
-      // ACTIVE FETCH: If media but no base64, try to fetch from Evolution API
+      // ACTIVE FETCH: Fetch credentials from Env Vars or DB
       const credentials = matchedIntegration?.credentials as any;
-      const apiUrl = credentials?.apiUrl || credentials?.url;
-      const apikey = credentials?.apikey || credentials?.token;
+      const apiUrl = process.env.EVOLUTION_API_URL || credentials?.apiUrl || credentials?.url;
+      const apikey = process.env.EVOLUTION_API_KEY || credentials?.apikey || credentials?.token;
 
       console.log(`[EV_MEDIA] msgId=${evolutionMsgId} | type=${content.mediaType} | hasB64=${hasBase64} | apiUrl=${!!apiUrl} | apikey=${!!apikey}`);
 
