@@ -74,7 +74,7 @@ export default async function TermsPage() {
       <div className="fixed inset-0 z-0 pointer-events-none opacity-20 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
       
       <div className="relative z-10 max-w-3xl mx-auto px-6 py-24">
-        <Link href="/" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-emerald-400 transition-colors mb-12">
+        <Link href="/" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-emerald-400 transition-colors mb-12 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none touch-manipulation">
           <ArrowLeft className="w-4 h-4" /> {t.back}
         </Link>
         

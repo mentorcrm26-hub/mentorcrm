@@ -129,7 +129,7 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-6">
             <div className="relative group hidden sm:block">
-              <button className="flex items-center gap-2 text-xs font-bold text-zinc-500 hover:text-zinc-100 transition-colors uppercase tracking-widest">
+              <button className="flex items-center gap-2 text-xs font-bold text-zinc-500 hover:text-zinc-100 transition-colors uppercase tracking-widest focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none touch-manipulation">
                 <Globe className="h-3.5 w-3.5" />
                 <span>{lang}</span>
               </button>
@@ -138,7 +138,7 @@ export default function LandingPage() {
                   <button
                     key={l}
                     onClick={() => { setLang(l); document.cookie = `NEXT_LOCALE=${l}; path=/; max-age=31536000`; }}
-                    className="block w-full px-4 py-2 text-left text-[10px] font-bold uppercase tracking-widest text-zinc-500 hover:bg-zinc-800 hover:text-emerald-400"
+                    className="block w-full px-4 py-2 text-left text-[10px] font-bold uppercase tracking-widest text-zinc-500 hover:bg-zinc-800 hover:text-emerald-400 transition-colors focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none touch-manipulation"
                   >
                     {l === 'pt' ? 'Português' : l === 'en' ? 'English' : 'Español'}
                   </button>
@@ -146,12 +146,12 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <Link href="/login" className="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
+            <Link href="/login" className="text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none touch-manipulation">
               {t.login}
             </Link>
             <Link
               href="/demo"
-              className="inline-flex h-9 items-center justify-center border border-white px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-all hover:bg-white hover:text-black"
+              className="inline-flex h-9 items-center justify-center border border-white px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-black focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none touch-manipulation"
             >
               {t.trial}
             </Link>
@@ -209,7 +209,7 @@ export default function LandingPage() {
                 >
                   <Link
                     href="/demo"
-                    className="group relative inline-flex h-14 items-center gap-4 border border-emerald-500/50 bg-emerald-500/5 px-10 text-xs font-bold uppercase tracking-widest text-emerald-400 transition-all hover:bg-emerald-500 hover:text-black overflow-hidden"
+                    className="group relative inline-flex h-14 items-center gap-4 border border-emerald-500/50 bg-emerald-500/5 px-10 text-xs font-bold uppercase tracking-widest text-emerald-400 transition-colors hover:bg-emerald-500 hover:text-black overflow-hidden focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none touch-manipulation"
                   >
                     <span className="relative z-10 flex items-center gap-3">
                       {t.cta}
@@ -303,7 +303,7 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.2 }}
-                className="group relative flex flex-col p-8 border border-white/[0.05] bg-zinc-900/10 hover:bg-zinc-900/40 transition-all duration-500"
+                className="group relative flex flex-col p-8 border border-white/[0.05] bg-zinc-900/10 hover:bg-zinc-900/40 transition-colors duration-500"
               >
                 <div className="absolute top-4 right-4 text-xs font-bold text-zinc-700 font-mono tracking-widest">{feature.index}</div>
                 <div className="mb-6 inline-flex h-14 w-14 items-center justify-center bg-zinc-900 border border-white/[0.08] group-hover:border-emerald-500/50 transition-colors">
@@ -366,7 +366,7 @@ export default function LandingPage() {
                 <p className="text-[10px] text-zinc-500 font-bold tracking-widest uppercase mb-8">{t.onePlan}</p>
                 <Link
                   href="/signup"
-                  className="w-full lg:min-w-[240px] inline-flex h-14 items-center justify-center bg-white px-8 text-xs font-extrabold uppercase tracking-widest text-black transition-all hover:bg-emerald-500"
+                  className="w-full lg:min-w-[240px] inline-flex h-14 items-center justify-center bg-white px-8 text-xs font-extrabold uppercase tracking-widest text-black transition-colors hover:bg-emerald-500 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none touch-manipulation"
                 >
                   {t.createAccount}
                 </Link>
@@ -383,11 +383,11 @@ export default function LandingPage() {
         </div>
         <p className="text-[10px] font-bold uppercase tracking-[0.4em] mb-6">© {new Date().getFullYear()} {t.footer}</p>
         <div className="flex justify-center items-center gap-6">
-          <Link href="/terms" className="text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-emerald-400 transition-colors">
+          <Link href="/terms" className="text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-emerald-400 transition-colors focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none touch-manipulation">
             {t.terms}
           </Link>
           <span className="text-zinc-800">•</span>
-          <Link href="/privacy" className="text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-emerald-400 transition-colors">
+          <Link href="/privacy" className="text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-emerald-400 transition-colors focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none touch-manipulation">
             {t.privacy}
           </Link>
         </div>
