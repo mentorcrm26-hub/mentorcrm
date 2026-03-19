@@ -165,13 +165,13 @@ export async function configureWebhook(instanceName: string, webhookUrlParam: st
 
   return { success: true, data: await response.json().catch(() => ({})) };
 }
-export async function sendEvolutionMedia(instanceName: string, phone: string, mediaUrl: string, mediaType: 'image' | 'video' | 'document' | 'audio', caption?: string) {
+export async function sendEvolutionMedia(instanceName: string, phone: string, mediaUrl: string, mediaType: 'image' | 'video' | 'document' | 'audio', caption?: string, fileName?: string) {
   if (!EVOLUTION_API_URL || !EVOLUTION_API_KEY) {
     throw new Error('Configuração de WhatsApp incompleta');
   }
 
   const endpoint = `${EVOLUTION_API_URL}/message/sendMedia/${instanceName}`;
-  const fileName = mediaUrl.split('/').pop() || 'file';
+  const finalFileName = fileName || mediaUrl.split('/').pop() || 'file';
 
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -183,8 +183,9 @@ export async function sendEvolutionMedia(instanceName: string, phone: string, me
       number: phone,
       media: mediaUrl,
       mediatype: mediaType,
+      mediaType: mediaType, // Some V2 versions use camelCase
       caption: caption || '',
-      fileName: fileName
+      fileName: finalFileName
     }),
   });
 

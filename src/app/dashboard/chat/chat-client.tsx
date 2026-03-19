@@ -298,7 +298,8 @@ export function ChatClient({
                         mediaUrl,
                         mediaType as any,
                         instanceName || 'INSTANCE',
-                        newMessage.trim() || undefined
+                        newMessage.trim() || undefined,
+                        selectedFile.name
                     )
 
                     if (!res.success) throw new Error(res.error)

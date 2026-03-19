@@ -188,7 +188,7 @@ export async function POST(req: NextRequest) {
       
       // ACTIVE FETCH: Fetch credentials from Env Vars or DB
       const credentials = matchedIntegration?.credentials as any;
-      const apiUrl = process.env.EVOLUTION_API_URL || credentials?.apiUrl || credentials?.url;
+      const apiUrl = (process.env.EVOLUTION_API_URL || credentials?.apiUrl || credentials?.url || '').replace(/\/$/, '');
       const apikey = process.env.EVOLUTION_API_KEY || credentials?.apikey || credentials?.token;
 
       console.log(`[EV_MEDIA] msgId=${evolutionMsgId} | type=${content.mediaType} | hasB64=${hasBase64} | apiUrl=${!!apiUrl} | apikey=${!!apikey}`);

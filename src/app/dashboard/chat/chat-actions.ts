@@ -26,14 +26,15 @@ export async function sendMediaMessage(
     mediaUrl: string, 
     mediaType: 'image' | 'video' | 'document' | 'audio', 
     instanceName: string,
-    caption?: string
+    caption?: string,
+    fileName?: string
 ) {
     const supabase = await createClient()
 
     // 1. Send via Evolution API
     let evolutionMsgId = null
     try {
-        const res = await sendEvolutionMedia(instanceName, phone, mediaUrl, mediaType, caption)
+        const res = await sendEvolutionMedia(instanceName, phone, mediaUrl, mediaType, caption, fileName)
         evolutionMsgId = res.key?.id
     } catch (err: any) {
         return { success: false, error: err.message || 'Failed to send media via WhatsApp' }
