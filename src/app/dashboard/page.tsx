@@ -18,7 +18,7 @@ export default async function DashboardPage() {
     // Fetch everything in parallel
     const [userProfileRes, allLeadsRes] = await Promise.all([
         supabase.from('users').select('role, tenants (name, status)').eq('id', user.id).single(),
-        supabase.from('leads').select('id, status, created_at')
+        supabase.from('leads').select('id, status, created_at').eq('is_archived', false)
     ])
 
     const userProfile = userProfileRes.data
