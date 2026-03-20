@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { sendEvolutionMessage } from './integrations/evolution-api';
 
 export class WhatsAppService {
@@ -9,7 +9,7 @@ export class WhatsAppService {
     }
 
     async sendMessage(phone: string, message: string) {
-        const supabase = await createClient();
+        const supabase = await createAdminClient();
 
         // 1. Get WhatsApp Integration
         const { data: integration } = await supabase
@@ -42,14 +42,11 @@ export class WhatsAppService {
         }
     }
 
-    public async logMessage(phone: string, message: string, direction: 'inbound' | 'outbound' = 'outbound', evolutionMsgId?: string) {
-        // HOTFIX: Não gravar se não tiver ID da Evolution para evitar mensagens fantasmas/mal direcionadas
-        if (!evolutionMsgId) {
-            console.log('[WA-LOG] Ignorando gravação local sem evolution_message_id');
-            return;
-        }
+    public async logMessage(phone: string, message: string, direction: 'inbound' | 'outbound' = 'outbound', evolution_message_id?: string) {
+        // ... same check ...
+        if (!evolution_message_id) return;
 
-        const supabase = await createClient();
+        const supabase = await createAdminClient();
         try {
             const { data: lead } = await supabase
                 .from('leads')
@@ -76,7 +73,7 @@ export class WhatsAppService {
                         direction: direction,
                         content: message,
                         status: direction === 'outbound' ? 'sent' : 'delivered',
-                        evolution_message_id: evolutionMsgId,
+                        evolution_message_id: evolution_message_id,
                         source: 'whatsapp_service'
                     });
                 }
