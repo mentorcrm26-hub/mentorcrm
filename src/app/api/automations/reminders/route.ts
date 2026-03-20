@@ -43,22 +43,31 @@ export async function GET(req: Request) {
         // AUTOMATION: 1 HOUR BEFORE (55 - 65 min)
         if (diffMinutes <= 65 && diffMinutes >= 55 && !notified['1h']) {
             const templateContent = (config?.reminder_1h as any)?.content
-            await processReminder(supabase, lead, '1h', templateContent, notified, config)
-            results.sent_1h++
+            const success = await processReminder(supabase, lead, '1h', templateContent, notified, config)
+            if (success) {
+                results.sent_1h++
+                notified['1h'] = true
+            }
         }
 
         // AUTOMATION: 30 MINUTES BEFORE (25 - 35 min)
         if (diffMinutes <= 35 && diffMinutes >= 25 && !notified['30m']) {
             const templateContent = (config?.reminder_30m as any)?.content
-            await processReminder(supabase, lead, '30m', templateContent, notified, config)
-            results.sent_30m++
+            const success = await processReminder(supabase, lead, '30m', templateContent, notified, config)
+            if (success) {
+                results.sent_30m++
+                notified['30m'] = true
+            }
         }
 
         // AUTOMATION: AT MEETING TIME (-5 to +5 min)
         if (diffMinutes <= 5 && diffMinutes >= -5 && !notified['0m']) {
             const templateContent = (config?.reminder_0m as any)?.content
-            await processReminder(supabase, lead, '0m', templateContent, notified, config)
-            // (Optional: add to results stats)
+            const success = await processReminder(supabase, lead, '0m', templateContent, notified, config)
+            if (success) {
+                results.sent_0m++
+                notified['0m'] = true
+            }
         }
     }
 
@@ -80,6 +89,8 @@ async function processReminder(supabase: any, lead: any, type: string, customTem
         .limit(1)
         .single();
 
+    let sentAnything = false;
+
     // 1. Send to Lead
     if (lead.phone) {
         let timeText = '';
@@ -93,11 +104,12 @@ async function processReminder(supabase: any, lead: any, type: string, customTem
         
         const parsedMessage = parseTemplate(customTemplate || defaultContent, lead, defaultSender);
 
-        await sendWhatsAppMessage({
+        const res = await sendWhatsAppMessage({
             phone: lead.phone,
             message: parsedMessage,
             tenantId: lead.tenant_id
         })
+        if (res && res.success) sentAnything = true;
     }
 
     // 2. Notificação Profissional (Apenas se configurado e apenas para 30m e 0m)
@@ -110,18 +122,23 @@ async function processReminder(supabase: any, lead: any, type: string, customTem
             else if (type === '0m') timeMsg = 'AGORA';
             
             const professionalMessage = `⚠️ [LEMBRETE CRM]: Reunião de ${lead.name} às ${formatFlorida(meetingAt, 'HH:mm')} (${timeMsg}).`;
-            await sendWhatsAppMessage({
+            const resProf = await sendWhatsAppMessage({
                 phone: profPhone,
                 message: professionalMessage,
                 tenantId: lead.tenant_id
             })
+            if (resProf && resProf.success) sentAnything = true;
         }
     }
 
     // 3. Mark as notified in DB
-    const updatedNotified = { ...notified, [type]: true }
-    await supabase
-        .from('leads')
-        .update({ meeting_notified: updatedNotified })
-        .eq('id', lead.id)
+    if (sentAnything) {
+        const updatedNotified = { ...notified, [type]: true }
+        await supabase
+            .from('leads')
+            .update({ meeting_notified: updatedNotified })
+            .eq('id', lead.id)
+    }
+    
+    return sentAnything;
 }
