@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(req: Request) {
     const supabase = await createAdminClient()
-    const now = getFloridaDate()
+    const nowReal = new Date()
 
     // 1. Fetch upcoming meetings in the next ~70 minutes
     // IMPORTANT: status must be 'Scheduled' and meeting_at within range
@@ -18,19 +18,19 @@ export async function GET(req: Request) {
         .select('*, tenant:tenants(id, name)')
         .not('meeting_at', 'is', null)
         .eq('status', 'Scheduled')
-        .gte('meeting_at', subMinutes(now, 10).toISOString())
-        .lte('meeting_at', addMinutes(now, 70).toISOString())
+        .gte('meeting_at', subMinutes(nowReal, 10).toISOString())
+        .lte('meeting_at', addMinutes(nowReal, 70).toISOString())
 
     if (error) {
         console.error('CRON ERROR:', error.message)
         return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    const results = { sent_1h: 0, sent_30m: 0, processed: leads?.length || 0 }
+    const results = { sent_1h: 0, sent_30m: 0, sent_0m: 0, processed: leads?.length || 0 }
 
     for (const lead of leads || []) {
-        const meetingAt = getFloridaDate(lead.meeting_at)
-        const diffMinutes = Math.round((meetingAt.getTime() - now.getTime()) / (60 * 1000))
+        const meetingAtReal = new Date(lead.meeting_at)
+        const diffMinutes = Math.round((meetingAtReal.getTime() - nowReal.getTime()) / (60 * 1000))
         const notified = lead.meeting_notified || {}
 
         // Fetch settings for this tenant to see custom templates
@@ -65,7 +65,7 @@ export async function GET(req: Request) {
     return NextResponse.json({
         success: true,
         processed: results.processed,
-        timestamp_florida: formatFlorida(now),
+        timestamp_florida: formatFlorida(nowReal),
         stats: results
     })
 }
