@@ -35,10 +35,24 @@ export async function POST(req: NextRequest) {
     // Log first 1000 chars of body to see the structure of real inbound messages
     debugLog(`[RAW EVENT] ${JSON.stringify(body).slice(0, 1000)}`);
 
-    // Flexible filtering: allow upsert and update for debugging
-    if (!eventType.includes('messages.upsert') && !eventType.includes('messages.update')) {
+    // Flexible filtering: allow upsert, update, and delete
+    if (!eventType.includes('upsert') && !eventType.includes('update') && !eventType.includes('delete')) {
       debugLog(`[SKIP EVENT] ${eventType}`);
       return NextResponse.json({ success: true, message: `Skipping event: ${eventType}` });
+    }
+
+    if (eventType.includes('delete')) {
+      debugLog(`[MESSAGES-DELETE EVENT] Processing delete webhook...`);
+      const delData = Array.isArray(body.data) ? body.data : [body.data];
+      
+      for (const delItem of delData) {
+        const targetId = delItem?.id || delItem?.key?.id || delItem?.messageId;
+        if (targetId) {
+          debugLog(`[DELETE EVENT] Marking message deleted: ${targetId}`);
+          await supabase.from('messages').update({ is_deleted: true }).eq('evolution_message_id', targetId);
+        }
+      }
+      return NextResponse.json({ success: true });
     }
 
     console.log(`[EV_WEBHOOK] HIT | Event: ${eventType} | Instance: ${instanceName}`);
