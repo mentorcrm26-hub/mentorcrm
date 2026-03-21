@@ -480,7 +480,7 @@ export function ChatClient({
                         </div>
 
                         {/* Stream */}
-                        <div className="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar relative">
+                        <div className="flex-1 overflow-y-auto px-8 pt-8 pb-4 space-y-6 custom-scrollbar relative">
                             <AnimatePresence initial={false}>
                                 {isLoadingMessages ? (
                                     <div className="flex justify-center p-8">
@@ -577,7 +577,7 @@ export function ChatClient({
                                     </div>
                                 )}
                             </AnimatePresence>
-                            <div ref={messagesEndRef} />
+                            <div ref={messagesEndRef} className="h-6 shrink-0 w-full" />
                         </div>
 
                         {/* Input Hub */}

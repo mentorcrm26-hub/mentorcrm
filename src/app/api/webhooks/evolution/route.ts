@@ -253,8 +253,10 @@ export async function POST(req: NextRequest) {
                        content.mediaType === 'video' ? 'mp4' : 
                        content.mediaType === 'audio' ? 'ogg' : 'pdf');
                       
-          const fileName = content.fileName || `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
-          const filePath = `${tenantId}/${conv.id}/${fileName}`;
+          const rawFileName = content.fileName || `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
+          // Sanitize filename to avoid Supabase storage upload errors with special characters
+          const sanitizedFileName = rawFileName.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+          const filePath = `${tenantId}/${conv.id}/${sanitizedFileName}`;
           
           const { error: uploadError } = await supabase.storage
             .from('chat-media')
