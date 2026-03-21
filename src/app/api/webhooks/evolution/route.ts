@@ -1,3 +1,10 @@
+/**
+ * 🔒 CORE SYSTEM LOCK - DO NOT MODIFY 🔒
+ * 
+ * Este arquivo foi VALIDADO EM PRODUÇÃO no dia 20/03/2026.
+ * O Webhook de recebimento da Evolution API está perfeitamente funcional para Textos e Mídias (Base64 -> Supabase).
+ * A criação de leads orgânicos e a atribuição de Tenant foi estabilizada. Evite alterações estruturais.
+ */
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
 // Removed fs/path imports to avoid Vercel filesystem errors
@@ -188,7 +195,9 @@ export async function POST(req: NextRequest) {
       
       // ACTIVE FETCH: Fetch credentials from Env Vars or DB
       const credentials = matchedIntegration?.credentials as any;
-      const apiUrl = (process.env.EVOLUTION_API_URL || credentials?.apiUrl || credentials?.url || '').replace(/\/$/, '');
+      const apiUrl = (process.env.EVOLUTION_API_URL || credentials?.apiUrl || credentials?.url || '')
+        .replace(/\/manager\/?$/, '')
+        .replace(/\/$/, '');
       const apikey = process.env.EVOLUTION_API_KEY || credentials?.apikey || credentials?.token;
 
       console.log(`[EV_MEDIA] msgId=${evolutionMsgId} | type=${content.mediaType} | hasB64=${hasBase64} | apiUrl=${!!apiUrl} | apikey=${!!apikey}`);

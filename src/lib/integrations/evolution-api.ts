@@ -1,3 +1,10 @@
+/**
+ * 🔒 CORE SYSTEM LOCK - DO NOT MODIFY 🔒
+ * 
+ * Este arquivo foi VALIDADO EM PRODUÇÃO no dia 20/03/2026.
+ * As rotinas de comunicação (Envio e Recebimento de Texto/Mídia) com a Evolution API estão estabilizadas.
+ * Evite alterações que não sejam extremamente críticas para não quebrar a sincronização bidirecional.
+ */
 
 export const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL?.replace(/\/manager$/, '');
 export const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY;

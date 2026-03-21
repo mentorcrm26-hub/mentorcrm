@@ -1,3 +1,10 @@
+/**
+ * 🔒 CORE SYSTEM LOCK - DO NOT MODIFY 🔒
+ * 
+ * Este arquivo foi VALIDADO EM PRODUÇÃO no dia 20/03/2026.
+ * Todo o sistema de automação (1h, 30m e 0m) e tratamento de Fuso Horário está 100% funcional.
+ * Evite qualquer modificação neste motor central para garantir que os agendamentos continuem sendo enviados corretamente.
+ */
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { sendWhatsAppMessage } from '@/lib/whatsapp-service'
@@ -104,13 +111,11 @@ async function processReminder(supabase: any, lead: any, type: string, customTem
         
         const parsedMessage = parseTemplate(customTemplate || defaultContent, lead, defaultSender);
 
-        console.log(`[WA-CRON] Preparing to send to Lead ${lead.name} (${lead.phone}): ${parsedMessage}`);
         const res = await sendWhatsAppMessage({
             phone: lead.phone,
             message: parsedMessage,
             tenantId: lead.tenant_id
         })
-        console.log(`[WA-CRON] Result for Lead ${lead.name}:`, res);
         if (res && res.success) sentAnything = true;
     }
 
