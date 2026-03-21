@@ -25,6 +25,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Mentor CRM",
     description: "Revolutionizing sales with AI.",
+  },
+  verification: {
+    google: "NuVfKw2tRHf6EcCLdv4MlOoSur1JXtWShH2s09zD27E",
   }
 };
 
