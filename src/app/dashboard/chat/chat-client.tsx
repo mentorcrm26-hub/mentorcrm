@@ -53,6 +53,7 @@ interface Message {
     is_internal?: boolean
     media_url?: string
     media_type?: 'image' | 'video' | 'document' | 'audio'
+    is_deleted?: boolean
 }
 
 export function ChatClient({ 
@@ -530,11 +531,22 @@ export function ChatClient({
                                                     key={msg.id} 
                                                     className={`flex ${isOutbound ? 'justify-end' : 'justify-start'}`}
                                                 >
-                                                    <div className={`max-w-[70%] p-4 rounded-3xl shadow-sm border ${
+                                                    <div className={`max-w-[70%] p-4 rounded-3xl shadow-sm border transition-all ${
                                                         isOutbound 
                                                             ? 'bg-emerald-600 text-white rounded-br-sm border-emerald-500 shadow-emerald-500/10' 
                                                             : 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-bl-sm border-zinc-200 dark:border-white/5'
-                                                    }`}>
+                                                    } ${msg.is_deleted ? 'opacity-70 grayscale-[30%] border-dashed' : ''}`}>
+                                                        
+                                                        {msg.is_deleted && (
+                                                            <div className={`flex items-center gap-1.5 mb-2.5 px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider w-fit ${
+                                                                isOutbound 
+                                                                    ? 'bg-white/20 text-white border border-white/10' 
+                                                                    : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30'
+                                                            }`}>
+                                                               🚫 Mensagem Revogada
+                                                            </div>
+                                                        )}
+
                                                         {msg.media_url && (
                                                             <div className="mb-2">
                                                                 {msg.media_type === 'image' ? (

@@ -117,6 +117,23 @@ export async function POST(req: NextRequest) {
          else if (msg.content) content.text = msg.content;
       }
 
+      // Detect Message Revocation (Delete for everyone)
+      if (eventType.includes('update') && msg.update) {
+        if (msg.update.status === 'REVOKED' || msg.update.status === 4 || msg.update.status === 'DELETED') {
+          debugLog(`[REVOKE UPDATE] Marking message deleted: ${evolutionMsgId}`);
+          await supabase.from('messages').update({ is_deleted: true }).eq('evolution_message_id', evolutionMsgId).eq('tenant_id', tenantId);
+        }
+        continue; // It's just a status update, skip creating a new message
+      }
+
+      const protocolMsg = msg.message?.protocolMessage || msg.message?.ephemeralMessage?.message?.protocolMessage || msg.message?.viewOnceMessage?.message?.protocolMessage;
+      const isRevoke = protocolMsg && (protocolMsg.type === 0 || protocolMsg.type === 'REVOKE');
+      if (isRevoke && protocolMsg.key?.id) {
+        debugLog(`[REVOKE] Marking message deleted: ${protocolMsg.key.id}`);
+        await supabase.from('messages').update({ is_deleted: true }).eq('evolution_message_id', protocolMsg.key.id).eq('tenant_id', tenantId);
+        continue; // Skip creating a new message for the revoke protocol message
+      }
+
       // NO-CONTINUE POLICY: If parsing failed, use a fallback instead of skipping
       if (!content.text && !content.mediaUrl) {
         debugLog(`[FALLBACK] Parsing failed for: ${evolutionMsgId}. Saving raw JSON.`);
