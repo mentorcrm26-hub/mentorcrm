@@ -117,6 +117,7 @@ export function ChatClient({
     }
     
     const messagesEndRef = useRef<HTMLDivElement>(null)
+    const isInitialLoad = useRef(true)
 
     const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
         messagesEndRef.current?.scrollIntoView({ behavior })
@@ -124,6 +125,9 @@ export function ChatClient({
 
     const activeConversationRef = useRef<Conversation | null>(activeConversation)
     useEffect(() => {
+        if (activeConversationRef.current?.id !== activeConversation?.id) {
+            isInitialLoad.current = true;
+        }
         activeConversationRef.current = activeConversation
     }, [activeConversation])
 
@@ -224,7 +228,15 @@ export function ChatClient({
 
     useEffect(() => {
         if (messages.length > 0) {
-            scrollToBottom(messages.length <= 1 ? 'auto' : 'smooth')
+            // Need a slight delay to ensure DOM is fully painted with the new messages
+            setTimeout(() => {
+                if (isInitialLoad.current) {
+                    scrollToBottom('auto')
+                    isInitialLoad.current = false
+                } else {
+                    scrollToBottom('smooth')
+                }
+            }, 100)
         }
     }, [messages])
 
