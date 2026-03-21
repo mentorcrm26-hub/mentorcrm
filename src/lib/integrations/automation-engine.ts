@@ -4,8 +4,8 @@ import { sendEmail } from '@/lib/mail';
 import { sendWhatsAppMessage } from '@/lib/whatsapp-service';
 import { parseTemplate } from './message-parser';
 
-export async function triggerAutomation(event: 'new_lead' | 'status_change' | 'meeting_scheduled', lead: any) {
-  const supabase = await createClient();
+export async function triggerAutomation(event: 'new_lead' | 'status_change' | 'meeting_scheduled' | 'lead_birthday', lead: any, supabaseInstance?: any) {
+  const supabase = supabaseInstance || await createClient();
 
   // 1. Fetch active automations for this event and tenant
   const { data: automations } = await supabase
