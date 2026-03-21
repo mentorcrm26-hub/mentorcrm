@@ -1,3 +1,11 @@
+/**
+ * 🔒 CORE SYSTEM LOCK - DO NOT MODIFY 🔒
+ * 
+ * Este arquivo foi VALIDADO EM PRODUÇÃO no dia 20/03/2026.
+ * O Live Chat suporta perfeitamente rolagem automática otimizada,
+ * envio e visualização nativa de mídias (Base64) e rastreamento robusto
+ * de Mensagens Revogadas (Deletadas pelo usuário). Evite alterações estruturais.
+ */
 'use client'
 
 import { useState, useEffect, useRef } from 'react'

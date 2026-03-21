@@ -1,3 +1,11 @@
+/**
+ * 🔒 CORE SYSTEM LOCK - DO NOT MODIFY 🔒
+ * 
+ * Este arquivo foi VALIDADO EM PRODUÇÃO no dia 20/03/2026.
+ * As rotas de Chat Actions suportam o envio de mídias nativas via
+ * base64 e garantem persistência correta das conversas.
+ * NÃO MODIFICAR PARA NÃO QUEBRAR O LIVE CHAT / EVOLUTION API.
+ */
 'use server'
 
 import { createClient } from '@/lib/supabase/server'

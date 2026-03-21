@@ -12,8 +12,9 @@ export async function GET(request: Request) {
 
     try {
         const urlObj = new URL(request.url)
-        const protocol = urlObj.protocol
-        const host = urlObj.host
+        const host = request.headers.get('host') || urlObj.host
+        const forwardedProto = request.headers.get('x-forwarded-proto')
+        const protocol = forwardedProto ? `${forwardedProto}:` : urlObj.protocol
         const redirectUri = `${protocol}//${host}/api/auth/google/callback`
 
         const oauth2Client = new google.auth.OAuth2(
