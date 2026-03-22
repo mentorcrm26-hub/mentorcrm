@@ -12,12 +12,14 @@ export function LeadDetailsModal({
     isOpen,
     onClose,
     lead,
-    availableTags = []
+    availableTags = [],
+    userRole = 'agent'
 }: {
     isOpen: boolean
     onClose: () => void
     lead: any | null
     availableTags?: any[]
+    userRole?: string
 }) {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -281,9 +283,10 @@ export function LeadDetailsModal({
                                     name="name"
                                     type="text"
                                     required
+                                    disabled={userRole !== 'admin'}
                                     defaultValue={lead.name}
                                     placeholder="e.g. John Doe"
-                                    className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium"
+                                    className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium disabled:opacity-75 disabled:bg-zinc-50 dark:disabled:bg-zinc-900/50"
                                 />
                             </div>
 
@@ -296,8 +299,9 @@ export function LeadDetailsModal({
                                     name="email"
                                     type="email"
                                     defaultValue={lead.email || ''}
+                                    disabled={userRole !== 'admin'}
                                     placeholder="john@example.com"
-                                    className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium"
+                                    className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium disabled:opacity-75 disabled:bg-zinc-50 dark:disabled:bg-zinc-900/50"
                                 />
                             </div>
 
@@ -310,9 +314,10 @@ export function LeadDetailsModal({
                                     name="phone"
                                     type="text"
                                     value={phoneStr}
+                                    disabled={userRole !== 'admin'}
                                     onChange={handlePhoneChange}
                                     placeholder="(407) 123-4567"
-                                    className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium"
+                                    className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium disabled:opacity-75 disabled:bg-zinc-50 dark:disabled:bg-zinc-900/50"
                                 />
                             </div>
 
@@ -329,8 +334,9 @@ export function LeadDetailsModal({
                                                 <button
                                                     key={tag.id}
                                                     type="button"
+                                                    disabled={userRole !== 'admin'}
                                                     onClick={() => handleToggleTag(tag)}
-                                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-bold transition-all shadow-sm ${isActive ? 'opacity-100 scale-100 ring-2 ring-offset-1 focus:outline-none dark:ring-offset-zinc-950' : 'opacity-40 hover:opacity-100 scale-95'}`}
+                                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-bold transition-all shadow-sm ${isActive ? 'opacity-100 scale-100 ring-2 ring-offset-1 focus:outline-none dark:ring-offset-zinc-950' : 'opacity-40 hover:opacity-100 scale-95'} disabled:cursor-not-allowed`}
                                                     style={{ 
                                                         backgroundColor: `${tag.color_hex}15`, 
                                                         color: tag.color_hex, 
@@ -357,7 +363,8 @@ export function LeadDetailsModal({
                                     name="birth_date"
                                     type="date"
                                     defaultValue={lead.birth_date || ''}
-                                    className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium text-zinc-700 dark:text-zinc-300 [&::-webkit-calendar-picker-indicator]:dark:invert"
+                                    disabled={userRole !== 'admin'}
+                                    className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium text-zinc-700 dark:text-zinc-300 [&::-webkit-calendar-picker-indicator]:dark:invert disabled:opacity-75 disabled:bg-zinc-50 dark:disabled:bg-zinc-900/50"
                                 />
                                 <p className="text-xs text-zinc-500 mt-1">Automatic format based on browser.</p>
                             </div>
@@ -371,7 +378,8 @@ export function LeadDetailsModal({
                                     name="meeting_at"
                                     type="datetime-local"
                                     defaultValue={lead.meeting_at ? formatFlorida(lead.meeting_at, "yyyy-MM-dd'T'HH:mm") : ''}
-                                    className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-medium text-zinc-700 dark:text-zinc-300 [&::-webkit-calendar-picker-indicator]:dark:invert"
+                                    disabled={userRole !== 'admin'}
+                                    className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-medium text-zinc-700 dark:text-zinc-300 [&::-webkit-calendar-picker-indicator]:dark:invert disabled:opacity-75 disabled:bg-zinc-50 dark:disabled:bg-zinc-900/50"
                                 />
                                 <div className="flex items-center gap-x-1.5 mt-1.5 px-2 py-1 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100/50 dark:border-indigo-900/50 rounded-lg">
                                     <span className="flex h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
@@ -382,7 +390,7 @@ export function LeadDetailsModal({
                             </div>
 
                             {/* Cancel Meeting Area */}
-                            {lead.meeting_at && (
+                            {userRole === 'admin' && lead.meeting_at && (
                                 <div className="space-y-2 flex flex-col pt-0">
                                     <label className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                                         <CalendarX className="w-4 h-4 text-rose-500" /> Manage Session
@@ -428,7 +436,8 @@ export function LeadDetailsModal({
                             )}
 
                             {/* Archive Lead Area */}
-                            <div className="space-y-2 flex flex-col pt-0">
+                            {userRole === 'admin' && (
+                                <div className="space-y-2 flex flex-col pt-0">
                                 <label className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                                     <Archive className="w-4 h-4 text-zinc-400" /> Archive to Vault
                                 </label>
@@ -467,7 +476,8 @@ export function LeadDetailsModal({
                                         )}
                                     </div>
                                 </div>
-                            </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Smart Playbook Widget (Hidden for now as requested)
@@ -597,14 +607,16 @@ export function LeadDetailsModal({
                     >
                         Cancel
                     </button>
-                    <button
-                        type="submit"
-                        form="lead-details-form"
-                        disabled={isSubmitting}
-                        className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95"
-                    >
-                        {isSubmitting ? 'Saving...' : 'Save Changes'}
-                    </button>
+                    {userRole === 'admin' && (
+                        <button
+                            type="submit"
+                            form="lead-details-form"
+                            disabled={isSubmitting}
+                            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md active:scale-95"
+                        >
+                            {isSubmitting ? 'Saving...' : 'Save Changes'}
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

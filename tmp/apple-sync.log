@@ -24,3 +24,12 @@
 [2026-03-21T23:00:52.513Z] [External Fetch] Total external events retrieved: 50
 [2026-03-22T02:57:06.545Z] [External Fetch] Found 1 integrations: whatsapp
 [2026-03-22T02:57:06.547Z] [External Fetch] Total external events retrieved: 0
+[2026-03-22T21:53:50.764Z] [External Fetch] Found 1 integrations: whatsapp
+[2026-03-22T21:53:50.766Z] [External Fetch] Total external events retrieved: 0
+[2026-03-22T21:58:00.410Z] [External Fetch] Found 1 integrations: whatsapp
+[2026-03-22T21:58:00.412Z] [External Fetch] Total external events retrieved: 0
+[2026-03-22T21:58:00.711Z] [External Fetch] Found 1 integrations: whatsapp
+[2026-03-22T21:58:00.713Z] [External Fetch] Total external events retrieved: 0
+[2026-03-22T22:01:12.915Z] [External Fetch] Found 2 integrations: whatsapp, google
+[2026-03-22T22:01:12.916Z] [External Fetch] Triggering Google sync for google...
+[2026-03-22T22:01:13.134Z] [External Fetch] Total external events retrieved: 50

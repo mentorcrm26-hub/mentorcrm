@@ -15,6 +15,9 @@ export default async function LeadsPage() {
         redirect('/login')
     }
 
+    const { data: userProfile } = await supabase.from('users').select('role').eq('id', user.id).single()
+    const userRole = userProfile?.role || 'agent'
+
     // Fetch the leads for the user's tenant with expanded tags
     const { data: leadsResponse } = await supabase
         .from('leads')
@@ -41,12 +44,12 @@ export default async function LeadsPage() {
                 </div>
                 <div className="flex gap-4 items-center">
                     <NewLeadModal mode="lead" />
-                    <ImportLeadsModal />
+                    {userRole === 'admin' && <ImportLeadsModal />}
                 </div>
             </header>
 
             <main className="flex-1 overflow-x-auto min-h-0">
-                <KanbanBoard initialLeads={leads || []} availableTags={allTags || []} />
+                <KanbanBoard initialLeads={leads || []} availableTags={allTags || []} userRole={userRole} />
             </main>
         </div>
     )

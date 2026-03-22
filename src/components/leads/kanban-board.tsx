@@ -35,7 +35,7 @@ type Lead = {
     tags?: any[]
 }
 
-export function KanbanBoard({ initialLeads, availableTags = [] }: { initialLeads: any[], availableTags?: any[] }) {
+export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agent' }: { initialLeads: any[], availableTags?: any[], userRole?: string }) {
     const [leads, setLeads] = useState<Lead[]>(initialLeads)
     const [isMounted, setIsMounted] = useState(false)
     const [messageModalState, setMessageModalState] = useState<{
@@ -305,7 +305,9 @@ export function KanbanBoard({ initialLeads, availableTags = [] }: { initialLeads
                                                                     className="flex bg-white dark:bg-zinc-950 items-center justify-end absolute top-2 right-2 border border-zinc-200 dark:border-zinc-800 rounded-md shadow-sm"
                                                                     onClick={(e) => e.stopPropagation()}
                                                                 >
-                                                                    <DeleteLeadButton leadId={lead.id} leadName={lead.name} />
+                                                                    {userRole === 'admin' && (
+                                                                        <DeleteLeadButton leadId={lead.id} leadName={lead.name} />
+                                                                    )}
                                                                 </div>
                                                             </div>
 
@@ -375,6 +377,7 @@ export function KanbanBoard({ initialLeads, availableTags = [] }: { initialLeads
                     onClose={() => setDetailsModalLead(null)}
                     lead={detailsModalLead}
                     availableTags={availableTags}
+                    userRole={userRole}
                 />
 
                 <NewLeadModal
