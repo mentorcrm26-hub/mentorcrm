@@ -52,7 +52,6 @@ export function NavLinks({ role, tenantId }: NavLinksProps) {
     const links = [
         { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
         { href: '/dashboard/leads', label: 'Leads (CRM)', icon: Users },
-        { href: '/dashboard/analytics', label: 'Analytics', icon: TrendingUp },
         { href: '/dashboard/chat', label: 'Live Chat', icon: MessageSquare },
         // { href: '/dashboard/workflow', label: 'WorkFlow', icon: Workflow }, // Disabled for now per user request
         { href: '/dashboard/calendar', label: 'Calendar', icon: CalendarIcon },
@@ -61,6 +60,7 @@ export function NavLinks({ role, tenantId }: NavLinksProps) {
     ]
 
     const adminLinks = [
+        { href: '/dashboard/analytics', label: 'Overview & Stats', icon: TrendingUp },
         { href: '/dashboard/settings/templates', label: 'Message Templates', icon: Variable },
         { href: '/dashboard/settings/automations', label: 'Smart Automations', icon: Zap },
         { href: '/dashboard/settings', label: 'Settings & API', icon: Settings },

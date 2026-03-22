@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, Settings, Menu, X, LogOut, Gift, MessageSquare, Calendar as CalendarIcon, Archive } from 'lucide-react'
+import { LayoutDashboard, Users, Settings, Menu, X, LogOut, Gift, MessageSquare, Calendar as CalendarIcon, Archive, TrendingUp } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 export function MobileNav({ role, tenantName, tenantId }: { role: string | null, tenantName: string | null, tenantId: string | null }) {
@@ -105,8 +105,9 @@ export function MobileNav({ role, tenantName, tenantId }: { role: string | null,
                     
                     {role === 'admin' && (
                         <>
-                            <div className="pt-4 pb-2 px-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Automation</div>
+                            <div className="pt-4 pb-2 px-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Administration</div>
                             {[
+                                { href: '/dashboard/analytics', label: 'Overview & Stats', icon: TrendingUp },
                                 { href: '/dashboard/settings', label: 'Settings', icon: Settings },
                             ].map((link) => {
                                 const active = pathname?.startsWith(link.href)
