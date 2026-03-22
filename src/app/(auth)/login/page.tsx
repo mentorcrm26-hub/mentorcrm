@@ -1,7 +1,8 @@
-import Link from 'next/link'
-import { Workflow, AlertCircle } from 'lucide-react'
-import { login } from '../actions'
-import { cookies } from 'next/headers'
+import React from 'react';
+import Link from 'next/link';
+import { AlertCircle, ArrowRight } from 'lucide-react';
+import { login } from '../actions';
+import { cookies } from 'next/headers';
 
 const translations = {
     pt: {
@@ -29,19 +30,6 @@ const translations = {
         noAccount: 'NO LICENSE?',
         createFree: 'REQUEST TRIAL',
         defaultError: 'AUTHENTICATION FAILED. CHECK CREDENTIALS.'
-    },
-    es: {
-        title: 'ACCESO AO SISTEMA',
-        subtitle: 'Autentique su sesión de gestión.',
-        emailLabel: 'IDENTIFICADOR (EMAIL)',
-        emailPlaceholder: 'agente@mentor-crm.com',
-        passwordLabel: 'CLAVE DE ACCESO (CONTRASEÑA)',
-        forgotPassword: 'RECUPERAR ACCESO',
-        passwordPlaceholder: '••••••••',
-        submit: 'INICIAR SESIÓN',
-        noAccount: '¿NO TIENE LICENCIA?',
-        createFree: 'SOLICITAR PRUEBA',
-        defaultError: 'FALLO NA AUTENTICACIÓN. VERIFIQUE LAS CREDENCIALES.'
     }
 };
 
@@ -59,19 +47,19 @@ export default async function LoginPage({
     const t = translations[lang];
 
     return (
-        <div className="w-full relative z-10 flex flex-col p-10 bg-zinc-900/40 backdrop-blur-3xl border border-white/[0.08] shadow-2xl">
+        <div className="bg-white/70 backdrop-blur-[40px] border border-white/60 p-12 rounded-[3.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.06)] relative overflow-hidden group">
             <div className="mb-12 text-center flex flex-col items-center">
-                <div className="flex h-12 w-12 items-center justify-center border border-emerald-500/40 bg-emerald-500/10 shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] mb-8">
-                    <Workflow className="h-6 w-6 text-emerald-400" />
-                </div>
-                <h1 className="text-xl md:text-2xl font-bold tracking-[0.2em] uppercase text-white mb-3">{t.title}</h1>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{t.subtitle}</p>
+                <Link href="/" className="mb-10 hover:opacity-80 transition-opacity">
+                    <img src="/logo.png" alt="Mentor CRM" className="h-20 w-auto mix-blend-multiply" />
+                </Link>
+                <h1 className="text-sm font-black tracking-[0.4em] uppercase text-zinc-900 mb-3">{t.title}</h1>
+                <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400">{t.subtitle}</p>
             </div>
 
             {p?.error && (
-                <div className="mb-8 flex items-center gap-3 bg-red-500/10 border border-red-500/20 p-4">
-                    <AlertCircle className="h-4 w-4 text-red-400" />
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-red-400 leading-relaxed">{p.msg || t.defaultError}</p>
+                <div className="mb-8 flex items-center gap-4 bg-red-500/5 border border-red-500/10 p-5 rounded-2xl">
+                    <AlertCircle className="h-4 w-4 text-red-500 shrink-0" />
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-red-500 leading-relaxed">{p.msg || t.defaultError}</p>
                 </div>
             )}
 
@@ -79,7 +67,7 @@ export default async function LoginPage({
                 <div className="flex flex-col gap-3">
                     <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase" htmlFor="email">{t.emailLabel}</label>
                     <input
-                        className="border border-white/[0.08] bg-black/40 px-5 py-4 text-sm text-white placeholder-zinc-700 focus:outline-none focus:border-emerald-500/50 transition-all"
+                        className="border border-zinc-200 bg-zinc-50 px-6 py-5 text-sm text-zinc-900 placeholder-zinc-300 rounded-2xl focus:outline-none focus:border-mentor-blue/30 focus:bg-white transition-all shadow-sm"
                         id="email"
                         name="email"
                         type="email"
@@ -91,10 +79,10 @@ export default async function LoginPage({
                 <div className="flex flex-col gap-3">
                     <div className="flex justify-between items-end">
                         <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase" htmlFor="password">{t.passwordLabel}</label>
-                        <Link href="#" className="text-[9px] font-bold tracking-widest text-zinc-600 hover:text-emerald-400 transition-colors">{t.forgotPassword}</Link>
+                        <Link href="#" className="text-[9px] font-bold tracking-widest text-zinc-400 hover:text-mentor-blue transition-colors">{t.forgotPassword}</Link>
                     </div>
                     <input
-                        className="border border-white/[0.08] bg-black/40 px-5 py-4 text-sm text-white placeholder-zinc-700 focus:outline-none focus:border-emerald-500/50 transition-all"
+                        className="border border-zinc-200 bg-zinc-50 px-6 py-5 text-sm text-zinc-900 placeholder-zinc-300 rounded-2xl focus:outline-none focus:border-mentor-blue/30 focus:bg-white transition-all shadow-sm"
                         id="password"
                         name="password"
                         type="password"
@@ -106,17 +94,18 @@ export default async function LoginPage({
                 <div className="pt-4">
                     <button
                         formAction={login}
-                        className="group relative flex w-full h-14 items-center justify-center bg-white px-8 text-xs font-extrabold uppercase tracking-widest text-black transition-all hover:bg-emerald-500 hover:text-black focus:outline-none"
+                        className="group relative flex w-full h-16 items-center justify-center bg-zinc-900 px-8 text-[11px] font-black uppercase tracking-[0.5em] text-white transition-all hover:bg-mentor-blue rounded-2xl shadow-xl shadow-zinc-200"
                     >
                         {t.submit}
                     </button>
                 </div>
             </form>
 
-            <div className="mt-12 pt-8 border-t border-white/[0.05] text-center">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 mb-4">{t.noAccount}</p>
-                <Link href="/signup" className="text-[10px] font-bold uppercase tracking-tighter text-white hover:text-emerald-400 transition-colors border-b border-white hover:border-emerald-400 pb-0.5">
+            <div className="mt-12 pt-10 border-t border-zinc-100 text-center">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-6">{t.noAccount}</p>
+                <Link href="/signup" className="group text-[10px] font-black uppercase tracking-widest text-zinc-900 flex items-center justify-center gap-2">
                     {t.createFree}
+                    <ArrowRight className="h-3 w-3 transform group-hover:translate-x-1 transition-transform" />
                 </Link>
             </div>
         </div>

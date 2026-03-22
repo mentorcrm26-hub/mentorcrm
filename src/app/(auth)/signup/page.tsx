@@ -1,53 +1,39 @@
-import Link from 'next/link'
-import { AlertCircle, Sparkles } from 'lucide-react'
-import { signup } from '../actions'
-import { cookies } from 'next/headers'
+import React from 'react';
+import Link from 'next/link';
+import { AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { signup } from '../actions';
+import { cookies } from 'next/headers';
 
 const translations = {
     pt: {
-        title: 'Crie seu Trial (3 Dias)',
-        subtitle: 'Plataforma restrita a 3 leads no Trial.',
-        fullName: 'Nome Completo',
+        title: 'SOLICITAR ACESSO TRIAL',
+        subtitle: 'Inicie sua experiência de 3 dias com precisão total.',
+        fullName: 'NOME COMPLETO',
         namePlaceholder: 'Seu Nome',
-        emailLabel: 'Email Profissional',
+        emailLabel: 'EMAIL PROFISSIONAL',
         emailPlaceholder: 'voce@exemplo.com',
-        passwordLabel: 'Criar Senha',
+        passwordLabel: 'CRIAR SENHA',
         passwordPlaceholder: 'Mínimo de 6 caracteres',
         terms: 'Concordo com os Termos de Serviço e Política de Privacidade. Entendo que o Trial é restrito a 3 contatos.',
-        submit: 'Criar Conta Grátis',
-        alreadyHaveAccount: 'Já possui conta?',
-        loginLink: 'Entrar no painel',
+        submit: 'SOLICITAR ACESSO AGORA',
+        alreadyHaveAccount: 'JÁ POSSUI CONTA?',
+        loginLink: 'Acessar Painel',
         defaultError: 'Erro ao criar conta. Tente novamente.'
     },
     en: {
-        title: 'Create your Trial (3 Days)',
-        subtitle: 'Platform restricted to 3 leads on Trial.',
-        fullName: 'Full Name',
+        title: 'REQUEST TRIAL ACCESS',
+        subtitle: 'Start your 3-day experience with total precision.',
+        fullName: 'FULL NAME',
         namePlaceholder: 'Your Name',
-        emailLabel: 'Professional Email',
+        emailLabel: 'PROFESSIONAL EMAIL',
         emailPlaceholder: 'you@example.com',
-        passwordLabel: 'Create Password',
+        passwordLabel: 'CREATE PASSWORD',
         passwordPlaceholder: 'Minimum 6 characters',
         terms: 'I agree to the Terms of Service and Privacy Policy. I understand the Trial is restricted to 3 contacts.',
-        submit: 'Create Free Account',
-        alreadyHaveAccount: 'Already have an account?',
-        loginLink: 'Go to dashboard',
+        submit: 'REQUEST ACCESS NOW',
+        alreadyHaveAccount: 'ALREADY HAVE AN ACCOUNT?',
+        loginLink: 'Login to Dashboard',
         defaultError: 'Error creating account. Try again.'
-    },
-    es: {
-        title: 'Crea tu Prueba (3 Días)',
-        subtitle: 'Plataforma restringida a 3 prospectos en Prueba.',
-        fullName: 'Nombre Completo',
-        namePlaceholder: 'Tu Nombre',
-        emailLabel: 'Correo Profesional',
-        emailPlaceholder: 'tu@ejemplo.com',
-        passwordLabel: 'Crear Contraseña',
-        passwordPlaceholder: 'Mínimo 6 caracteres',
-        terms: 'Acepto los Términos de Servicio y la Política de Privacidad. Entiendo que la Prueba está restingida a 3 contactos.',
-        submit: 'Crear Cuenta Gratis',
-        alreadyHaveAccount: '¿Ya tienes cuenta?',
-        loginLink: 'Ir al panel',
-        defaultError: 'Error al crear la cuenta. Inténtalo de nuevo.'
     }
 };
 
@@ -65,32 +51,27 @@ export default async function SignupPage({
     const t = translations[lang];
 
     return (
-        <div className="w-full relative z-10 flex flex-col p-6 sm:p-10 bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl">
-            <div className="mb-8 text-center flex flex-col items-center">
-                <Link href="/">
-                    <div className="flex items-center gap-2 mb-6 hover:opacity-80 transition">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">
-                            <Sparkles className="h-4 w-4 text-white" />
-                        </div>
-                        <span className="text-xl font-bold tracking-tight text-white">Mentor CRM</span>
-                    </div>
+        <div className="bg-white/70 backdrop-blur-[40px] border border-white/60 p-10 md:p-14 rounded-[3.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.06)] relative overflow-hidden group">
+            <div className="mb-10 text-center flex flex-col items-center">
+                <Link href="/" className="mb-8 hover:opacity-80 transition-opacity">
+                    <img src="/logo.png" alt="Mentor CRM" className="h-20 w-auto mix-blend-multiply" />
                 </Link>
-                <h1 className="text-2xl font-bold text-white">{t.title}</h1>
-                <p className="text-sm text-slate-400 mt-2">{t.subtitle}</p>
+                <h1 className="text-sm font-black tracking-[0.4em] uppercase text-zinc-900 mb-3">{t.title}</h1>
+                <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400">{t.subtitle}</p>
             </div>
 
             {p?.error && (
-                <div className="mb-6 flex items-center gap-2 rounded-lg bg-red-500/10 border border-red-500/20 p-4 text-sm text-red-400">
-                    <AlertCircle className="h-4 w-4" />
-                    <p>{p.msg || t.defaultError}</p>
+                <div className="mb-8 flex items-center gap-4 bg-red-500/5 border border-red-500/10 p-5 rounded-2xl">
+                    <AlertCircle className="h-4 w-4 text-red-500 shrink-0" />
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-red-500 leading-relaxed">{p.msg || t.defaultError}</p>
                 </div>
             )}
 
-            <form className="flex flex-col gap-5">
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-slate-300" htmlFor="full_name">{t.fullName}</label>
+            <form className="flex flex-col gap-6">
+                <div className="flex flex-col gap-3">
+                    <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase" htmlFor="full_name">{t.fullName}</label>
                     <input
-                        className="rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+                        className="border border-zinc-200 bg-zinc-50 px-6 py-4 text-sm text-zinc-900 placeholder-zinc-300 rounded-2xl focus:outline-none focus:border-mentor-blue/30 focus:bg-white transition-all shadow-sm"
                         id="full_name"
                         name="full_name"
                         type="text"
@@ -99,10 +80,10 @@ export default async function SignupPage({
                     />
                 </div>
 
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-slate-300" htmlFor="email">{t.emailLabel}</label>
+                <div className="flex flex-col gap-3">
+                    <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase" htmlFor="email">{t.emailLabel}</label>
                     <input
-                        className="rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+                        className="border border-zinc-200 bg-zinc-50 px-6 py-4 text-sm text-zinc-900 placeholder-zinc-300 rounded-2xl focus:outline-none focus:border-mentor-blue/30 focus:bg-white transition-all shadow-sm"
                         id="email"
                         name="email"
                         type="email"
@@ -111,10 +92,10 @@ export default async function SignupPage({
                     />
                 </div>
 
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-slate-300" htmlFor="password">{t.passwordLabel}</label>
+                <div className="flex flex-col gap-3">
+                    <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase" htmlFor="password">{t.passwordLabel}</label>
                     <input
-                        className="rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+                        className="border border-zinc-200 bg-zinc-50 px-6 py-4 text-sm text-zinc-900 placeholder-zinc-300 rounded-2xl focus:outline-none focus:border-mentor-blue/30 focus:bg-white transition-all shadow-sm"
                         id="password"
                         name="password"
                         type="password"
@@ -124,26 +105,41 @@ export default async function SignupPage({
                     />
                 </div>
 
-                <div className="flex items-start gap-3 mt-2">
-                    <input type="checkbox" id="terms" className="mt-1 h-4 w-4 rounded border-white/10 bg-black/50" required />
-                    <label htmlFor="terms" className="text-xs text-slate-400 leading-relaxed">
+                <div className="flex items-start gap-4 p-5 bg-zinc-50 border border-zinc-100 rounded-2xl mt-2 shadow-inner">
+                    <input type="checkbox" id="terms" className="mt-1 h-4 w-4 accent-mentor-blue rounded border-zinc-200" required />
+                    <label htmlFor="terms" className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.05em] leading-relaxed">
                         {t.terms}
                     </label>
                 </div>
 
-                <button
-                    formAction={signup}
-                    className="mt-4 flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-black"
-                >
-                    {t.submit}
-                </button>
+                <div className="pt-4">
+                    <button
+                        formAction={signup}
+                        className="group relative flex w-full h-16 items-center justify-center bg-zinc-900 px-8 text-[11px] font-black uppercase tracking-[0.4em] text-white transition-all hover:bg-mentor-blue rounded-2xl shadow-xl shadow-zinc-200"
+                    >
+                        {t.submit}
+                    </button>
+                </div>
             </form>
 
-            <div className="mt-8 text-center text-sm text-slate-400">
-                {t.alreadyHaveAccount}{' '}
-                <Link href="/login" className="font-semibold text-indigo-400 hover:text-indigo-300">
-                    {t.loginLink}
-                </Link>
+            <div className="mt-10 pt-10 border-t border-zinc-100 text-center">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-6">{t.alreadyHaveAccount}</p>
+                <div className="flex flex-col items-center gap-4">
+                    <Link href="/login" className="group text-[10px] font-black uppercase tracking-widest text-zinc-900 flex items-center justify-center gap-2">
+                        {t.loginLink}
+                        <ArrowRight className="h-3 w-3 transform group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                </div>
+            </div>
+
+            <div className="mt-12 text-center flex items-center justify-center gap-6 opacity-30">
+                <span className="text-[9px] font-black text-zinc-400 tracking-[0.3em] uppercase flex items-center gap-2">
+                    <CheckCircle2 className="h-3 w-3 text-emerald-500" /> ELITE ENCRYPTION
+                </span>
+                <div className="h-1 w-1 bg-zinc-200 rounded-full"></div>
+                <span className="text-[9px] font-black text-zinc-400 tracking-[0.3em] uppercase flex items-center gap-2">
+                    <CheckCircle2 className="h-3 w-3 text-emerald-500" /> SECURE ACCESS
+                </span>
             </div>
         </div>
     )

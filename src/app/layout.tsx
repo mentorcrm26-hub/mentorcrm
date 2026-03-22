@@ -28,6 +28,15 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "NuVfKw2tRHf6EcCLdv4MlOoSur1JXtWShH2s09zD27E",
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.png', type: 'image/png' },
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/favicon.png' },
+    ],
   }
 };
 
