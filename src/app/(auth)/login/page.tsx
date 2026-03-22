@@ -30,6 +30,19 @@ const translations = {
         noAccount: 'NO LICENSE?',
         createFree: 'REQUEST TRIAL',
         defaultError: 'AUTHENTICATION FAILED. CHECK CREDENTIALS.'
+    },
+    es: {
+        title: 'ACCESO AL SISTEMA',
+        subtitle: 'Autentique su sesión de gestión.',
+        emailLabel: 'IDENTIFICADOR (EMAIL)',
+        emailPlaceholder: 'agente@mentor-crm.com',
+        passwordLabel: 'CLAVE DE ACCESO (CONTRASEÑA)',
+        forgotPassword: 'RECUPERAR ACCESO',
+        passwordPlaceholder: '••••••••',
+        submit: 'INICIAR SESIÓN',
+        noAccount: '¿NO TIENE LICENCIA?',
+        createFree: 'SOLICITAR TRIAL',
+        defaultError: 'FALLO NA AUTENTICACIÓN. VERIFIQUE LAS CREDENCIALES.'
     }
 };
 
@@ -43,7 +56,7 @@ export default async function LoginPage({
     const p = await searchParams;
     const cookieStore = await cookies();
     const localeCookie = cookieStore.get('NEXT_LOCALE')?.value as Language | undefined;
-    const lang: Language = (localeCookie && translations[localeCookie]) ? localeCookie : 'pt';
+    const lang: Language = (localeCookie && translations[localeCookie]) ? localeCookie : 'en';
     const t = translations[lang];
 
     return (

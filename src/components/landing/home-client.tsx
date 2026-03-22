@@ -19,8 +19,61 @@ import {
   MousePointer2,
   Lock
 } from 'lucide-react';
+import { LocaleSelector } from './locale-selector';
 
 const translations = {
+  en: {
+    badge: 'ELITE ARCHITECTURE FOR LEAD MANAGEMENT',
+    heroLine1: 'Master your operation of',
+    heroLine2: 'leads with precision.',
+    subHero: 'The ultimate platform for high-performance agencies and sales teams. Capture, distribute, and convert with predictive technology and multi-channel automation.',
+    cta: 'START YOUR OPERATION',
+    login: 'LOGIN',
+    demo: 'FREE TRIAL',
+    navFeatures: 'Features',
+    navSolutions: 'Solutions',
+    navAutomation: 'Automation',
+    navSecurity: 'Security',
+    feat1Title: 'Precision Pipeline',
+    feat1Desc: 'Visualize your sales flow with absolute clarity through dynamic columns and high-resolution smart tags.',
+    feat2Title: 'Frictionless Automation',
+    feat2Desc: 'The system works while you focus on closing. Automatic scheduling and reminders via WhatsApp.',
+    feat3Title: 'Data Intelligence',
+    feat3Desc: 'Metrics that matter. Conversion by channel, agent performance, and real-time revenue projection.',
+    captureTitle: 'FRICTIONLESS MULTI-CHANNEL ATTRACTION',
+    captureHeadline: <>Capture every opportunity, <br/>from any <span className="text-zinc-400">channel.</span></>,
+    captureDesc: 'Capture leads exactly where they are. Instantly integrate with WhatsApp, Meta Ads, Landing Pages, and custom APIs.',
+    newLeadLabel: 'New Lead Received',
+    assignLabel: 'Assign',
+    distTitle: 'SMART DISTRIBUTION',
+    distHeadline: <>Eliminate wait times. <br/>Assign leads with <span className="italic font-light">intelligence.</span></>,
+    distDesc: 'Eliminate wait times. Our routing logic delivers the right lead to the top-performing agent at the exact moment of interest.',
+    card1Title: 'Dynamic Queues',
+    card1Desc: 'Organize leads by region, product, or estimated value.',
+    card2Title: 'Round-Robin',
+    card2Desc: 'Fair and balanced distribution across your entire team.',
+    card3Title: 'Priority Route',
+    card3Desc: 'VIP leads delivered instantly to your top closers.',
+    statsTitle: 'METRICS THAT DRIVE GROWTH',
+    statsHeadline: <>Evidence-based <span className="text-blue-500">decisions.</span></>,
+    stat1: 'Processed Leads',
+    stat1Val: '+2.4M',
+    stat2: 'Conversion Rate',
+    stat2Val: '28%',
+    stat3: 'Response Time',
+    stat3Val: '< 2min',
+    securityTitle: 'ENTERPRISE-LEVEL SECURITY',
+    securityHeadline: <>Your data is your greatest <span className="italic font-light">asset.</span></>,
+    securityDesc: 'Your database is your greatest asset. We protect everything with end-to-end encryption and total data isolation. Redundant backups and compliance with global privacy standards.',
+    finalCtaHeadline: <>The era of intuitive management <br/><span className="text-mentor-blue">starts today.</span></>,
+    createAccount: 'START YOUR OPERATION',
+    footer: '© 2026 MENTOR CRM. PRECISION-ENGINEERED FOR GROWTH.',
+    terms: 'Terms',
+    privacy: 'Privacy',
+    support: 'Support',
+    badge1: 'End-to-end Encryption',
+    badge2: 'Isolated Environments'
+  },
   pt: {
     badge: 'ARQUITETURA DE ELITE EM GESTÃO DE LEADS',
     heroLine1: 'Domine sua operação de',
@@ -29,45 +82,119 @@ const translations = {
     cta: 'INICIE SUA OPERAÇÃO',
     login: 'ENTRAR',
     demo: 'TESTE GRÁTIS',
-
-    // Sections
     navFeatures: 'Recursos',
     navSolutions: 'Soluções',
     navAutomation: 'Automação',
     navSecurity: 'Segurança',
-
     feat1Title: 'Pipeline de Precisão',
     feat1Desc: 'Visualize seu fluxo de vendas com clareza absoluta através de colunas dinâmicas e tags inteligentes de alta resolução.',
     feat2Title: 'Automação sem Atrito',
     feat2Desc: 'O sistema trabalha enquanto você foca no fechamento. Agendamentos e lembretes automáticos via WhatsApp.',
     feat3Title: 'Inteligência de Dados',
     feat3Desc: 'Métricas que importam. Conversão por canal, performance de agentes e projeção de receita em tempo real.',
-
-    // New Content
     captureTitle: 'ATRAÇÃO MULTICANAL SEM ATRITO',
+    captureHeadline: <>Capture cada oportunidade, <br/>de qualquer <span className="text-zinc-400">canal.</span></>,
     captureDesc: 'Capture leads exatamente onde eles estão. Integre instantaneamente com WhatsApp, Meta Ads, Landing Pages e APIs customizadas.',
+    newLeadLabel: 'Novo Lead Recebido',
+    assignLabel: 'Atribuir',
     distTitle: 'DISTRIBUIÇÃO INTELIGENTE',
+    distHeadline: <>Elimine o tempo de espera. <br/>Atribua leads com <span className="italic font-light">inteligência.</span></>,
     distDesc: 'Elimine o tempo de espera. Nossa lógica de roteamento entrega o lead certo para o agente de melhor performance no exato momento do interesse.',
-
+    card1Title: 'Filas Dinâmicas',
+    card1Desc: 'Organize leads por região, produto ou valor estipulado.',
+    card2Title: 'Round-Robin',
+    card2Desc: 'Distribuição justa e balanceada entre todo o seu time.',
+    card3Title: 'Priority Route',
+    card3Desc: 'Leads VIP entregues instantaneamente para seus top closers.',
     statsTitle: 'MÉTRICAS QUE IMPULSIONAM O CRESCIMENTO',
+    statsHeadline: <>Decisões baseadas em <span className="text-blue-500">evidências.</span></>,
     stat1: 'Leads Processados',
     stat1Val: '+2.4M',
     stat2: 'Taxa de Conversão',
     stat2Val: '28%',
     stat3: 'Tempo de Resposta',
     stat3Val: '< 2min',
-
     securityTitle: 'SEGURANÇA DE NÍVEL EMPRESARIAL',
-    securityDesc: 'Sua base de dados é seu maior ativo. Protegemos tudo com criptografia ponta a ponta e isolamento total de dados.',
-
+    securityHeadline: <>Seus dados são seu maior <span className="italic font-light">patrimônio.</span></>,
+    securityDesc: 'Sua base de dados é seu maior ativo. Protegemos tudo com criptografia ponta a ponta e isolamento total de dados. Backups redundantes e conformidade com padrões globais.',
+    finalCtaHeadline: <>A era da gestão intuitiva <br/><span className="text-mentor-blue">começa hoje.</span></>,
     createAccount: 'INICIE SUA OPERAÇÃO',
-    footer: '© 2026 MENTOR CRM. PRECISION-ENGINEERED FOR GROWTH.'
+    footer: '© 2026 MENTOR CRM. PRECISION-ENGINEERED FOR GROWTH.',
+    terms: 'Termos',
+    privacy: 'Privacidade',
+    support: 'Suporte',
+    badge1: 'Criptografia Ponta a Ponta',
+    badge2: 'Ambientes Isolados'
+  },
+  es: {
+    badge: 'ARQUITECTURA DE ÉLITE EN GESTIÓN DE LEADS',
+    heroLine1: 'Domine su operación de',
+    heroLine2: 'leads con precisión.',
+    subHero: 'La plataforma definitiva para agencias y equipos de ventas de alto rendimiento. Capture, distribuya y convierta com tecnología predictiva y automatización multicanal.',
+    cta: 'INICIE SU OPERACIÓN',
+    login: 'ENTRAR',
+    demo: 'PRUEBA GRATIS',
+    navFeatures: 'Recursos',
+    navSolutions: 'Soluciones',
+    navAutomation: 'Automatización',
+    navSecurity: 'Seguridad',
+    feat1Title: 'Pipeline de Precisión',
+    feat1Desc: 'Visualice su flujo de ventas con claridad absoluta a través de columnas dinámicas y etiquetas inteligentes de alta resolución.',
+    feat2Title: 'Automação sem Atrito',
+    feat2Desc: 'El sistema trabaja mientras usted se enfoca en el cierre. Agendamientos y recordatorios automáticos vía WhatsApp.',
+    feat3Title: 'Inteligencia de Datos',
+    feat3Desc: 'Métricas que importan. Conversión por canal, rendimiento de agentes y proyección de ingresos en tiempo real.',
+    captureTitle: 'ATRACCIÓN MULTICANAL SIN FRICCIONES',
+    captureHeadline: <>Capture cada oportunidad, <br/>de cualquier <span className="text-zinc-400">canal.</span></>,
+    captureDesc: 'Capture leads exactamente donde están. Integre instantáneamente con WhatsApp, Meta Ads, Landing Pages y APIs personalizadas.',
+    newLeadLabel: 'Nuevo Lead Recibido',
+    assignLabel: 'Asignar',
+    distTitle: 'DISTRIBUCIÓN INTELIGENTE',
+    distHeadline: <>Elimine el tiempo de espera. <br/>Asigne leads con <span className="italic font-light">inteligencia.</span></>,
+    distDesc: 'Elimine el tiempo de espera. Nuestra lógica de enrutamiento entrega o lead correcto al agente de mejor rendimiento en el momento exacto del interés.',
+    card1Title: 'Filas Dinámicas',
+    card1Desc: 'Organice leads por región, producto o valor estimado.',
+    card2Title: 'Round-Robin',
+    card2Desc: 'Distribución justa y equilibrada entre todo su equipo.',
+    card3Title: 'Priority Route',
+    card3Desc: 'Leads VIP entregados instantáneamente a sus mejores agentes.',
+    statsTitle: 'MÉTRICAS QUE IMPULSAN EL CRECIMIENTO',
+    statsHeadline: <>Decisiones basadas en <span className="text-blue-500">evidencias.</span></>,
+    stat1: 'Leads Procesados',
+    stat1Val: '+2.4M',
+    stat2: 'Tasa de Conversión',
+    stat2Val: '28%',
+    stat3: 'Tiempo de Respuesta',
+    stat3Val: '< 2min',
+    securityTitle: 'SEGURIDAD DE NIVEL EMPRESARIAL',
+    securityHeadline: <>Sus datos son su mayor <span className="italic font-light">activo.</span></>,
+    securityDesc: 'Su base de datos es su mayor activo. Protegemos todo con cifrado de extremo a extremo y aislamiento total de datos. Copias de seguridad redundantes y cumplimiento de estándares globales.',
+    finalCtaHeadline: <>La era de la gestión intuitiva <br/><span className="text-mentor-blue">comienza hoy.</span></>,
+    createAccount: 'INICIE SU OPERACIÓN',
+    footer: '© 2026 MENTOR CRM. PRECISION-ENGINEERED FOR GROWTH.',
+    terms: 'Términos',
+    privacy: 'Privacidad',
+    support: 'Soporte',
+    badge1: 'Cifrado de Extremo a Extremo',
+    badge2: 'Ambientes Aislados'
   }
 };
 
 export function HomeClient() {
   const [activeTab, setActiveTab] = useState(0);
-  const t = translations.pt;
+  const [lang, setLang] = useState<keyof typeof translations>('en');
+
+  useEffect(() => {
+    const locale = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('NEXT_LOCALE='))
+      ?.split('=')[1] as keyof typeof translations | undefined;
+    if (locale && translations[locale]) {
+      setLang(locale);
+    }
+  }, []);
+
+  const t = translations[lang];
 
   return (
     <div className="relative min-h-screen w-full bg-zinc-50 text-zinc-900 overflow-x-hidden selection:bg-mentor-blue/10 selection:text-mentor-blue font-sans">
@@ -90,16 +217,19 @@ export function HomeClient() {
 
           {/* Center Menu */}
           <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
-            {['Features', 'Solutions', 'Automation', 'Security'].map((link) => (
-              <Link
-                key={link}
-                href={`#${link.toLowerCase()}`}
-                className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 hover:text-mentor-blue transition-colors relative group"
-              >
-                {link}
-                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-mentor-blue transition-all group-hover:w-full"></span>
-              </Link>
-            ))}
+            {[t.navFeatures, t.navSolutions, t.navAutomation, t.navSecurity].map((link, i) => {
+              const ids = ['features', 'solutions', 'automation', 'security'];
+              return (
+                <Link
+                  key={link}
+                  href={`#${ids[i]}`}
+                    className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 hover:text-mentor-blue transition-colors relative group"
+                >
+                  {link}
+                  <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-mentor-blue transition-all group-hover:w-full"></span>
+                </Link>
+              );
+            })}
           </div>
 
           {/* CTA Buttons */}
@@ -113,6 +243,10 @@ export function HomeClient() {
             >
               {t.demo}
             </Link>
+            
+            <div className="h-6 w-[1px] bg-zinc-200 hidden sm:block mx-1" />
+            
+            <LocaleSelector />
           </div>
         </div>
       </nav>
@@ -192,7 +326,7 @@ export function HomeClient() {
             <div>
               <h2 className="text-[10px] font-black tracking-[0.5em] text-mentor-blue uppercase mb-6">{t.captureTitle}</h2>
               <h3 className="text-4xl md:text-5xl font-bold tracking-tight mb-8 leading-tight">
-                Capture cada oportunidade, <br />de qualquer <span className="text-zinc-400">canal.</span>
+                {t.captureHeadline}
               </h3>
               <p className="text-lg text-zinc-500 font-medium leading-relaxed mb-12">
                 {t.captureDesc}
@@ -225,11 +359,11 @@ export function HomeClient() {
                       <CheckCircle2 className="h-6 w-6 text-emerald-600" />
                     </div>
                     <div>
-                      <p className="text-xs font-black uppercase tracking-widest leading-none mb-2">Novo Lead Recebido</p>
+                      <p className="text-xs font-black uppercase tracking-widest leading-none mb-2">{t.newLeadLabel}</p>
                       <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">WhatsApp Business API</p>
                     </div>
                   </div>
-                  <div className="h-10 px-6 bg-zinc-900 rounded-full flex items-center text-[9px] font-black text-white uppercase tracking-widest">Atribuir</div>
+                  <div className="h-10 px-6 bg-zinc-900 rounded-full flex items-center text-[9px] font-black text-white uppercase tracking-widest">{t.assignLabel}</div>
                 </div>
               </div>
             </div>
@@ -241,7 +375,7 @@ export function HomeClient() {
           <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
             <h2 className="text-[10px] font-black tracking-[0.5em] text-mentor-blue uppercase mb-6">{t.distTitle}</h2>
             <h3 className="text-4xl md:text-5xl font-bold tracking-tight mb-10 max-w-3xl">
-              Elimine o tempo de espera. <br />Atribua leads com <span className="italic font-light">inteligência.</span>
+              {t.distHeadline}
             </h3>
             <p className="text-lg text-zinc-500 font-medium leading-relaxed mb-16 max-w-2xl">
               {t.distDesc}
@@ -249,9 +383,9 @@ export function HomeClient() {
 
             <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { title: 'Filas Dinâmicas', icon: <Users />, desc: 'Organize leads por região, produto ou valor estipulado.' },
-                { title: 'Round-Robin', icon: <Workflow />, desc: 'Distribuição justa e balanceada entre todo o seu time.' },
-                { title: 'Priority Route', icon: <Zap />, desc: 'Leads VIP entregues instantaneamente para seus top closers.' }
+                { title: t.card1Title, icon: <Users />, desc: t.card1Desc },
+                { title: t.card2Title, icon: <Workflow />, desc: t.card2Desc },
+                { title: t.card3Title, icon: <Zap />, desc: t.card3Desc }
               ].map((card, i) => (
                 <div key={i} className="bg-white/70 backdrop-blur-2xl border border-white/60 p-12 rounded-[3rem] shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-500 text-left">
                   <div className="h-14 w-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-8">
@@ -272,7 +406,7 @@ export function HomeClient() {
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="flex flex-col items-center text-center mb-20">
               <h2 className="text-[10px] font-black tracking-[0.5em] text-blue-400 uppercase mb-6">{t.statsTitle}</h2>
-              <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-8">Decisões baseadas em <span className="text-blue-500">evidências.</span></h3>
+              <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-8">{t.statsHeadline}</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
@@ -302,16 +436,16 @@ export function HomeClient() {
               </div>
               <div>
                 <h2 className="text-[10px] font-black tracking-[0.5em] text-mentor-blue uppercase mb-6">{t.securityTitle}</h2>
-                <h3 className="text-3xl font-bold tracking-tight mb-6">Seus dados são seu maior <span className="italic font-light">patrimônio.</span></h3>
+                <h3 className="text-3xl font-bold tracking-tight mb-6">{t.securityHeadline}</h3>
                 <p className="text-zinc-500 font-medium leading-relaxed max-w-xl">
-                  {t.securityDesc} Integridade total, backups redundantes e conformidade com padrões globais de privacidade.
+                  {t.securityDesc}
                 </p>
                 <div className="flex gap-8 mt-10">
                   <span className="text-[9px] font-black tracking-widest text-zinc-400 uppercase flex items-center gap-2">
-                    <ShieldCheck className="h-4 w-4 text-emerald-500" /> End-to-end Encryption
+                    <ShieldCheck className="h-4 w-4 text-emerald-500" /> {t.badge1}
                   </span>
                   <span className="text-[9px] font-black tracking-widest text-zinc-400 uppercase flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Isolated Environments
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500" /> {t.badge2}
                   </span>
                 </div>
               </div>
@@ -323,7 +457,7 @@ export function HomeClient() {
         <section className="py-20 px-6 text-center">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-10">
-              A era da gestão intuitiva <br /><span className="text-mentor-blue">começa hoje.</span>
+              {t.finalCtaHeadline}
             </h2>
             <Link
               href="/login"
@@ -344,9 +478,9 @@ export function HomeClient() {
           </div>
 
           <div className="flex gap-12 text-[13px] font-bold text-zinc-500 tracking-[0.2em] uppercase">
-            <Link href="/terms" className="hover:text-mentor-blue transition-colors">Terms</Link>
-            <Link href="/privacy" className="hover:text-mentor-blue transition-colors">Privacy</Link>
-            <Link href="#" className="hover:text-mentor-blue transition-colors">Support</Link>
+            <Link href="/terms" className="hover:text-mentor-blue transition-colors">{t.terms}</Link>
+            <Link href="/privacy" className="hover:text-mentor-blue transition-colors">{t.privacy}</Link>
+            <Link href="#" className="hover:text-mentor-blue transition-colors">{t.support}</Link>
           </div>
         </div>
       </footer>

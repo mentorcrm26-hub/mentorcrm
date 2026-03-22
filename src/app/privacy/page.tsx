@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { ArrowLeft, ShieldCheck, Lock, Eye } from 'lucide-react'
+import { cookies } from 'next/headers'
 
 const translations = {
     pt: {
@@ -26,11 +27,26 @@ const translations = {
         section3Title: '3. SHARING',
         section3Content: 'Mentor CRM never sells user or lead data. Sharing only occurs with essential services (like WhatsApp API) through your configuration.',
         footer: 'Privacy questions? Contact dpo@mentor-crm.com'
+    },
+    es: {
+        back: 'VOLVER',
+        title: 'POLÍTICA DE PRIVACIDAD',
+        lastUpdate: 'ÚLTIMA ACTUALIZACIÓN: 21 DE MARZO, 2026',
+        section1Title: '1. RECOLECCIÓN DE DATOS',
+        section1Content: 'Recopilamos información profesional básica como nombre y correo electrónico para el funcionamiento de la plataforma. Los datos de leads procesados son propiedad exclusiva del usuario.',
+        section2Title: '2. TRATAMIENTO Y SEGURIDAD',
+        section2Content: 'Utilizamos cifrado de extremo a extremo y bases de datos aisladas para garantizar que su operación y sus leads estén siempre protegidos.',
+        section3Title: '3. COMPARTIR DATOS',
+        section3Content: 'Mentor CRM nunca comercializa datos de usuarios o de leads. El intercambio ocurre solo con servicios esenciales (como API de WhatsApp) mediante su configuración.',
+        footer: '¿Dudas sobre privacidad? Contacte con dpo@mentor-crm.com'
     }
 }
 
-export default function PrivacyPage() {
-    const t = translations.pt
+export default async function PrivacyPage() {
+    const cookieStore = await cookies()
+    const localeCookie = cookieStore.get('NEXT_LOCALE')?.value as keyof typeof translations | undefined
+    const lang = (localeCookie && translations[localeCookie]) ? localeCookie : 'en'
+    const t = translations[lang]
 
     return (
         <div className="min-h-screen w-full bg-zinc-50 text-zinc-900 selection:bg-mentor-blue/10 selection:text-mentor-blue">

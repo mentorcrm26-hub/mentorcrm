@@ -42,6 +42,10 @@ export async function login(formData: FormData) {
 export async function signup(formData: FormData) {
     const supabase = await createClient()
 
+    const rawPhone = formData.get('phone') as string;
+    const cleanPhone = rawPhone.replace(/\D/g, '');
+    const formattedPhone = cleanPhone.startsWith('1') ? cleanPhone : `1${cleanPhone}`;
+
     // type-casting here for convenience
     const data = {
         email: formData.get('email') as string,
@@ -49,6 +53,7 @@ export async function signup(formData: FormData) {
         options: {
             data: {
                 full_name: formData.get('full_name') as string,
+                phone: formattedPhone,
             }
         }
     }

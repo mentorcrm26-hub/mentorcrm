@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { signup } from '../actions';
 import { cookies } from 'next/headers';
+import SignupForm from './signup-form';
 
 const translations = {
     pt: {
@@ -12,6 +13,8 @@ const translations = {
         namePlaceholder: 'Seu Nome',
         emailLabel: 'EMAIL PROFISSIONAL',
         emailPlaceholder: 'voce@exemplo.com',
+        phoneLabel: 'TELEFONE (US)',
+        phonePlaceholder: '(XXX) XXX-XXXX',
         passwordLabel: 'CRIAR SENHA',
         passwordPlaceholder: 'Mínimo de 6 caracteres',
         terms: 'Concordo com os Termos de Serviço e Política de Privacidade. Entendo que o Trial é restrito a 3 contatos.',
@@ -27,6 +30,8 @@ const translations = {
         namePlaceholder: 'Your Name',
         emailLabel: 'PROFESSIONAL EMAIL',
         emailPlaceholder: 'you@example.com',
+        phoneLabel: 'PHONE (US)',
+        phonePlaceholder: '(XXX) XXX-XXXX',
         passwordLabel: 'CREATE PASSWORD',
         passwordPlaceholder: 'Minimum 6 characters',
         terms: 'I agree to the Terms of Service and Privacy Policy. I understand the Trial is restricted to 3 contacts.',
@@ -34,6 +39,23 @@ const translations = {
         alreadyHaveAccount: 'ALREADY HAVE AN ACCOUNT?',
         loginLink: 'Login to Dashboard',
         defaultError: 'Error creating account. Try again.'
+    },
+    es: {
+        title: 'SOLICITAR ACCESO TRIAL',
+        subtitle: 'Inicie su experiencia de 3 días con precisión total.',
+        fullName: 'NOMBRE COMPLETO',
+        namePlaceholder: 'Su Nombre',
+        emailLabel: 'EMAIL PROFESIONAL',
+        emailPlaceholder: 'usted@ejemplo.com',
+        phoneLabel: 'TELÉFONO (US)',
+        phonePlaceholder: '(XXX) XXX-XXXX',
+        passwordLabel: 'CREAR CONTRASEÑA',
+        passwordPlaceholder: 'Mínimo de 6 caracteres',
+        terms: 'Acepto los Términos de Servicio y la Política de Privacidad. Entiendo que el Trial está restringido a 3 contactos.',
+        submit: 'SOLICITAR ACCESO AHORA',
+        alreadyHaveAccount: '¿YA TIENE UNA CUENTA?',
+        loginLink: 'Acceder al Panel',
+        defaultError: 'Error al crear la cuenta. Intente de nuevo.'
     }
 };
 
@@ -47,7 +69,7 @@ export default async function SignupPage({
     const p = await searchParams;
     const cookieStore = await cookies();
     const localeCookie = cookieStore.get('NEXT_LOCALE')?.value as Language | undefined;
-    const lang: Language = (localeCookie && translations[localeCookie]) ? localeCookie : 'pt';
+    const lang: Language = (localeCookie && translations[localeCookie]) ? localeCookie : 'en';
     const t = translations[lang];
 
     return (
@@ -67,60 +89,7 @@ export default async function SignupPage({
                 </div>
             )}
 
-            <form className="flex flex-col gap-6">
-                <div className="flex flex-col gap-3">
-                    <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase" htmlFor="full_name">{t.fullName}</label>
-                    <input
-                        className="border border-zinc-200 bg-zinc-50 px-6 py-4 text-sm text-zinc-900 placeholder-zinc-300 rounded-2xl focus:outline-none focus:border-mentor-blue/30 focus:bg-white transition-all shadow-sm"
-                        id="full_name"
-                        name="full_name"
-                        type="text"
-                        placeholder={t.namePlaceholder}
-                        required
-                    />
-                </div>
-
-                <div className="flex flex-col gap-3">
-                    <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase" htmlFor="email">{t.emailLabel}</label>
-                    <input
-                        className="border border-zinc-200 bg-zinc-50 px-6 py-4 text-sm text-zinc-900 placeholder-zinc-300 rounded-2xl focus:outline-none focus:border-mentor-blue/30 focus:bg-white transition-all shadow-sm"
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder={t.emailPlaceholder}
-                        required
-                    />
-                </div>
-
-                <div className="flex flex-col gap-3">
-                    <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase" htmlFor="password">{t.passwordLabel}</label>
-                    <input
-                        className="border border-zinc-200 bg-zinc-50 px-6 py-4 text-sm text-zinc-900 placeholder-zinc-300 rounded-2xl focus:outline-none focus:border-mentor-blue/30 focus:bg-white transition-all shadow-sm"
-                        id="password"
-                        name="password"
-                        type="password"
-                        placeholder={t.passwordPlaceholder}
-                        minLength={6}
-                        required
-                    />
-                </div>
-
-                <div className="flex items-start gap-4 p-5 bg-zinc-50 border border-zinc-100 rounded-2xl mt-2 shadow-inner">
-                    <input type="checkbox" id="terms" className="mt-1 h-4 w-4 accent-mentor-blue rounded border-zinc-200" required />
-                    <label htmlFor="terms" className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.05em] leading-relaxed">
-                        {t.terms}
-                    </label>
-                </div>
-
-                <div className="pt-4">
-                    <button
-                        formAction={signup}
-                        className="group relative flex w-full h-16 items-center justify-center bg-zinc-900 px-8 text-[11px] font-black uppercase tracking-[0.4em] text-white transition-all hover:bg-mentor-blue rounded-2xl shadow-xl shadow-zinc-200"
-                    >
-                        {t.submit}
-                    </button>
-                </div>
-            </form>
+            <SignupForm t={t} />
 
             <div className="mt-10 pt-10 border-t border-zinc-100 text-center">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-6">{t.alreadyHaveAccount}</p>

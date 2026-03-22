@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Scale, ShieldCheck, FileText } from 'lucide-react'
+import { cookies } from 'next/headers'
 
 const translations = {
     pt: {
@@ -26,11 +27,26 @@ const translations = {
         section3Title: '3. RESPONSIBILITY',
         section3Content: 'Mentor CRM is not responsible for the content of messages sent by its users or for the closing of deals. We are a facilitation and automation tool.',
         footer: 'Questions about terms? Contact compliance@mentor-crm.com'
+    },
+    es: {
+        back: 'VOLVER',
+        title: 'TÉRMINOS DE SERVICIO',
+        lastUpdate: 'ÚLTIMA ACTUALIZACIÓN: 21 DE MARZO, 2026',
+        section1Title: '1. ACEPTACIÓN DE LOS TÉRMINOS',
+        section1Content: 'Al acceder al Mentor CRM, usted acepta cumplir con estos términos de servicio e con todas las leyes y regulaciones aplicables. El uso de la plataforma está restringido a fines profesionales de gestión de ventas y leads.',
+        section2Title: '2. LICENCIA DE USO (TRIAL)',
+        section2Content: 'El período de prueba (Trial) se concede por 3 días y está limitado a 3 contactos. Está prohibido el uso de automatizaciones abusivas o la extracción masiva de datos durante este período.',
+        section3Title: '3. RESPONSABILIDAD',
+        section3Content: 'Mentor CRM no se responsabiliza por el contenido de los mensajes enviados por sus usuarios ni por el cierre de negocios. Somos una herramienta de facilitación y automatización.',
+        footer: '¿Dudas sobre los términos? Contacte con compliance@mentor-crm.com'
     }
 }
 
-export default function TermsPage() {
-    const t = translations.pt // Using PT by default as per project context
+export default async function TermsPage() {
+    const cookieStore = await cookies()
+    const localeCookie = cookieStore.get('NEXT_LOCALE')?.value as keyof typeof translations | undefined
+    const lang = (localeCookie && translations[localeCookie]) ? localeCookie : 'en'
+    const t = translations[lang]
 
     return (
         <div className="min-h-screen w-full bg-zinc-50 text-zinc-900 selection:bg-mentor-blue/10 selection:text-mentor-blue">

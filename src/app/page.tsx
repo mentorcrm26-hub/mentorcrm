@@ -2,12 +2,12 @@ import { Metadata } from 'next';
 import { HomeClient } from '@/components/landing/home-client';
 
 export const metadata: Metadata = {
-  title: 'Mentor CRM | Arquitetura de Elite em Gestão de Leads',
-  description: 'A plataforma definitiva para agências e times de vendas de alta performance. Capture, distribua e converta com tecnologia preditiva e automação multicanal.',
-  keywords: 'gestão de leads, automação de vendas, crm multicanal, distribuição de leads, vendas de alta performance, mentor crm',
+  title: 'Mentor CRM | AI-Powered Lead Management Architecture',
+  description: 'The ultimate platform for high-performance agencies and sales teams. Capture, distribute, and convert with predictive technology and multi-channel automation.',
+  keywords: 'lead management, sales automation, multi-channel crm, lead distribution, high-performance sales, mentor crm',
   openGraph: {
-    title: 'Mentor CRM | Gestão de Leads de Alta Performance',
-    description: 'Capture e converta mais com o Mentor CRM.',
+    title: 'Mentor CRM | High-Performance Lead Management',
+    description: 'Capture and convert more with Mentor CRM.',
     images: ['/logo.png'],
     type: 'website',
   },
