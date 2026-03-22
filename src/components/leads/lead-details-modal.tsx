@@ -5,6 +5,7 @@ import { updateLead, archiveLead } from '@/app/dashboard/leads/actions'
 import { getLeadNotes, addLeadNote, updateLeadNote, deleteLeadNote } from '@/app/dashboard/leads/note-actions'
 import { toast } from 'sonner'
 import { X, Calendar, User, Mail, Phone, FileText, Clock, Trash2, CalendarX, Pencil, Save, Archive } from 'lucide-react'
+import { LeadPlaybookWidget } from './lead-playbook-widget'
 import { formatFlorida, parseFloridaTime } from '@/lib/timezone'
 
 export function LeadDetailsModal({
@@ -416,6 +417,11 @@ export function LeadDetailsModal({
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Smart Playbook Widget */}
+                        <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                            <LeadPlaybookWidget leadId={lead.id} />
                         </div>
 
                         {/* Enhanced Notes Section */}

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, TrendingUp, MessageSquare, Calendar as CalendarIcon, Gift, Variable, Zap, Settings, Archive } from 'lucide-react'
+import { LayoutDashboard, Users, TrendingUp, MessageSquare, Workflow, Calendar as CalendarIcon, Gift, Variable, Zap, Settings, Archive } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
@@ -54,6 +54,7 @@ export function NavLinks({ role, tenantId }: NavLinksProps) {
         { href: '/dashboard/leads', label: 'Leads (CRM)', icon: Users },
         { href: '/dashboard/analytics', label: 'Analytics', icon: TrendingUp },
         { href: '/dashboard/chat', label: 'Live Chat', icon: MessageSquare },
+        { href: '/dashboard/workflow', label: 'WorkFlow', icon: Workflow },
         { href: '/dashboard/calendar', label: 'Calendar', icon: CalendarIcon },
         { href: '/dashboard/birthdays', label: 'Birthdays', icon: Gift },
         { href: '/dashboard/vault', label: 'Mentor Vault', icon: Archive },
