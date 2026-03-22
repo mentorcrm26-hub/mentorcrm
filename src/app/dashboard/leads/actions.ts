@@ -239,8 +239,8 @@ export async function updateLeadStatus(leadId: string, newStatus: string) {
         updated_at: new Date().toISOString()
     }
 
-    // If moving back to New Lead or Contacting, cancel any existing meeting
-    if (newStatus === 'New Lead' || newStatus === 'Contacting') {
+    // If moving back to New Lead or Attempting Contact or In Conversation, cancel any existing meeting
+    if (newStatus === 'New Lead' || newStatus === 'Attempting Contact' || newStatus === 'In Conversation') {
         updatePayload.meeting_at = null
     }
 
@@ -256,7 +256,7 @@ export async function updateLeadStatus(leadId: string, newStatus: string) {
 
     let syncError = null
     try {
-        if (newStatus === 'Scheduled' || newStatus === 'New Lead' || newStatus === 'Contacting') {
+        if (newStatus === 'Scheduled' || newStatus === 'New Lead' || newStatus === 'Attempting Contact' || newStatus === 'In Conversation') {
             const { syncLeadMeeting } = await import('@/lib/integrations/calendar/sync-engine')
             await syncLeadMeeting(leadId)
         }

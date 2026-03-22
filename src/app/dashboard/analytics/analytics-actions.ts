@@ -25,8 +25,10 @@ export async function getAnalyticsMetricsAction() {
     // Agrupar por status manualmente se o Supabase não retornar o agrupamento desejado
     const funnelData = [
         { name: 'New Lead', value: 0 },
-        { name: 'Contacting', value: 0 },
+        { name: 'Attempting Contact', value: 0 },
+        { name: 'In Conversation', value: 0 },
         { name: 'Scheduled', value: 0 },
+        { name: 'Proposal/Analysis', value: 0 },
         { name: 'Won', value: 0 },
         { name: 'Lost', value: 0 }
     ]

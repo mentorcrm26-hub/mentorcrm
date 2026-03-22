@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
 import { MessageSquareText, Mail, Megaphone, AlertTriangle, Clock, CalendarX, X, Search } from 'lucide-react'
 import { updateLeadStatus } from '@/app/dashboard/leads/actions'
@@ -14,9 +14,11 @@ import { NewLeadModal } from './new-lead-modal'
 
 const COLUMNS = [
     { id: 'New Lead', title: 'New Lead', color: 'bg-blue-500' },
-    { id: 'Contacting', title: 'Contacting', color: 'bg-yellow-500' },
+    { id: 'Attempting Contact', title: 'Attempting Contact', color: 'bg-yellow-400' },
+    { id: 'In Conversation', title: 'In Conversation', color: 'bg-emerald-400' },
     { id: 'Scheduled', title: 'Scheduled', color: 'bg-purple-500' },
-    { id: 'Won', title: 'Won', color: 'bg-emerald-500' },
+    { id: 'Proposal/Analysis', title: 'Proposal/Analysis', color: 'bg-orange-500' },
+    { id: 'Won', title: 'Won', color: 'bg-emerald-600' },
     { id: 'Lost', title: 'Lost', color: 'bg-red-500' },
 ]
 
@@ -30,9 +32,10 @@ type Lead = {
     meeting_at: string | null
     status: string
     created_at: string
+    tags?: any[]
 }
 
-export function KanbanBoard({ initialLeads }: { initialLeads: any[] }) {
+export function KanbanBoard({ initialLeads, availableTags = [] }: { initialLeads: any[], availableTags?: any[] }) {
     const [leads, setLeads] = useState<Lead[]>(initialLeads)
     const [isMounted, setIsMounted] = useState(false)
     const [messageModalState, setMessageModalState] = useState<{
@@ -68,7 +71,46 @@ export function KanbanBoard({ initialLeads }: { initialLeads: any[] }) {
         setIsMounted(true)
     }, [])
 
-    const handleDragEnd = async (result: DropResult) => {
+    // Custom Edge-Scrolling for dragging cards across screen horizontally
+    const scrollContainerRef = useRef<HTMLDivElement>(null)
+    const requestRef = useRef<number | null>(null)
+    const mouseX = useRef(0)
+    const isDraggingCard = useRef(false)
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            mouseX.current = e.clientX
+        }
+        window.addEventListener('mousemove', handleMouseMove)
+        return () => window.removeEventListener('mousemove', handleMouseMove)
+    }, [])
+
+    const scrollLoop = () => {
+        if (!isDraggingCard.current || !scrollContainerRef.current) return
+        
+        const rect = scrollContainerRef.current.getBoundingClientRect()
+        const SCROLL_SPEED = 15
+        const EDGE_THRESHOLD = 150
+
+        if (mouseX.current > rect.right - EDGE_THRESHOLD) {
+            scrollContainerRef.current.scrollLeft += SCROLL_SPEED
+        }
+        if (mouseX.current < rect.left + EDGE_THRESHOLD) {
+            scrollContainerRef.current.scrollLeft -= SCROLL_SPEED
+        }
+
+        requestRef.current = requestAnimationFrame(scrollLoop)
+    }
+
+    const onDragStart = () => {
+        isDraggingCard.current = true
+        requestRef.current = requestAnimationFrame(scrollLoop)
+    }
+
+    const handleDragEndFixed = async (result: DropResult) => {
+        isDraggingCard.current = false
+        if (requestRef.current) cancelAnimationFrame(requestRef.current)
+
         const { destination, source, draggableId } = result
 
         if (!destination) return
@@ -83,7 +125,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: any[] }) {
         const newStatus = destination.droppableId
         const movedLead = leads.find(l => l.id === draggableId)
 
-        if (movedLead?.meeting_at && (newStatus === 'New Lead' || newStatus === 'Contacting')) {
+        if (movedLead?.meeting_at && (newStatus === 'New Lead' || newStatus === 'Attempting Contact' || newStatus === 'In Conversation')) {
             // Intercept downgrade
             setDowngradeConf({ isOpen: true, lead: movedLead, newStatus })
             return
@@ -198,12 +240,12 @@ export function KanbanBoard({ initialLeads }: { initialLeads: any[] }) {
                 </div>
             </div>
 
-            <DragDropContext onDragEnd={handleDragEnd}>
-                <div className="flex gap-4 h-full items-stretch pb-4 overflow-x-auto snap-x snap-mandatory">
+            <DragDropContext onDragEnd={handleDragEndFixed} onDragStart={onDragStart}>
+                <div ref={scrollContainerRef} className="flex gap-4 h-full items-stretch pb-4 overflow-x-auto">
                     {COLUMNS.map((column) => {
                         const columnLeads = filteredLeads.filter(l => l.status === column.id) || []
                         return (
-                            <div key={column.id} className="flex-1 min-w-[280px] flex flex-col bg-zinc-50 dark:bg-zinc-900/80 rounded-2xl snap-center shrink-0 border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm group/column">
+                            <div key={column.id} className="flex-1 min-w-[280px] flex flex-col bg-zinc-50 dark:bg-zinc-900/80 rounded-2xl shrink-0 border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm group/column">
                                 <div className="p-4 font-semibold text-zinc-700 dark:text-zinc-200 flex justify-between items-center border-b border-zinc-200 dark:border-white/10 relative overflow-hidden rounded-t-2xl">
                                     <div className={`absolute top-0 left-0 w-full h-1 ${column.color} opacity-80`} />
                                     <div className="flex items-center gap-2">
@@ -249,6 +291,15 @@ export function KanbanBoard({ initialLeads }: { initialLeads: any[] }) {
                                                                     <h4 className="font-medium text-sm text-zinc-900 dark:text-zinc-100 truncate">{lead.name}</h4>
                                                                     {lead.email && <p className="text-xs text-zinc-500 mt-1 truncate">{lead.email}</p>}
                                                                     {lead.phone && <p className="text-xs text-zinc-500 mt-1">{lead.phone}</p>}
+                                                                    {lead.tags && lead.tags.length > 0 && (
+                                                                        <div className="flex flex-wrap gap-1.5 mt-2.5">
+                                                                            {lead.tags.map((t: any) => (
+                                                                                <span key={t.id} className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold shadow-sm" style={{ backgroundColor: `${t.color_hex}15`, color: t.color_hex, border: `1px solid ${t.color_hex}30` }}>
+                                                                                    {t.name}
+                                                                                </span>
+                                                                            ))}
+                                                                        </div>
+                                                                    )}
                                                                 </div>
                                                                 <div
                                                                     className="flex bg-white dark:bg-zinc-950 items-center justify-end absolute top-2 right-2 border border-zinc-200 dark:border-zinc-800 rounded-md shadow-sm"
@@ -323,6 +374,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: any[] }) {
                     isOpen={!!detailsModalLead}
                     onClose={() => setDetailsModalLead(null)}
                     lead={detailsModalLead}
+                    availableTags={availableTags}
                 />
 
                 <NewLeadModal

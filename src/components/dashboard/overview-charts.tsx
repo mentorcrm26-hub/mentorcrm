@@ -12,8 +12,10 @@ type Lead = {
 
 const COLORS = {
     'New Lead': '#3b82f6', // blue
-    'Contacting': '#eab308', // yellow
+    'Attempting Contact': '#facc15', // yellow
+    'In Conversation': '#34d399', // light green
     'Scheduled': '#a855f7', // purple
+    'Proposal/Analysis': '#f97316', // orange
     'Won': '#10b981', // green
     'Lost': '#ef4444' // red
 }
@@ -27,8 +29,10 @@ export function OverviewCharts({ leads }: { leads: Lead[] }) {
 
     const funnelData = [
         { name: 'New Lead', count: statusCounts['New Lead'] || 0, color: COLORS['New Lead'] },
-        { name: 'Contacting', count: statusCounts['Contacting'] || 0, color: COLORS['Contacting'] },
+        { name: 'Attempting Contact', count: statusCounts['Attempting Contact'] || 0, color: COLORS['Attempting Contact'] },
+        { name: 'In Conversation', count: statusCounts['In Conversation'] || 0, color: COLORS['In Conversation'] },
         { name: 'Scheduled', count: statusCounts['Scheduled'] || 0, color: COLORS['Scheduled'] },
+        { name: 'Proposal/Analysis', count: statusCounts['Proposal/Analysis'] || 0, color: COLORS['Proposal/Analysis'] },
         { name: 'Won', count: statusCounts['Won'] || 0, color: COLORS['Won'] },
         { name: 'Lost', count: statusCounts['Lost'] || 0, color: COLORS['Lost'] },
     ]

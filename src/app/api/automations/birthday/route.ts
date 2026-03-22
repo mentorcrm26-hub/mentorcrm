@@ -34,17 +34,24 @@ export async function GET(req: Request) {
             })
         }
 
-        const monthDay = formatFlorida(nowFlorida, 'MM-DD')
+        const monthDay = formatFlorida(nowFlorida, 'MM-dd')
         console.log(`[BIRTHDAY CRON] Verificando aniversariantes para: ${monthDay}`)
 
         // 2. Buscar leads que fazem aniversário hoje (ignorando o ano)
-        // O formato no banco é YYYY-MM-DD
-        const { data: leads, error } = await supabase
+        // Como o tipo no Postgres é DATE, o operador .like() não funciona diretamente sem cast.
+        // Buscamos os que tem data e filtramos abaixo.
+        const { data: allLeads, error } = await supabase
             .from('leads')
             .select('*')
-            .like('birth_date', `%-${monthDay}`)
+            .not('birth_date', 'is', null)
 
         if (error) throw error
+
+        const leads = (allLeads || []).filter(lead => {
+            if (!lead.birth_date) return false;
+            // birth_date no banco geralmente é YYYY-MM-DD
+            return lead.birth_date.substring(5) === monthDay;
+        })
 
         const results = { sent: 0, total: leads?.length || 0 }
         

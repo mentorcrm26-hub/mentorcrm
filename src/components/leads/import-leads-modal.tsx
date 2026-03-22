@@ -17,6 +17,41 @@ type ColumnMapping = {
     product_interest: string
 }
 
+interface HeaderSelectProps {
+    label: string
+    icon: React.ElementType
+    field: string
+    mapping: ColumnMapping
+    setMapping: React.Dispatch<React.SetStateAction<ColumnMapping>>
+    fileHeaders: string[]
+    required?: boolean
+}
+
+const HeaderSelect = ({ label, icon: Icon, field, mapping, setMapping, fileHeaders, required = false }: HeaderSelectProps) => (
+    <div className="flex items-center justify-between p-3 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <div className="flex items-center gap-3">
+            <div className="p-2 bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-zinc-200/50 dark:border-zinc-700">
+                <Icon className="w-4 h-4 text-zinc-500" />
+            </div>
+            <div>
+                <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                    {label} {required && <span className="text-xs text-red-500 font-bold">*</span>}
+                </p>
+            </div>
+        </div>
+        <select
+            value={mapping[field as keyof ColumnMapping] || ''}
+            onChange={(e) => setMapping((prev: ColumnMapping) => ({ ...prev, [field]: e.target.value }))}
+            className="w-1/2 px-3 py-2 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-lg text-sm text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-blue-500 font-medium"
+        >
+            <option value="">-- Ignore this field --</option>
+            {fileHeaders.map((h: string) => (
+                <option key={h} value={h}>{h}</option>
+            ))}
+        </select>
+    </div>
+)
+
 export function ImportLeadsModal() {
     const router = useRouter()
     const [isOpen, setIsOpen] = useState(false)
@@ -25,13 +60,14 @@ export function ImportLeadsModal() {
     const [isMounted, setIsMounted] = useState(false)
 
     useEffect(() => {
-        setIsMounted(true)
+        const timer = setTimeout(() => setIsMounted(true), 0)
+        return () => clearTimeout(timer)
     }, [])
 
     // File State
     const [fileName, setFileName] = useState<string>('')
     const [fileHeaders, setFileHeaders] = useState<string[]>([])
-    const [rawRows, setRawRows] = useState<any[]>([])
+    const [rawRows, setRawRows] = useState<Record<string, string>[]>([])
 
     // Mapping State
     const [mapping, setMapping] = useState<ColumnMapping>({
@@ -56,7 +92,7 @@ export function ImportLeadsModal() {
             complete: (results) => {
                 const headers = results.meta.fields || []
                 setFileHeaders(headers)
-                setRawRows(results.data)
+                setRawRows(results.data as Record<string, string>[])
 
                 // Smart auto-mapping prediction
                 const predictedMapping: ColumnMapping = {
@@ -109,7 +145,7 @@ export function ImportLeadsModal() {
             if (!isNaN(d.getTime())) {
                 return d.toISOString().split('T')[0]
             }
-        } catch (e) {
+        } catch {
             return undefined
         }
         return undefined
@@ -166,31 +202,6 @@ export function ImportLeadsModal() {
             }, 1000)
         }
     }
-
-    const HeaderSelect = ({ label, icon: Icon, field, required = false }: any) => (
-        <div className="flex items-center justify-between p-3 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
-            <div className="flex items-center gap-3">
-                <div className="p-2 bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-zinc-200/50 dark:border-zinc-700">
-                    <Icon className="w-4 h-4 text-zinc-500" />
-                </div>
-                <div>
-                    <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                        {label} {required && <span className="text-xs text-red-500 font-bold">*</span>}
-                    </p>
-                </div>
-            </div>
-            <select
-                value={mapping[field as keyof ColumnMapping]}
-                onChange={(e) => setMapping(prev => ({ ...prev, [field]: e.target.value }))}
-                className="w-1/2 px-3 py-2 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-lg text-sm text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-blue-500 font-medium"
-            >
-                <option value="">-- Ignore this field --</option>
-                {fileHeaders.map(h => (
-                    <option key={h} value={h}>{h}</option>
-                ))}
-            </select>
-        </div>
-    )
 
     if (!isMounted) return null
 
@@ -282,13 +293,13 @@ export function ImportLeadsModal() {
                                     </div>
 
                                     <div className="space-y-3">
-                                        <HeaderSelect label="Full Name" icon={User} field="name" required={true} />
-                                        <HeaderSelect label="Email Address" icon={Mail} field="email" />
-                                        <HeaderSelect label="Phone Number" icon={Phone} field="phone" />
-                                        <HeaderSelect label="Date of Birth" icon={Calendar} field="birth_date" />
-                                        <HeaderSelect label="Internal Notes" icon={FileText} field="notes" />
-                                        <HeaderSelect label="Kanban Status" icon={ArrowRight} field="status" />
-                                        <HeaderSelect label="Product Interest" icon={Zap} field="product_interest" />
+                                        <HeaderSelect label="Full Name" icon={User} field="name" mapping={mapping} setMapping={setMapping} fileHeaders={fileHeaders} required={true} />
+                                        <HeaderSelect label="Email Address" icon={Mail} field="email" mapping={mapping} setMapping={setMapping} fileHeaders={fileHeaders} />
+                                        <HeaderSelect label="Phone Number" icon={Phone} field="phone" mapping={mapping} setMapping={setMapping} fileHeaders={fileHeaders} />
+                                        <HeaderSelect label="Date of Birth" icon={Calendar} field="birth_date" mapping={mapping} setMapping={setMapping} fileHeaders={fileHeaders} />
+                                        <HeaderSelect label="Internal Notes" icon={FileText} field="notes" mapping={mapping} setMapping={setMapping} fileHeaders={fileHeaders} />
+                                        <HeaderSelect label="Kanban Status" icon={ArrowRight} field="status" mapping={mapping} setMapping={setMapping} fileHeaders={fileHeaders} />
+                                        <HeaderSelect label="Product Interest" icon={Zap} field="product_interest" mapping={mapping} setMapping={setMapping} fileHeaders={fileHeaders} />
                                     </div>
                                 </div>
                             )}

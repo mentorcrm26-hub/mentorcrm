@@ -50,7 +50,30 @@ create table if not exists public.lead_workflows (
   tenant_id uuid not null references public.tenants(id) on delete cascade
 );
 
--- 5. RLS Policies
+-- 5. Helper function to get current user tenant id
+create or replace function public.current_user_tenant_id()
+returns uuid
+language plpgsql
+stable
+security definer -- AVOID RLS RECURSION
+set search_path = public
+as $function$
+declare
+  t_id uuid;
+begin
+  -- 1. Try metadata
+  t_id := (auth.jwt() -> 'user_metadata' ->> 'tenant_id')::uuid;
+  if t_id is not null then
+    return t_id;
+  end if;
+
+  -- 2. Try users table
+  select tenant_id into t_id from public.users where id = auth.uid();
+  return t_id;
+end;
+$function$;
+
+-- 6. RLS Policies
 alter table public.workflows enable row level security;
 do $$ begin
   create policy "Users manage their own tenant workflows" 
@@ -78,29 +101,6 @@ do $$ begin
   on public.lead_workflows for all 
   using (tenant_id = public.current_user_tenant_id());
 exception when duplicate_object then null; end $$;
-
--- 6. Helper function to get current user tenant id (if not exists)
-create or replace function public.current_user_tenant_id()
-returns uuid
-language plpgsql
-stable
-security definer -- AVOID RLS RECURSION
-set search_path = public
-as $function$
-declare
-  t_id uuid;
-begin
-  -- 1. Try metadata
-  t_id := (auth.jwt() -> 'user_metadata' ->> 'tenant_id')::uuid;
-  if t_id is not null then
-    return t_id;
-  end if;
-
-  -- 2. Try users table
-  select tenant_id into t_id from public.users where id = auth.uid();
-  return t_id;
-end;
-$function$;
 
 -- 7. Add assigned_to to leads table for forwarding feature
 alter table public.leads 

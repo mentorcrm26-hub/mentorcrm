@@ -54,7 +54,7 @@ export function NavLinks({ role, tenantId }: NavLinksProps) {
         { href: '/dashboard/leads', label: 'Leads (CRM)', icon: Users },
         { href: '/dashboard/analytics', label: 'Analytics', icon: TrendingUp },
         { href: '/dashboard/chat', label: 'Live Chat', icon: MessageSquare },
-        { href: '/dashboard/workflow', label: 'WorkFlow', icon: Workflow },
+        // { href: '/dashboard/workflow', label: 'WorkFlow', icon: Workflow }, // Disabled for now per user request
         { href: '/dashboard/calendar', label: 'Calendar', icon: CalendarIcon },
         { href: '/dashboard/birthdays', label: 'Birthdays', icon: Gift },
         { href: '/dashboard/vault', label: 'Mentor Vault', icon: Archive },

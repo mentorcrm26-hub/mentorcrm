@@ -10,15 +10,17 @@ type Lead = {
 
 const STAGES = [
     { id: 'New Lead', title: 'New Lead', color: 'bg-blue-500', text: 'text-blue-600 dark:text-blue-400', stroke: '#3b82f6' },
-    { id: 'Contacting', title: 'Contacting', color: 'bg-amber-500', text: 'text-amber-600 dark:text-amber-400', stroke: '#f59e0b' },
+    { id: 'Attempting Contact', title: 'Attempting Contact', color: 'bg-yellow-400', text: 'text-yellow-600 dark:text-yellow-400', stroke: '#facc15' },
+    { id: 'In Conversation', title: 'In Conversation', color: 'bg-emerald-400', text: 'text-emerald-600 dark:text-emerald-400', stroke: '#34d399' },
     { id: 'Scheduled', title: 'Scheduled', color: 'bg-indigo-500', text: 'text-indigo-600 dark:text-indigo-400', stroke: '#6366f1' },
-    { id: 'Won', title: 'Won', color: 'bg-emerald-500', text: 'text-emerald-600 dark:text-emerald-400', stroke: '#10b981' },
+    { id: 'Proposal/Analysis', title: 'Proposal/Analysis', color: 'bg-orange-500', text: 'text-orange-600 dark:text-orange-400', stroke: '#f97316' },
+    { id: 'Won', title: 'Won', color: 'bg-emerald-600', text: 'text-emerald-600 dark:text-emerald-400', stroke: '#059669' },
     { id: 'Lost', title: 'Lost', color: 'bg-red-500', text: 'text-red-600 dark:text-red-400', stroke: '#ef4444' },
 ]
 
 export function PipelineMiniCards({ leads }: { leads: Lead[] }) {
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-7 gap-4">
             {STAGES.map((stage) => {
                 const count = leads.filter(l => l.status === stage.id).length;
 

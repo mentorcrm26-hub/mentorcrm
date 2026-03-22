@@ -3,19 +3,21 @@
 import { useState, useEffect } from 'react'
 import { updateLead, archiveLead } from '@/app/dashboard/leads/actions'
 import { getLeadNotes, addLeadNote, updateLeadNote, deleteLeadNote } from '@/app/dashboard/leads/note-actions'
+import { toggleLeadTag } from '@/app/dashboard/settings/tags/actions'
 import { toast } from 'sonner'
-import { X, Calendar, User, Mail, Phone, FileText, Clock, Trash2, CalendarX, Pencil, Save, Archive } from 'lucide-react'
-import { LeadPlaybookWidget } from './lead-playbook-widget'
+import { X, Calendar, User, Mail, Phone, FileText, Clock, Trash2, CalendarX, Pencil, Save, Archive, Tag } from 'lucide-react'
 import { formatFlorida, parseFloridaTime } from '@/lib/timezone'
 
 export function LeadDetailsModal({
     isOpen,
     onClose,
-    lead
+    lead,
+    availableTags = []
 }: {
     isOpen: boolean
     onClose: () => void
     lead: any | null
+    availableTags?: any[]
 }) {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -31,6 +33,7 @@ export function LeadDetailsModal({
     const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
     const [editingContent, setEditingContent] = useState("")
     const [confirmDeleteNoteId, setConfirmDeleteNoteId] = useState<string | null>(null)
+    const [optimisticTags, setOptimisticTags] = useState<any[]>([])
 
     // Helper to format phone visually
     const formatPhoneUI = (raw: string) => {
@@ -61,11 +64,27 @@ export function LeadDetailsModal({
             setConfirmArchive(false)
             setConfirmDeleteNoteId(null)
             setNewNote("")
+            setOptimisticTags(lead.tags || [])
             loadNotes()
         } else {
             setPhoneStr("")
         }
     }, [lead, isOpen])
+
+    async function handleToggleTag(tag: any) {
+        const isAttached = optimisticTags.some(t => t.id === tag.id)
+        
+        // Optimistic UI update
+        if (isAttached) {
+            setOptimisticTags(prev => prev.filter(t => t.id !== tag.id))
+            const res = await toggleLeadTag(lead.id, tag.id, false)
+            if (!res.success) toast.error("Failed to remove tag")
+        } else {
+            setOptimisticTags(prev => [...prev, tag])
+            const res = await toggleLeadTag(lead.id, tag.id, true)
+            if (!res.success) toast.error("Failed to add tag")
+        }
+    }
 
     async function loadNotes() {
         if (!lead) return
@@ -192,7 +211,7 @@ export function LeadDetailsModal({
             phone: phoneStr || undefined,
             birth_date: lead.birth_date || undefined,
             meeting_at: undefined,
-            status: 'Contacting'
+            status: 'Attempting Contact'
         })
 
         if (!res.success) {
@@ -296,6 +315,38 @@ export function LeadDetailsModal({
                                     className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium"
                                 />
                             </div>
+
+                            {/* Tags / Flags */}
+                            {availableTags && availableTags.length > 0 && (
+                                <div className="space-y-2 col-span-1 md:col-span-2">
+                                    <label className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                                        <Tag className="w-4 h-4 text-zinc-400" /> Lead Tags & Flags
+                                    </label>
+                                    <div className="flex flex-wrap gap-2 p-3 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                                        {availableTags.map(tag => {
+                                            const isActive = optimisticTags.some(t => t.id === tag.id);
+                                            return (
+                                                <button
+                                                    key={tag.id}
+                                                    type="button"
+                                                    onClick={() => handleToggleTag(tag)}
+                                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-bold transition-all shadow-sm ${isActive ? 'opacity-100 scale-100 ring-2 ring-offset-1 focus:outline-none dark:ring-offset-zinc-950' : 'opacity-40 hover:opacity-100 scale-95'}`}
+                                                    style={{ 
+                                                        backgroundColor: `${tag.color_hex}15`, 
+                                                        color: tag.color_hex, 
+                                                        border: `1px solid ${tag.color_hex}30`,
+                                                        ...(isActive ? { '--tw-ring-color': tag.color_hex } as any : {})
+                                                    }}
+                                                >
+                                                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tag.color_hex }} />
+                                                    {tag.name}
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                    <p className="text-xs text-zinc-500 mt-1">Click a tag to apply or remove it from this lead.</p>
+                                </div>
+                            )}
 
                             {/* Birth Date */}
                             <div className="space-y-2">
@@ -419,10 +470,11 @@ export function LeadDetailsModal({
                             </div>
                         </div>
 
-                        {/* Smart Playbook Widget */}
+                        {/* Smart Playbook Widget (Hidden for now as requested)
                         <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800">
                             <LeadPlaybookWidget leadId={lead.id} />
                         </div>
+                        */}
 
                         {/* Enhanced Notes Section */}
                         <div className="space-y-4">

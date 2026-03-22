@@ -15,12 +15,22 @@ export default async function LeadsPage() {
         redirect('/login')
     }
 
-    // Fetch the leads for the user's tenant
-    const { data: leads } = await supabase
+    // Fetch the leads for the user's tenant with expanded tags
+    const { data: leadsResponse } = await supabase
         .from('leads')
-        .select('*')
+        .select(`
+            *,
+            lead_tags(tags(id, name, color_hex))
+        `)
         .eq('is_archived', false)
         .order('created_at', { ascending: false })
+
+    const leads = leadsResponse?.map(lead => ({
+        ...lead,
+        tags: lead.lead_tags?.map((lt: any) => lt.tags).filter(Boolean) || []
+    })) || []
+
+    const { data: allTags } = await supabase.from('tags').select('*').order('name')
 
     return (
         <div className="flex flex-col gap-6 h-full">
@@ -36,7 +46,7 @@ export default async function LeadsPage() {
             </header>
 
             <main className="flex-1 overflow-x-auto min-h-0">
-                <KanbanBoard initialLeads={leads || []} />
+                <KanbanBoard initialLeads={leads || []} availableTags={allTags || []} />
             </main>
         </div>
     )
