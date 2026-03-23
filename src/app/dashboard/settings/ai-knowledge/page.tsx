@@ -11,12 +11,13 @@ export default function AIKnowledgePage() {
     const [files, setFiles] = useState<any[]>([])
     const [search, setSearch] = useState('')
     const [deletingId, setDeletingId] = useState<string | null>(null)
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+    const [itemToDelete, setItemToDelete] = useState<string | null>(null)
 
     // ... loadKnowledge e handleFileUpload permanecem iguais ou similares ...
 
     const handleRemove = async (id: string) => {
-        if (!confirm('Are you sure you want to remove this document from knowledge base?')) return
-
+        setDeletingId(id)
         setDeletingId(id)
         try {
             const result = await deleteKnowledgeAction(id)
@@ -151,7 +152,13 @@ export default function AIKnowledgePage() {
                                                 <p className="text-xs text-zinc-500 dark:text-zinc-400">{file.size} • Indexed at {new Date(file.created_at).toLocaleDateString()}</p>
                                             </div>
                                         </div>
-                                        <button className="p-2 text-zinc-400 hover:text-red-500 transition-colors">
+                                        <button 
+                                            onClick={() => {
+                                                setItemToDelete(file.id)
+                                                setIsConfirmOpen(true)
+                                            }}
+                                            className="p-2 text-zinc-400 hover:text-red-500 transition-colors"
+                                        >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
                                     </div>
@@ -161,6 +168,42 @@ export default function AIKnowledgePage() {
                     </div>
                 </div>
             </div>
+
+            {/* Custom Confirm Modal */}
+            {isConfirmOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[2rem] shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden p-8 text-center animate-in zoom-in-95 duration-200">
+                        <div className="w-16 h-16 rounded-3xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 mx-auto mb-6 shadow-sm border border-red-200 dark:border-red-800">
+                            <Trash2 className="w-8 h-8" />
+                        </div>
+                        <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Delete Document?</h3>
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-8 leading-relaxed">
+                            This document will be permanently removed from the AI knowledge base. This action cannot be undone.
+                        </p>
+                        
+                        <div className="flex flex-col gap-3">
+                            <button 
+                                onClick={() => {
+                                    if (itemToDelete) handleRemove(itemToDelete)
+                                    setIsConfirmOpen(false)
+                                }}
+                                className="w-full bg-red-600 hover:bg-red-700 text-white rounded-2xl py-3.5 text-sm font-bold transition-all shadow-md active:scale-95"
+                            >
+                                Yes, Remove Document
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setIsConfirmOpen(false)
+                                    setItemToDelete(null)
+                                }}
+                                className="w-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold py-3 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

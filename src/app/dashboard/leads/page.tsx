@@ -3,6 +3,10 @@ import { redirect } from 'next/navigation'
 import { KanbanBoard } from '@/components/leads/kanban-board'
 import { NewLeadModal } from '@/components/leads/new-lead-modal'
 import { ImportLeadsModal } from '@/components/leads/import-leads-modal'
+import { fetchExternalEvents, reconcileExternalChanges } from '@/lib/integrations/calendar/sync-engine'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function LeadsPage() {
     const supabase = await createClient()
@@ -18,7 +22,19 @@ export default async function LeadsPage() {
     const { data: userProfile } = await supabase.from('users').select('role').eq('id', user.id).single()
     const userRole = userProfile?.role || 'agent'
 
-    // Fetch the leads for the user's tenant with expanded tags
+    // 1. Fetch external events and tags first
+    const [externalEvents, { data: allTags }] = await Promise.all([
+        fetchExternalEvents(supabase),
+        supabase.from('tags').select('*').order('name')
+    ])
+    
+    console.log(`[DEBUG LeadsPage] External events fetched: ${externalEvents.length}`)
+
+    // 2. Reconcile changes (sync external deletions/moves back to CRM)
+    const wasUpdated = await reconcileExternalChanges(supabase, externalEvents)
+    console.log(`[DEBUG LeadsPage] Sync reconciliation performed. Updates made: ${wasUpdated}`)
+
+    // 3. Fetch final leads data from DB (after reconciliation)
     const { data: leadsResponse } = await supabase
         .from('leads')
         .select(`
@@ -28,12 +44,11 @@ export default async function LeadsPage() {
         .eq('is_archived', false)
         .order('created_at', { ascending: false })
 
+
     const leads = leadsResponse?.map(lead => ({
         ...lead,
         tags: lead.lead_tags?.map((lt: any) => lt.tags).filter(Boolean) || []
     })) || []
-
-    const { data: allTags } = await supabase.from('tags').select('*').order('name')
 
     return (
         <div className="flex flex-col gap-6 h-full">

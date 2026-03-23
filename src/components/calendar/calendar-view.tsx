@@ -31,10 +31,12 @@ interface ExternalEvent {
 
 export function CalendarView({
     initialLeads,
-    externalEvents = []
+    externalEvents = [],
+    userRole = 'agent'
 }: {
     initialLeads: Lead[],
-    externalEvents?: ExternalCalendarEvent[]
+    externalEvents?: ExternalCalendarEvent[],
+    userRole?: string
 }) {
     const [currentDate, setCurrentDate] = useState(getFloridaDate())
     const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
@@ -333,6 +335,7 @@ export function CalendarView({
                 isOpen={!!selectedLead}
                 onClose={() => setSelectedLead(null)}
                 lead={selectedLead}
+                userRole={userRole}
             />
 
             <NewLeadModal

@@ -17,6 +17,7 @@ export function WhatsAppIntegrationCard({
     const [isLoading, setIsLoading] = useState(false)
     const [qrCode, setQrCode] = useState<string | null>(null)
     const [pollingActive, setPollingActive] = useState(false)
+    const [isConfirmDisconnectOpen, setIsConfirmDisconnectOpen] = useState(false)
 
     // Form inputs
     const [name, setName] = useState('')
@@ -74,8 +75,7 @@ export function WhatsAppIntegrationCard({
     }
 
     const handleDisconnect = async () => {
-        if (!confirm('Are you sure you want to disconnect WhatsApp?')) return
-        
+        setIsConfirmDisconnectOpen(false)
         setIsLoading(true)
         const res = await disconnectWhatsApp(integration.credentials.instanceName)
         setIsLoading(false)
@@ -118,20 +118,30 @@ export function WhatsAppIntegrationCard({
                     <div className="mt-auto space-y-2">
                         {isConnected ? (
                             <button
-                                onClick={handleDisconnect}
+                                onClick={() => setIsConfirmDisconnectOpen(true)}
                                 disabled={isLoading}
                                 className="w-full inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-red-200 dark:border-red-900/50 bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 h-10 px-4 py-2 gap-2"
                             >
                                 <Trash2 className="w-4 h-4" /> Disconnect
                             </button>
                         ) : integration ? (
-                            <button
-                                onClick={() => handleGetQR(integration.credentials.instanceName)}
-                                disabled={isLoading}
-                                className="w-full inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 h-10 px-4 py-2 gap-2"
-                            >
-                                <QrCode className="w-4 h-4" /> Scan QR Code
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => handleGetQR(integration.credentials.instanceName)}
+                                    disabled={isLoading}
+                                    className="flex-1 inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 h-10 px-4 py-2 gap-2"
+                                >
+                                    <QrCode className="w-4 h-4" /> Scan QR
+                                </button>
+                                <button
+                                    onClick={() => setIsConfirmDisconnectOpen(true)}
+                                    disabled={isLoading}
+                                    title="Cancel Connection Setup"
+                                    className="inline-flex shrink-0 items-center justify-center rounded-lg text-sm font-medium transition-colors border border-red-200 dark:border-red-900/50 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 h-10 w-10 px-0 py-0 flex-col"
+                                >
+                                    <Trash2 className="w-[18px] h-[18px]" />
+                                </button>
+                            </div>
                         ) : (
                             <button
                                 onClick={() => setIsCreateModalOpen(true)}
@@ -223,6 +233,38 @@ export function WhatsAppIntegrationCard({
                             <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold animate-pulse">
                                 Waiting for connection...
                             </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Confirm Disconnect Modal */}
+            {isConfirmDisconnectOpen && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-zinc-950/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[2rem] shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden p-8 text-center animate-in zoom-in-95 duration-200">
+                        <div className="w-16 h-16 rounded-3xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 mx-auto mb-6 shadow-sm border border-red-200 dark:border-red-800">
+                            <Trash2 className="w-8 h-8" />
+                        </div>
+                        <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Disconnect WhatsApp?</h3>
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-8 leading-relaxed">
+                            Are you sure you want to disable WhatsApp integration? Scheduled messages and real-time sync will stop immediately.
+                        </p>
+                        
+                        <div className="flex flex-col gap-3">
+                            <button 
+                                onClick={handleDisconnect}
+                                disabled={isLoading}
+                                className="w-full bg-red-600 hover:bg-red-700 text-white rounded-2xl py-3.5 text-sm font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
+                            >
+                                {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Yes, Disconnect'}
+                            </button>
+                            <button 
+                                onClick={() => setIsConfirmDisconnectOpen(false)}
+                                disabled={isLoading}
+                                className="w-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold py-3 transition-colors"
+                            >
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 </div>

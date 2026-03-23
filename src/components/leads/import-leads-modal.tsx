@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createManyLeads } from '@/app/dashboard/leads/actions'
 import { toast } from 'sonner'
 import Papa from 'papaparse'
-import { X, UploadCloud, FileSpreadsheet, ArrowRight, CheckCircle2, User, Mail, Phone, Calendar, FileText, Loader2, Zap } from 'lucide-react'
+import { X, UploadCloud, FileSpreadsheet, ArrowRight, CheckCircle2, User, Mail, Phone, Calendar, FileText, Loader2, Zap, Info } from 'lucide-react'
 
 type ColumnMapping = {
     name: string
@@ -88,7 +88,9 @@ export function ImportLeadsModal() {
 
         Papa.parse(file, {
             header: true,
-            skipEmptyLines: true,
+            skipEmptyLines: 'greedy',
+            transformHeader: (h) => h.trim().replace(/^\uFEFF/g, ''),
+            transform: (v) => v.trim(),
             complete: (results) => {
                 const headers = results.meta.fields || []
                 setFileHeaders(headers)
@@ -280,6 +282,26 @@ export function ImportLeadsModal() {
                                             >
                                                 Download CSV Template
                                             </button>
+                                        </div>
+
+                                        <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800 text-left">
+                                            <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-3 flex items-center gap-2">
+                                                <Info className="w-3.5 h-3.5 text-indigo-500" /> How to prepare your file
+                                            </h4>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 transition-colors hover:border-indigo-500/30">
+                                                    <p className="text-[10px] font-bold text-zinc-500 mb-1 uppercase tracking-tighter">CSV / TXT Format</p>
+                                                    <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium">
+                                                        Use comma (<code>,</code>) to separate fields. The first line must be the header with column names.
+                                                    </p>
+                                                </div>
+                                                <div className="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 transition-colors hover:border-indigo-500/30">
+                                                    <p className="text-[10px] font-bold text-zinc-500 mb-1 uppercase tracking-tighter">Structure Example</p>
+                                                    <code className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold block bg-white dark:bg-black/20 p-2 rounded border border-indigo-100 dark:border-indigo-900/10 whitespace-nowrap overflow-x-auto">
+                                                        Name,Phone,Email,Notes...
+                                                    </code>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

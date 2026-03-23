@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Mail, MessageSquare, Plus, Trash2, Edit2, Variable, Save, X, Info } from 'lucide-react';
+import { Mail, MessageSquare, Plus, Trash2, Edit2, Variable, Save, X, Info, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { saveTemplate, deleteTemplate } from './actions';
 
@@ -23,6 +23,8 @@ export function TemplatesManagementClient({ initialTemplates }: { initialTemplat
         subject: ''
     });
     const [isLoading, setIsLoading] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [idToDelete, setIdToDelete] = useState<string | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const handleSave = async (e: React.FormEvent) => {
@@ -46,11 +48,15 @@ export function TemplatesManagementClient({ initialTemplates }: { initialTemplat
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure?')) return;
+        setIsConfirmOpen(false);
+        setIsLoading(true);
         const res = await deleteTemplate(id);
+        setIsLoading(false);
         if (res.success) {
             toast.success('Deleted!');
             window.location.reload();
+        } else {
+            toast.error(res.error || 'Failed to delete template.');
         }
     };
 
@@ -110,7 +116,8 @@ export function TemplatesManagementClient({ initialTemplates }: { initialTemplat
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        handleDelete(t.id);
+                                        setIdToDelete(t.id);
+                                        setIsConfirmOpen(true);
                                     }}
                                     className="opacity-0 group-hover:opacity-100 p-1.5 text-zinc-400 hover:text-red-500 transition-all rounded-md hover:bg-red-50 dark:hover:bg-red-950"
                                 >
@@ -242,6 +249,39 @@ export function TemplatesManagementClient({ initialTemplates }: { initialTemplat
                     </div>
                 )}
             </div>
+
+            {/* Custom Confirm Modal */}
+            {isConfirmOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[2rem] shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden p-8 text-center animate-in zoom-in-95 duration-200">
+                        <div className="w-16 h-16 rounded-3xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 mx-auto mb-6 shadow-sm border border-red-200 dark:border-red-800">
+                            <Trash2 className="w-8 h-8" />
+                        </div>
+                        <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Delete Template?</h3>
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-8 leading-relaxed">
+                            Are you sure you want to delete this template? This operation cannot be reversed.
+                        </p>
+                        
+                        <div className="flex flex-col gap-3">
+                            <button 
+                                onClick={() => idToDelete && handleDelete(idToDelete)}
+                                className="w-full bg-red-600 hover:bg-red-700 text-white rounded-2xl py-3.5 text-sm font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
+                            >
+                                {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Yes, Delete Template'}
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setIsConfirmOpen(false);
+                                    setIdToDelete(null);
+                                }}
+                                className="w-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold py-3 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

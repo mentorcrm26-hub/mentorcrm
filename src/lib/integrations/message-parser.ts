@@ -6,6 +6,7 @@ export function parseTemplate(content: string, lead: any, sender?: any): string 
   // Basic lead variables
   const variables: Record<string, string> = {
     '{nome_cliente}': lead.name || 'Cliente',
+    '{name}': lead.name || 'Client',
     '{email_cliente}': lead.email || '',
     '{telefone_cliente}': lead.phone || '',
     '{origem}': lead.origin || '',

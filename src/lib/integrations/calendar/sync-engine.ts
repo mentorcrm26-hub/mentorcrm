@@ -37,7 +37,7 @@ UID:${eventId}
 DTSTAMP:${formatCalDate(new Date())}
 DTSTART:${formatCalDate(dStart)}
 DTEND:${formatCalDate(dEnd)}
-SUMMARY:Call with ${lead.name}
+SUMMARY:[CRM] 📞 Call with ${lead.name}
 DESCRIPTION:Lead: ${lead.name}\\nEmail: ${lead.email || 'N/A'}\\nPhone: ${lead.phone || 'N/A'}\\nNotes: ${lead.notes || 'N/A'}
 STATUS:CONFIRMED
 END:VEVENT
@@ -241,7 +241,7 @@ async function syncToGoogle(lead: { meeting_at?: string, name: string, email?: s
         const dEnd = new Date(dStart.getTime() + 60 * 60 * 1000)
 
         const event = {
-            summary: `Call with ${lead.name}`,
+            summary: `[CRM] 📞 Call with ${lead.name}`,
             description: `Lead: ${lead.name}\nEmail: ${lead.email || 'N/A'}\nPhone: ${lead.phone || 'N/A'}\nNotes: ${lead.notes || 'N/A'}`,
             start: { 
                 dateTime: dStart.toISOString(),
@@ -435,10 +435,13 @@ async function fetchGoogleEvents(credentials: any, supabase: any): Promise<Exter
     const auth = await getGoogleAuth(credentials, supabase)
     const calendar = google.calendar({ version: 'v3', auth })
 
+    const now = new Date()
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString()
+
     const res = await calendar.events.list({
         calendarId: 'primary',
-        timeMin: new Date().toISOString(),
-        maxResults: 50,
+        timeMin: startOfToday,
+        maxResults: 100,
         singleEvents: true,
         orderBy: 'startTime',
     })
@@ -517,11 +520,12 @@ function parseIcsEvents(icsData: string, url: string): ExternalCalendarEvent[] {
     return events
 }
 
-export async function reconcileExternalChanges(supabaseClient?: any, preFetchedEvents?: ExternalCalendarEvent[]) {
+export async function reconcileExternalChanges(supabaseClient?: any, preFetchedEvents?: ExternalCalendarEvent[]): Promise<boolean> {
     const supabase = supabaseClient || await createClient()
     const { data: integrations } = await supabase.from('integrations').select('*') as { data: Integration[] | null }
     
-    if (!integrations || integrations.length === 0) return
+    console.log(`[DEBUG Sync] Available integrations: ${integrations?.map(i => i.provider).join(', ') || 'None'}`)
+    if (!integrations || integrations.length === 0) return false
 
     try {
         // Use pre-fetched events if available to avoid redundant network calls
@@ -530,7 +534,7 @@ export async function reconcileExternalChanges(supabaseClient?: any, preFetchedE
         const updatePromises: Promise<any>[] = []
 
         // 1. Apple Reconcile
-        const apple = integrations.find((i: Integration) => i.provider === 'apple')
+        const apple = integrations.find((i: Integration) => i.provider.toLowerCase() === 'apple')
         if (apple) {
             const { data: leads } = await supabase
                 .from('leads')
@@ -561,12 +565,32 @@ export async function reconcileExternalChanges(supabaseClient?: any, preFetchedE
                             )
                         }
                     } else {
+                        const startOfToday = new Date()
+                        startOfToday.setHours(0,0,0,0)
+
+                        if (lead.meeting_at && new Date(lead.meeting_at) < startOfToday) {
+                            continue
+                        }
+
                         const updatedAt = new Date(lead.updated_at).getTime()
-                        if (Date.now() - updatedAt < 5 * 60 * 1000) continue
+                        if (Date.now() - updatedAt < 10 * 1000) continue
 
                         console.log(`Lead ${lead.name} event missing in Apple, clearing sync link.`)
                         updatePromises.push(
-                            supabase.from('leads').update({ apple_event_id: null, meeting_notified: {}, updated_at: new Date().toISOString() }).eq('id', lead.id)
+                            supabase.from('leads').update({ 
+                                apple_event_id: null, 
+                                meeting_at: null,
+                                status: 'In Conversation',
+                                meeting_notified: {}, 
+                                updated_at: new Date().toISOString() 
+                            }).eq('id', lead.id)
+                        )
+                        // Add auto note
+                        updatePromises.push(
+                            supabase.from('lead_notes').insert({
+                                lead_id: lead.id,
+                                content: `📅 [Sync Apple] Evento removido do calendário externo. Lead retornado para coluna de Conversa.`
+                            })
                         )
                     }
                 }
@@ -574,16 +598,23 @@ export async function reconcileExternalChanges(supabaseClient?: any, preFetchedE
         }
 
         // 2. Google Reconcile
-        const googleIntegration = integrations.find((i: Integration) => i.provider === 'google')
+        const googleIntegration = integrations.find((i: Integration) => i.provider.toLowerCase() === 'google')
+        console.log(`[DEBUG Sync] Google Integration search for 'google' (case-insensitive) found: ${!!googleIntegration}`)
         if (googleIntegration) {
             const { data: googleLeads } = await supabase
                 .from('leads')
                 .select('id, name, meeting_at, google_event_id, updated_at')
                 .not('google_event_id', 'is', null)
+            
+            console.log(`[DEBUG Sync] Found ${googleLeads?.length || 0} leads with Google Event IDs`)
 
             if (googleLeads) {
+                const googleExternalEvents = externalEvents.filter(e => e.provider === 'google')
+                console.log(`[DEBUG Sync] Total Google External Events fetched: ${googleExternalEvents.length}`)
+
                 for (const lead of googleLeads) {
-                    const extEvent = externalEvents.find(e => e.id === lead.google_event_id)
+                    const extEvent = googleExternalEvents.find(e => e.id === lead.google_event_id)
+                    console.log(`[DEBUG Sync] Lead: ${lead.name} | GID: ${lead.google_event_id} | Found Externally: ${!!extEvent}`)
 
                     if (extEvent) {
                         const googleStartTime = extEvent.start
@@ -605,12 +636,31 @@ export async function reconcileExternalChanges(supabaseClient?: any, preFetchedE
                             )
                         }
                     } else {
+                        const startOfToday = new Date()
+                        startOfToday.setHours(0,0,0,0)
+
+                        if (lead.meeting_at && new Date(lead.meeting_at) < startOfToday) {
+                            continue
+                        }
+
                         const updatedAt = new Date(lead.updated_at).getTime()
-                        if (Date.now() - updatedAt < 5 * 60 * 1000) continue
+                        if (Date.now() - updatedAt < 10 * 1000) continue
 
                         console.log(`Lead ${lead.name} event missing in Google, clearing sync link.`)
                         updatePromises.push(
-                            supabase.from('leads').update({ google_event_id: null, updated_at: new Date().toISOString() }).eq('id', lead.id)
+                            supabase.from('leads').update({ 
+                                google_event_id: null, 
+                                meeting_at: null,
+                                status: 'In Conversation',
+                                updated_at: new Date().toISOString() 
+                            }).eq('id', lead.id)
+                        )
+                        // Add auto note
+                        updatePromises.push(
+                            supabase.from('lead_notes').insert({
+                                lead_id: lead.id,
+                                content: `📅 [Sync Google] Evento removido do calendário externo. Lead retornado para coluna de Conversa.`
+                            })
                         )
                     }
                 }
@@ -619,8 +669,10 @@ export async function reconcileExternalChanges(supabaseClient?: any, preFetchedE
         
         if (updatePromises.length > 0) {
             await Promise.all(updatePromises)
+            return true
         }
     } catch (error) {
         console.error('Reconciliation Error:', error)
     }
+    return false
 }

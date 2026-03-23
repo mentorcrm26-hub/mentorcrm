@@ -4,6 +4,9 @@ import { CalendarView } from '@/components/calendar/calendar-view'
 import { getFloridaDate } from '@/lib/timezone'
 import { fetchExternalEvents, reconcileExternalChanges } from '@/lib/integrations/calendar/sync-engine'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function CalendarPage() {
     const supabase = await createClient()
 
@@ -20,6 +23,12 @@ export default async function CalendarPage() {
         supabase.from('leads').select('*').eq('is_archived', false).order('name', { ascending: true }),
         fetchExternalEvents(supabase)
     ])
+
+    const { data: userProfile } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single()
 
     const allLeads = leadsRes.data || []
 
@@ -48,7 +57,7 @@ export default async function CalendarPage() {
             </header>
 
             <main className="flex-1 min-h-0 bg-white dark:bg-zinc-950 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col md:flex-row">
-                <CalendarView initialLeads={allLeads || []} externalEvents={externalEvents} />
+                <CalendarView initialLeads={allLeads || []} externalEvents={externalEvents} userRole={userProfile?.role || 'agent'} />
             </main>
         </div>
     )

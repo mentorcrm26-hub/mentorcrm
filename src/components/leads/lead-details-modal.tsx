@@ -213,13 +213,18 @@ export function LeadDetailsModal({
             phone: phoneStr || undefined,
             birth_date: lead.birth_date || undefined,
             meeting_at: undefined,
-            status: 'Attempting Contact'
+            status: 'In Conversation'
         })
 
         if (!res.success) {
             toast.error('Failed to cancel meeting')
         } else {
-            toast.success('Meeting cancelled. Lead remains in CRM.')
+            // Add automatic note about cancellation
+            if (lead.meeting_at) {
+                const dateStr = formatFlorida(lead.meeting_at, "dd/MM/yyyy HH:mm")
+                await addLeadNote(lead.id, `📅 Reunião cancelada: O agendamento para ${dateStr} foi removido e o lead retornou para a coluna de Conversa.`)
+            }
+            toast.success('Meeting cancelled. Lead moved to Conversation.')
             setConfirmCancel(false)
             onClose()
         }
@@ -321,6 +326,21 @@ export function LeadDetailsModal({
                                 />
                             </div>
 
+                            {/* Birth Date */}
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                                    <Calendar className="w-4 h-4 text-zinc-400" /> Date of Birth
+                                </label>
+                                <input
+                                    name="birth_date"
+                                    type="date"
+                                    defaultValue={lead.birth_date || ''}
+                                    disabled={userRole !== 'admin'}
+                                    className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium text-zinc-700 dark:text-zinc-300 [&::-webkit-calendar-picker-indicator]:dark:invert disabled:opacity-75 disabled:bg-zinc-50 dark:disabled:bg-zinc-900/50"
+                                />
+                                <p className="text-xs text-zinc-500 mt-1">Automatic format based on browser.</p>
+                            </div>
+
                             {/* Tags / Flags */}
                             {availableTags && availableTags.length > 0 && (
                                 <div className="space-y-2 col-span-1 md:col-span-2">
@@ -354,20 +374,7 @@ export function LeadDetailsModal({
                                 </div>
                             )}
 
-                            {/* Birth Date */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                                    <Calendar className="w-4 h-4 text-zinc-400" /> Date of Birth
-                                </label>
-                                <input
-                                    name="birth_date"
-                                    type="date"
-                                    defaultValue={lead.birth_date || ''}
-                                    disabled={userRole !== 'admin'}
-                                    className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium text-zinc-700 dark:text-zinc-300 [&::-webkit-calendar-picker-indicator]:dark:invert disabled:opacity-75 disabled:bg-zinc-50 dark:disabled:bg-zinc-900/50"
-                                />
-                                <p className="text-xs text-zinc-500 mt-1">Automatic format based on browser.</p>
-                            </div>
+
 
                             {/* Meeting Appointment */}
                             <div className="space-y-2">

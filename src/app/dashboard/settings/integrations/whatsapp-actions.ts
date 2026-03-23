@@ -115,8 +115,9 @@ export async function disconnectWhatsApp(instanceName: string) {
   if (!userProfile) return { success: false, error: 'Tenant error' }
 
   try {
-    await evolution.logoutInstance(instanceName)
-    await evolution.deleteInstance(instanceName)
+    // Attempt to clean up remotely, but don't fail if they're already deleted
+    try { await evolution.logoutInstance(instanceName) } catch {}
+    try { await evolution.deleteInstance(instanceName) } catch {}
     
     await supabase.from('integrations').delete().eq('tenant_id', userProfile.tenant_id).eq('provider', 'whatsapp')
     

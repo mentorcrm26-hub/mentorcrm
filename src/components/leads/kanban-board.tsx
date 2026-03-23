@@ -32,6 +32,7 @@ type Lead = {
     meeting_at: string | null
     status: string
     created_at: string
+    tenant_id: string
     tags?: any[]
 }
 

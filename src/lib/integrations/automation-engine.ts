@@ -60,6 +60,13 @@ export async function manualSendMessage(messageOrTemplateId: string, lead: any) 
   let content = lead.content; // raw content if manual
   let subject = lead.subject;
 
+  const { data: { user } } = await supabase.auth.getUser();
+  let sender = null;
+  if (user) {
+      const { data: profile } = await supabase.from('users').select('*').eq('id', user.id).single();
+      sender = profile;
+  }
+
   if (messageOrTemplateId !== 'custom') {
     const { data: template } = await supabase
       .from('message_templates')
@@ -69,23 +76,18 @@ export async function manualSendMessage(messageOrTemplateId: string, lead: any) 
 
     if (!template) return { success: false, error: 'Template not found' };
     
-    const { data: { user } } = await supabase.auth.getUser();
-    let sender = null;
-    if (user) {
-      const { data: profile } = await supabase.from('users').select('*').eq('id', user.id).single();
-      sender = profile;
-    }
-
     type = template.type;
     content = parseTemplate(template.content, lead, sender);
     subject = template.subject ? parseTemplate(template.subject, lead, sender) : undefined;
   } else {
-    // Se for customizado, tenta extrair o assunto se ele começar com "Subject:"
     if (type === 'email' && typeof content === 'string' && content.startsWith('Subject:')) {
       const lines = content.split('\n');
       subject = lines[0].replace('Subject:', '').trim();
       content = lines.slice(1).join('\n').trim();
     }
+    
+    // Parse variables for custom messages too
+    content = parseTemplate(content, lead, sender);
   }
 
   if (type === 'email' && lead.email) {
