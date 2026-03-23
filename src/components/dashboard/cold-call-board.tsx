@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { format, startOfWeek, addDays, subDays, isSameDay } from 'date-fns'
+import { format, startOfWeek, addDays, subDays, isSameDay, getISOWeek, getYear } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { 
     PhoneCall, 
@@ -44,18 +44,20 @@ export function ColdCallBoard({
     currentWeekStart: string 
 }) {
     const router = useRouter()
-    const startDate = new Date(currentWeekStart)
+    const [_yr, _mo, _dy] = currentWeekStart.split('-').map(Number)
+    const startDate = new Date(_yr, _mo - 1, _dy)
     const [editingCell, setEditingCell] = useState<{ day: string, activityId: string, value: number, isTarget: boolean } | null>(null)
     const [isSaving, setIsSaving] = useState(false)
 
     // Helper functions
     const getDaysOfWeek = () => {
-        return Array.from({ length: 7 }, (_, i) => addDays(startDate, i))
+        // Return only Monday through Friday (5 days)
+        return Array.from({ length: 5 }, (_, i) => addDays(startDate, i))
     }
 
     const days = getDaysOfWeek()
-    const weekNumber = parseInt(format(startDate, 'w'))
-    const year = startDate.getFullYear()
+    const weekNumber = getISOWeek(startDate)
+    const year = getYear(startDate)
     const monthName = format(startDate, 'MMMM')
 
     const getStat = (date: Date, activityId: string) => {
@@ -90,25 +92,29 @@ export function ColdCallBoard({
         if (direction === 'today') {
             newDate = startOfWeek(new Date(), { weekStartsOn: 1 })
         } else {
+            // Shift by 7 days to get to the same day (Monday) of next/prev week
             newDate = direction === 'prev' ? subDays(startDate, 7) : addDays(startDate, 7)
         }
-        router.push(`/dashboard/cold-call?week=${format(newDate, 'yyyy-MM-dd')}`)
+        // Always normalize the navigation target to Monday
+        const normalizedDate = startOfWeek(newDate, { weekStartsOn: 1 })
+        router.push(`/dashboard/cold-call?week=${format(normalizedDate, 'yyyy-MM-dd')}`)
     }
 
-    const handleSave = async () => {
-        if (!editingCell) return
+    const handleSave = async (activityId: string, day: string, value: number, isTarget: boolean) => {
         setIsSaving(true)
         try {
-            if (editingCell.isTarget) {
-                const column = getTargetColumn(editingCell.activityId)
-                await updateWeeklyTarget(year, weekNumber, column, editingCell.value)
+            if (isTarget) {
+                const column = getTargetColumn(activityId)
+                const res = await updateWeeklyTarget(year, weekNumber, column, value)
+                if (!res.success) throw new Error(res.error)
             } else {
-                await updateDailyStat(editingCell.day, editingCell.activityId, editingCell.value)
+                const res = await updateDailyStat(day, activityId, value)
+                if (!res.success) throw new Error(res.error)
             }
             toast.success('Updated successfully')
             setEditingCell(null)
-        } catch (error) {
-            toast.error('Failed to update')
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to update')
         } finally {
             setIsSaving(false)
         }
@@ -195,7 +201,7 @@ export function ColdCallBoard({
                         </div>
                         <div>
                             <h2 className="text-lg font-bold">Weekly Performance Planner</h2>
-                            <p className="text-xs text-zinc-500">Week {weekNumber} of {year} ({format(startDate, 'dd/MM')} - {format(days[6], 'dd/MM')})</p>
+                            <p className="text-xs text-zinc-500">Week {weekNumber} of {year} ({format(days[0], 'dd/MM')} - {format(days[4], 'dd/MM')})</p>
                         </div>
                     </div>
                     
@@ -253,8 +259,7 @@ export function ColdCallBoard({
                                                 isTarget={true}
                                                 isEditing={editingCell?.activityId === activity.id && editingCell?.isTarget}
                                                 onEdit={() => setEditingCell({ activityId: activity.id, day: '', value: getTarget(activity.id), isTarget: true })}
-                                                onChange={(v) => setEditingCell(prev => prev ? { ...prev, value: v } : null)}
-                                                onSave={handleSave}
+                                                onSave={(v: number) => handleSave(activity.id, '', v, true)}
                                                 onCancel={() => setEditingCell(null)}
                                                 isLoading={isSaving}
                                             />
@@ -274,8 +279,7 @@ export function ColdCallBoard({
                                                         isToday={isSameDay(day, new Date())}
                                                         isEditing={editingCell?.activityId === activity.id && editingCell?.day === dayStr && !editingCell?.isTarget}
                                                         onEdit={() => setEditingCell({ activityId: activity.id, day: dayStr, value: val, isTarget: false })}
-                                                        onChange={(v) => setEditingCell(prev => prev ? { ...prev, value: v } : null)}
-                                                        onSave={handleSave}
+                                                        onSave={(v: number) => handleSave(activity.id, dayStr, v, false)}
                                                         onCancel={() => setEditingCell(null)}
                                                         isLoading={isSaving}
                                                     />
@@ -293,29 +297,51 @@ export function ColdCallBoard({
     )
 }
 
-function Cell({ value, isTarget, isEditing, onEdit, onChange, onSave, onCancel, isLoading, isToday }: any) {
+function Cell({ value, isTarget, isEditing, onEdit, onSave, onCancel, isLoading, isToday }: any) {
+    const [tempValue, setTempValue] = useState(value.toString())
+
+    useEffect(() => {
+        if (isEditing) {
+            setTempValue(value.toString())
+        }
+    }, [isEditing, value])
+
     if (isEditing) {
         return (
             <div className="relative z-10 animate-in zoom-in-95 duration-200">
                 <div className="flex flex-col items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-indigo-500 rounded-xl shadow-2xl min-w-[100px]">
                     <input 
-                        type="number" 
+                        type="text" 
+                        inputMode="numeric"
                         autoFocus
-                        value={value} 
-                        onChange={(e) => onChange(parseInt(e.target.value) || 0)}
-                        className="w-full p-2 text-center text-sm font-bold bg-zinc-50 dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 focus:ring-2 focus:ring-indigo-500"
+                        value={tempValue} 
+                        onChange={(e) => {
+                            // Only allow numbers
+                            const val = e.target.value.replace(/\D/g, '')
+                            setTempValue(val)
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') onSave(parseInt(tempValue) || 0)
+                            if (e.key === 'Escape') onCancel()
+                        }}
+                        className="w-full p-2 text-center text-sm font-bold bg-zinc-50 dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 focus:ring-2 focus:ring-indigo-500 outline-none"
                     />
                     <div className="flex gap-2 w-full">
                         <button 
-                            onClick={onSave} 
+                            onClick={() => onSave(parseInt(tempValue) || 0)} 
                             disabled={isLoading}
-                            className="flex-1 p-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex justify-center"
+                            className="flex-1 p-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex justify-center disabled:opacity-50"
                         >
-                            <Save className={`w-3.5 h-3.5 ${isLoading ? 'animate-pulse' : ''}`} />
+                            {isLoading ? (
+                                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                                <Save className="w-3.5 h-3.5" />
+                            )}
                         </button>
                         <button 
                             onClick={onCancel} 
-                            className="flex-1 p-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors flex justify-center"
+                            disabled={isLoading}
+                            className="flex-1 p-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors flex justify-center disabled:opacity-50"
                         >
                             <X className="w-3.5 h-3.5" />
                         </button>

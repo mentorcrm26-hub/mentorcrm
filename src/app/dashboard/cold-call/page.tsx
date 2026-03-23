@@ -12,9 +12,10 @@ export default async function ColdCallPage({
     // Determine the start of the week for display
     // Default to current week's Monday (or Sunday depending on setup, but image shows Monday)
     const now = new Date()
-    const defaultStart = startOfWeek(now, { weekStartsOn: 1 }) // 1 = Monday
-    const weekStartArg = searchParams.week || format(defaultStart, 'yyyy-MM-dd')
-    const weekStartDate = new Date(weekStartArg)
+    // Force Monday start regardless of how the date is passed
+    const defaultStart = startOfWeek(now, { weekStartsOn: 1 })
+    const baseDate = searchParams.week ? new Date(searchParams.week) : defaultStart
+    const weekStartDate = startOfWeek(baseDate, { weekStartsOn: 1 })
 
     const response = await getColdCallData(format(weekStartDate, 'yyyy-MM-dd'))
     

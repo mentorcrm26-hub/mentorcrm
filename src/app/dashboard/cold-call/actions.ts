@@ -27,10 +27,10 @@ export async function getColdCallData(weekStartDate: string) {
         .lte('date', format(end, 'yyyy-MM-dd'))
 
     // 2. Fetch Weekly Targets
-    // We use ISO week number logic or just the start date
-    // For simplicity, let's use week number from date-fns
-    const weekNumber = parseInt(format(start, 'w'))
-    const year = start.getFullYear()
+    // Using ISO weeks for consistency (standard in modern business)
+    const { getISOWeek, getYear } = require('date-fns')
+    const weekNumber = getISOWeek(start)
+    const year = getYear(start)
 
     const { data: targets } = await supabase
         .from('cold_call_targets')
@@ -66,15 +66,27 @@ export async function updateDailyStat(date: string, field: string, value: number
     const { data: profile } = await supabase.from('users').select('tenant_id').eq('id', user.id).single()
     if (!profile) return { success: false, error: 'User profile not found' }
 
+    // Fetch existing first to ensure we don't wipe other fields
+    const { data: existing } = await supabase
+        .from('cold_call_daily_stats')
+        .select('*')
+        .eq('tenant_id', profile.tenant_id)
+        .eq('date', date)
+        .single()
+
     const { error } = await supabase
         .from('cold_call_daily_stats')
         .upsert({
+            ...(existing || {}),
             tenant_id: profile.tenant_id,
             date,
             [field]: value
         }, { onConflict: 'tenant_id,date' })
 
-    if (error) return { success: false, error: error.message }
+    if (error) {
+        console.error('Error updating daily stat:', error)
+        return { success: false, error: error.message }
+    }
     
     revalidatePath('/dashboard/cold-call')
     return { success: true }
@@ -88,16 +100,28 @@ export async function updateWeeklyTarget(year: number, weekNumber: number, field
     const { data: profile } = await supabase.from('users').select('tenant_id').eq('id', user.id).single()
     if (!profile) return { success: false, error: 'User profile not found' }
 
+    const { data: existing } = await supabase
+        .from('cold_call_targets')
+        .select('*')
+        .eq('tenant_id', profile.tenant_id)
+        .eq('year', year)
+        .eq('week_number', weekNumber)
+        .single()
+
     const { error } = await supabase
         .from('cold_call_targets')
         .upsert({
+            ...(existing || {}),
             tenant_id: profile.tenant_id,
             year,
             week_number: weekNumber,
             [field]: value
         }, { onConflict: 'tenant_id,year,week_number' })
 
-    if (error) return { success: false, error: error.message }
+    if (error) {
+        console.error('Error updating weekly target:', error)
+        return { success: false, error: error.message }
+    }
 
     revalidatePath('/dashboard/cold-call')
     return { success: true }
