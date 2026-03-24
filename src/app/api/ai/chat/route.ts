@@ -68,9 +68,10 @@ export async function POST(req: Request) {
 
         // Retornar a stream usando o formato adequado para a versão atual da SDK
         return result.toUIMessageStreamResponse();
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('CRITICAL ERROR in AI Chat Route:', error);
-        return new Response(JSON.stringify({ error: error.message || 'Internal Server Error' }), {
+        const message = error instanceof Error ? error.message : 'Internal Server Error';
+        return new Response(JSON.stringify({ error: message }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
         });

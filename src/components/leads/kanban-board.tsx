@@ -11,6 +11,7 @@ import { SendMessageModal } from './send-message-modal'
 import { BroadcastModal } from './broadcast-modal'
 import { LeadDetailsModal } from './lead-details-modal'
 import { NewLeadModal } from './new-lead-modal'
+import { Lead, LeadTag } from '@/types/leads'
 
 const COLUMNS = [
     { id: 'New Lead', title: 'New Lead', color: 'bg-blue-500' },
@@ -22,21 +23,8 @@ const COLUMNS = [
     { id: 'Lost', title: 'Lost', color: 'bg-red-500' },
 ]
 
-type Lead = {
-    id: string
-    name: string
-    email: string | null
-    phone: string | null
-    notes: string | null
-    birth_date: string | null
-    meeting_at: string | null
-    status: string
-    created_at: string
-    tenant_id: string
-    tags?: any[]
-}
 
-export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agent' }: { initialLeads: any[], availableTags?: any[], userRole?: string }) {
+export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agent' }: { initialLeads: Lead[], availableTags?: LeadTag[], userRole?: string }) {
     const [leads, setLeads] = useState<Lead[]>(initialLeads)
     const [isMounted, setIsMounted] = useState(false)
     const [messageModalState, setMessageModalState] = useState<{
@@ -294,7 +282,7 @@ export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agen
                                                                     {lead.phone && <p className="text-xs text-zinc-500 mt-1">{lead.phone}</p>}
                                                                     {lead.tags && lead.tags.length > 0 && (
                                                                         <div className="flex flex-wrap gap-1.5 mt-2.5">
-                                                                            {lead.tags.map((t: any) => (
+                                                                            {lead.tags.map((t: LeadTag) => (
                                                                                 <span key={t.id} className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold shadow-sm" style={{ backgroundColor: `${t.color_hex}15`, color: t.color_hex, border: `1px solid ${t.color_hex}30` }}>
                                                                                     {t.name}
                                                                                 </span>

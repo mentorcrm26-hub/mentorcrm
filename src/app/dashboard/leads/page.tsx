@@ -45,9 +45,9 @@ export default async function LeadsPage() {
         .order('created_at', { ascending: false })
 
 
-    const leads = leadsResponse?.map(lead => ({
+    const leads = (leadsResponse || []).map(lead => ({
         ...lead,
-        tags: lead.lead_tags?.map((lt: any) => lt.tags).filter(Boolean) || []
+        tags: (lead.lead_tags as unknown as { tags: { id: string, name: string, color_hex: string } | null }[] | undefined)?.map(lt => lt.tags).filter(Boolean) || []
     })) || []
 
     return (

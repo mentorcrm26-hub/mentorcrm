@@ -5,7 +5,7 @@ import { signup } from '../actions';
 import { ArrowRight } from 'lucide-react';
 
 interface SignupFormProps {
-    t: any;
+    t: Record<string, string>;
 }
 
 export default function SignupForm({ t }: SignupFormProps) {

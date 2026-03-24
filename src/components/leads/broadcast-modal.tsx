@@ -2,16 +2,10 @@
 
 import { useState } from 'react'
 import { X, Send, MessageSquareText, Mail, Loader2, Megaphone, AlertCircle, ShieldAlert, Clock, Plus } from 'lucide-react'
+import { Lead } from '@/types/leads'
 import { manualSendMessage } from '@/app/dashboard/leads/actions'
 import { toast } from 'sonner'
 
-type Lead = {
-    id: string
-    name: string
-    email: string | null
-    phone: string | null
-    tenant_id: string
-}
 
 export function BroadcastModal({
     isOpen,

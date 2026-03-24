@@ -7,6 +7,7 @@ import { toggleLeadTag } from '@/app/dashboard/settings/tags/actions'
 import { toast } from 'sonner'
 import { X, Calendar, User, Mail, Phone, FileText, Clock, Trash2, CalendarX, Pencil, Save, Archive, Tag } from 'lucide-react'
 import { formatFlorida, parseFloridaTime } from '@/lib/timezone'
+import { Lead, LeadTag, LeadNote } from '@/types/leads'
 
 export function LeadDetailsModal({
     isOpen,
@@ -17,8 +18,8 @@ export function LeadDetailsModal({
 }: {
     isOpen: boolean
     onClose: () => void
-    lead: any | null
-    availableTags?: any[]
+    lead: Lead | null
+    availableTags?: LeadTag[]
     userRole?: string
 }) {
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -29,13 +30,13 @@ export function LeadDetailsModal({
     const [confirmCancel, setConfirmCancel] = useState(false)
     const [confirmArchive, setConfirmArchive] = useState(false)
     
-    const [notesList, setNotesList] = useState<any[]>([])
+    const [notesList, setNotesList] = useState<LeadNote[]>([])
     const [isLoadingNotes, setIsLoadingNotes] = useState(false)
     const [newNote, setNewNote] = useState("")
     const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
     const [editingContent, setEditingContent] = useState("")
     const [confirmDeleteNoteId, setConfirmDeleteNoteId] = useState<string | null>(null)
-    const [optimisticTags, setOptimisticTags] = useState<any[]>([])
+    const [optimisticTags, setOptimisticTags] = useState<LeadTag[]>([])
 
     // Helper to format phone visually
     const formatPhoneUI = (raw: string) => {
@@ -73,7 +74,8 @@ export function LeadDetailsModal({
         }
     }, [lead, isOpen])
 
-    async function handleToggleTag(tag: any) {
+    async function handleToggleTag(tag: LeadTag) {
+        if (!lead) return
         const isAttached = optimisticTags.some(t => t.id === tag.id)
         
         // Optimistic UI update
@@ -117,7 +119,7 @@ export function LeadDetailsModal({
     }
 
     async function handleAddNote() {
-        if (!newNote.trim()) return
+        if (!newNote.trim() || !lead) return
         setIsSubmitting(true)
         const res = await addLeadNote(lead.id, newNote.trim())
         if (res.success) {
@@ -159,6 +161,7 @@ export function LeadDetailsModal({
     }
 
     async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+        if (!lead) return
         event.preventDefault()
         setIsSubmitting(true)
         setError(null)
@@ -189,7 +192,7 @@ export function LeadDetailsModal({
             name,
             email,
             phone: finalPhone,
-            notes: lead.notes, 
+            notes: lead.notes || undefined, 
             birth_date: birth_date || undefined,
             meeting_at
         })
@@ -206,6 +209,7 @@ export function LeadDetailsModal({
     }
 
     async function onCancelMeeting() {
+        if (!lead) return
         setIsSubmitting(true)
         const res = await updateLead(lead.id, {
             name: lead.name,
@@ -361,7 +365,7 @@ export function LeadDetailsModal({
                                                         backgroundColor: `${tag.color_hex}15`, 
                                                         color: tag.color_hex, 
                                                         border: `1px solid ${tag.color_hex}30`,
-                                                        ...(isActive ? { '--tw-ring-color': tag.color_hex } as any : {})
+                                                        ...(isActive ? { '--tw-ring-color': tag.color_hex } as React.CSSProperties : {})
                                                     }}
                                                 >
                                                     <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tag.color_hex }} />

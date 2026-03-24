@@ -1,15 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { BirthdaysView } from './birthdays-view'
+import { Lead } from '@/types/leads'
 
-type Lead = {
-    id: string
-    name: string
-    birth_date: string | null
-    phone: string | null
-    email: string | null
-    tenant_id?: string
-}
 
 export default async function BirthdaysPage() {
     const supabase = await createClient()
@@ -23,9 +16,9 @@ export default async function BirthdaysPage() {
     }
 
     // Fetch leads that have a birth date
-    const { data: leadsWithBDay, error } = await supabase
+    const { data: leadsWithBDay } = await supabase
         .from('leads')
-        .select('id, name, birth_date, phone, email, tenant_id')
+        .select('*')
         .not('birth_date', 'is', null)
 
     const today = new Date()
@@ -34,7 +27,7 @@ export default async function BirthdaysPage() {
 
     // 1. Filter birthdays in the current month
     // 2. Sort by day of the month
-    const monthBirthdays = (leadsWithBDay || [])
+    const monthBirthdays = (leadsWithBDay || [] as Lead[])
         .filter(lead => {
             if (!lead.birth_date) return false
             // Database stores format YYYY-MM-DD
@@ -49,11 +42,11 @@ export default async function BirthdaysPage() {
                 bDay: parseInt(day, 10),
             }
         })
-        .sort((a, b) => a.bDay - b.bDay) // ascending order of days
+        .sort((a, b) => (a.bDay || 0) - (b.bDay || 0)) // ascending order of days
 
     // Upcoming logic (Next 7 days, even crossing month boundaries)
     // For simplicity, we highlight if their birthday is today, or in the next 7 days of THIS month
-    const upcomingList = monthBirthdays.filter(lead => lead.bDay >= currentDay && lead.bDay <= currentDay + 7)
+    const upcomingList = monthBirthdays.filter(lead => (lead.bDay || 0) >= currentDay && (lead.bDay || 0) <= currentDay + 7)
 
     const todayList = monthBirthdays.filter(lead => lead.bDay === currentDay)
 

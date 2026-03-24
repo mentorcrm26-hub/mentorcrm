@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { format, startOfWeek, addDays, subDays, isSameDay, getISOWeek, getYear } from 'date-fns'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { toZonedTime } from 'date-fns-tz'
+import { useRouter } from 'next/navigation'
+
+const TIMEZONE = 'America/New_York' // Orlando, Florida (EST/EDT)
 import { 
     PhoneCall, 
     Search, 
@@ -21,10 +24,33 @@ import {
 import { updateDailyStat, updateWeeklyTarget } from '@/app/dashboard/cold-call/actions'
 import { toast } from 'sonner'
 
+export type ColdCallActivity = {
+    date: string
+    calls_made: number
+    discovery_calls: number
+    invites: number
+    meetings: number
+    no_shows: number
+    sales: number
+    [key: string]: string | number | boolean | null | undefined 
+}
+
+export type ColdCallTarget = {
+    year: number
+    week_number: number
+    calls_target: number
+    discovery_target: number
+    invites_target: number
+    meetings_target: number
+    no_shows_target: number
+    sales_target: number
+    [key: string]: any
+}
+
 export type ColdCallData = {
-    dailyStats: any[]
-    targets: any | null
-    monthlyStats: any[]
+    dailyStats: ColdCallActivity[]
+    targets: ColdCallTarget | null
+    monthlyStats: ColdCallActivity[]
 }
 
 const ACTIVITIES = [
@@ -36,18 +62,25 @@ const ACTIVITIES = [
     { id: 'sales', label: 'Sales Closed', icon: DollarSign, color: 'text-orange-500', bg: 'bg-orange-500', lightBg: 'bg-orange-50 dark:bg-orange-950/30' },
 ]
 
-export function ColdCallBoard({ 
-    initialData, 
-    currentWeekStart 
-}: { 
+export function ColdCallBoard({
+    initialData,
+    currentWeekStart
+}: {
     initialData: ColdCallData
-    currentWeekStart: string 
+    currentWeekStart: string
 }) {
     const router = useRouter()
     const [_yr, _mo, _dy] = currentWeekStart.split('-').map(Number)
     const startDate = new Date(_yr, _mo - 1, _dy)
     const [editingCell, setEditingCell] = useState<{ day: string, activityId: string, value: number, isTarget: boolean } | null>(null)
     const [isSaving, setIsSaving] = useState(false)
+    // Local data state for optimistic updates (target and daily values update instantly after save)
+    const [data, setData] = useState<ColdCallData>(initialData)
+
+    // Sync local state when the server re-renders with new props (router.refresh)
+    useEffect(() => {
+        setData(initialData)
+    }, [initialData])
 
     // Helper functions
     const getDaysOfWeek = () => {
@@ -60,17 +93,17 @@ export function ColdCallBoard({
     const year = getYear(startDate)
     const monthName = format(startDate, 'MMMM')
 
-    const getStat = (date: Date, activityId: string) => {
+    const getStat = (date: Date, activityId: string): number => {
         const dateStr = format(date, 'yyyy-MM-dd')
-        return initialData.dailyStats.find(s => s.date === dateStr)?.[activityId] || 0
+        return (data.dailyStats.find(s => s.date === dateStr)?.[activityId] as number) || 0
     }
 
     const getWeeklyTotal = (activityId: string) => {
-        return initialData.dailyStats.reduce((sum, s) => sum + (s[activityId] || 0), 0)
+        return data.dailyStats.reduce((sum, s) => sum + (s[activityId] as number || 0), 0)
     }
 
     const getMonthlyTotal = (activityId: string) => {
-        return initialData.monthlyStats.reduce((sum, s) => sum + (s[activityId] || 0), 0)
+        return data.monthlyStats.reduce((sum, s) => sum + (s[activityId] as number || 0), 0)
     }
 
     const getTargetColumn = (activityId: string) => {
@@ -79,8 +112,8 @@ export function ColdCallBoard({
         return `${activityId}_target`
     }
 
-    const getTarget = (activityId: string) => {
-        return initialData.targets?.[getTargetColumn(activityId)] || 0
+    const getTarget = (activityId: string): number => {
+        return (data.targets?.[getTargetColumn(activityId)] as number) || 0
     }
 
     const aggregateMonthlyTotal = () => {
@@ -90,12 +123,10 @@ export function ColdCallBoard({
     const navigateWeek = (direction: 'prev' | 'next' | 'today') => {
         let newDate;
         if (direction === 'today') {
-            newDate = startOfWeek(new Date(), { weekStartsOn: 1 })
+            newDate = startOfWeek(toZonedTime(new Date(), TIMEZONE), { weekStartsOn: 1 })
         } else {
-            // Shift by 7 days to get to the same day (Monday) of next/prev week
             newDate = direction === 'prev' ? subDays(startDate, 7) : addDays(startDate, 7)
         }
-        // Always normalize the navigation target to Monday
         const normalizedDate = startOfWeek(newDate, { weekStartsOn: 1 })
         router.push(`/dashboard/cold-call?week=${format(normalizedDate, 'yyyy-MM-dd')}`)
     }
@@ -107,12 +138,31 @@ export function ColdCallBoard({
                 const column = getTargetColumn(activityId)
                 const res = await updateWeeklyTarget(year, weekNumber, column, value)
                 if (!res.success) throw new Error(res.error)
+                // Optimistic update: show new target value immediately
+                setData(prev => ({
+                    ...prev,
+                    targets: {
+                        ...(prev.targets ?? {}),
+                        year,
+                        week_number: weekNumber,
+                        [column]: value,
+                    } as ColdCallData['targets']
+                }))
             } else {
                 const res = await updateDailyStat(day, activityId, value)
                 if (!res.success) throw new Error(res.error)
+                // Optimistic update: show new daily value immediately
+                setData(prev => {
+                    const existing = prev.dailyStats.find(s => s.date === day)
+                    const updatedStats = existing
+                        ? prev.dailyStats.map(s => s.date === day ? { ...s, [activityId]: value } : s)
+                        : [...prev.dailyStats, { date: day, calls_made: 0, discovery_calls: 0, invites: 0, meetings: 0, no_shows: 0, sales: 0, [activityId]: value }]
+                    return { ...prev, dailyStats: updatedStats }
+                })
             }
             toast.success('Updated successfully')
             setEditingCell(null)
+            router.refresh()
         } catch (error: any) {
             toast.error(error.message || 'Failed to update')
         } finally {
@@ -230,7 +280,7 @@ export function ColdCallBoard({
                                     </div>
                                 </th>
                                 {days.map((day, idx) => (
-                                    <th key={idx} className={`px-6 py-4 text-xs font-bold uppercase tracking-wider border-b border-zinc-100 dark:border-zinc-800 text-center ${isSameDay(day, new Date()) ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-500'}`}>
+                                    <th key={idx} className={`px-6 py-4 text-xs font-bold uppercase tracking-wider border-b border-zinc-100 dark:border-zinc-800 text-center ${isSameDay(day, toZonedTime(new Date(), TIMEZONE)) ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-500'}`}>
                                         <div className="flex flex-col">
                                             <span>{format(day, 'EEEE')}</span>
                                             <span className="text-[10px] opacity-60 font-normal">{format(day, 'dd/MM')}</span>
@@ -254,10 +304,10 @@ export function ColdCallBoard({
                                     {/* TARGET CELL */}
                                     <td className="px-2 py-4">
                                         <div className="flex justify-center">
-                                            <Cell 
-                                                value={getTarget(activity.id)} 
+                                            <Cell
+                                                value={getTarget(activity.id)}
                                                 isTarget={true}
-                                                isEditing={editingCell?.activityId === activity.id && editingCell?.isTarget}
+                                                isEditing={editingCell !== null && editingCell.activityId === activity.id && editingCell.isTarget === true}
                                                 onEdit={() => setEditingCell({ activityId: activity.id, day: '', value: getTarget(activity.id), isTarget: true })}
                                                 onSave={(v: number) => handleSave(activity.id, '', v, true)}
                                                 onCancel={() => setEditingCell(null)}
@@ -273,11 +323,11 @@ export function ColdCallBoard({
                                         return (
                                             <td key={idx} className="px-2 py-4">
                                                 <div className="flex justify-center">
-                                                    <Cell 
-                                                        value={val} 
+                                                    <Cell
+                                                        value={val}
                                                         isTarget={false}
-                                                        isToday={isSameDay(day, new Date())}
-                                                        isEditing={editingCell?.activityId === activity.id && editingCell?.day === dayStr && !editingCell?.isTarget}
+                                                        isToday={isSameDay(day, toZonedTime(new Date(), TIMEZONE))}
+                                                        isEditing={editingCell !== null && editingCell.activityId === activity.id && editingCell.day === dayStr && editingCell.isTarget === false}
                                                         onEdit={() => setEditingCell({ activityId: activity.id, day: dayStr, value: val, isTarget: false })}
                                                         onSave={(v: number) => handleSave(activity.id, dayStr, v, false)}
                                                         onCancel={() => setEditingCell(null)}
@@ -297,7 +347,18 @@ export function ColdCallBoard({
     )
 }
 
-function Cell({ value, isTarget, isEditing, onEdit, onSave, onCancel, isLoading, isToday }: any) {
+interface CellProps {
+    value: number
+    isTarget: boolean
+    isEditing: boolean
+    onEdit: () => void
+    onSave: (value: number) => void
+    onCancel: () => void
+    isLoading: boolean
+    isToday?: boolean
+}
+
+function Cell({ value, isTarget, isEditing, onEdit, onSave, onCancel, isLoading, isToday }: CellProps) {
     const [tempValue, setTempValue] = useState(value.toString())
 
     useEffect(() => {

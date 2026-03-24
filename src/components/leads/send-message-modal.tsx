@@ -5,14 +5,22 @@ import { parseTemplate } from '@/lib/integrations/message-parser'
 import { manualSendMessage } from '@/app/dashboard/leads/actions'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { Lead } from '@/types/leads'
 
 // Keep synced with Kanban
-type Lead = {
+interface Template {
     id: string
     name: string
-    email: string | null
-    phone: string | null
-    tenant_id?: string
+    content: string
+    type: 'whatsapp' | 'email'
+    subject?: string
+}
+
+interface UserProfile {
+    id: string
+    name: string
+    email: string
+    [key: string]: any
 }
 
 export function SendMessageModal({
@@ -30,9 +38,9 @@ export function SendMessageModal({
     const [message, setMessage] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [isSuccess, setIsSuccess] = useState(false)
-    const [templates, setTemplates] = useState<any[]>([])
+    const [templates, setTemplates] = useState<Template[]>([])
     const [isLoadingTemplates, setIsLoadingTemplates] = useState(false)
-    const [sender, setSender] = useState<any>(null)
+    const [sender, setSender] = useState<UserProfile | null>(null)
 
     useEffect(() => {
         if (isOpen) {
@@ -132,7 +140,7 @@ export function SendMessageModal({
         }
     }
 
-    const selectTemplate = (t: any) => {
+    const selectTemplate = (t: Template) => {
         const parsed = parseTemplate(t.content, lead, sender)
         if (t.type === 'email' && t.subject) {
             const parsedSubject = parseTemplate(t.subject, lead, sender)

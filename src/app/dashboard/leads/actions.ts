@@ -5,8 +5,10 @@ import { revalidatePath } from 'next/cache'
 import { triggerAutomation, manualSendMessage as manualSendMessageInternal } from '@/lib/integrations/automation-engine'
 import { cleanPhone } from '@/lib/utils'
 import { addMinutes, subMinutes } from 'date-fns'
+import { SupabaseClient } from '@supabase/supabase-js'
+import { Lead } from '@/types/leads'
 
-async function checkSchedulingConflict(supabase: any, tenantId: string, meetingAt: string, excludeLeadId?: string) {
+async function checkSchedulingConflict(supabase: SupabaseClient, tenantId: string, meetingAt: string, excludeLeadId?: string) {
     const meetingDate = new Date(meetingAt)
     const startTime = subMinutes(meetingDate, 59).toISOString()
     const endTime = addMinutes(meetingDate, 59).toISOString()
@@ -163,7 +165,7 @@ export async function updateLead(leadId: string, data: { name: string, email?: s
     // Fetch old lead to check for changes
     const { data: oldLead } = await supabase.from('leads').select('*').eq('id', leadId).single()
 
-    const updatePayload: any = {
+    const updatePayload: Partial<Lead> & { updated_at: string, meeting_notified?: any } = {
         name: data.name,
         email: data.email || null,
         phone: data.phone ? cleanPhone(data.phone) : null,
@@ -234,7 +236,7 @@ export async function updateLead(leadId: string, data: { name: string, email?: s
 export async function updateLeadStatus(leadId: string, newStatus: string) {
     const supabase = await createClient()
 
-    let updatePayload: any = {
+    let updatePayload: Partial<Lead> & { updated_at: string, meeting_at?: string | null } = {
         status: newStatus,
         updated_at: new Date().toISOString()
     }
@@ -327,7 +329,7 @@ export async function createManyLeads(leads: { name: string, email?: string, pho
     return { success: true, count: insertedData?.length || 0 }
 }
 
-export async function manualSendMessage(messageOrTemplateId: string, lead: any): Promise<{ success: boolean, error?: any, data?: any }> {
+export async function manualSendMessage(messageOrTemplateId: string, lead: Lead & { type?: string, content?: string, subject?: string }): Promise<{ success: boolean, error?: any, data?: any }> {
     return await manualSendMessageInternal(messageOrTemplateId, lead)
 }
 

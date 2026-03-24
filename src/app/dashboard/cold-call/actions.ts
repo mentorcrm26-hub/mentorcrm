@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
-import { startOfWeek, endOfWeek, format, addDays } from 'date-fns'
+import { startOfWeek, endOfWeek, format, addDays, getISOWeek, getYear } from 'date-fns'
 
 export async function getColdCallData(weekStartDate: string) {
     const supabase = await createClient()
@@ -28,7 +28,6 @@ export async function getColdCallData(weekStartDate: string) {
 
     // 2. Fetch Weekly Targets
     // Using ISO weeks for consistency (standard in modern business)
-    const { getISOWeek, getYear } = require('date-fns')
     const weekNumber = getISOWeek(start)
     const year = getYear(start)
 

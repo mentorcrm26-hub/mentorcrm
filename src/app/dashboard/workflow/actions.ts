@@ -55,7 +55,7 @@ export async function getWorkflows() {
 export async function saveWorkflow(
   workflow: Partial<Workflow>, 
   steps: Partial<WorkflowStep>[],
-  edges: any[] = []
+  edges: { source: string, target: string, sourceHandle?: string, label?: string }[] = []
 ) {
   const supabase = await createClient();
   const tenantId = await getUserTenant();
@@ -183,7 +183,7 @@ export async function executeWorkflowStep(
   const lead = leadWorkflow.lead;
 
   // 2. Execute Action based on type
-  let actionResult: any = { success: true };
+  let actionResult: { success: boolean, error?: string } = { success: true };
 
   // Skip actions for 'gate' or 'start' types as they are just routing nodes
   if (step.type !== 'gate' && step.type !== 'start') {
@@ -246,7 +246,7 @@ export async function executeWorkflowStep(
     }
   }
 
-  const updatePayload: any = {
+  const updatePayload: { current_step_id: string | null, updated_at: string, status?: string } = {
     current_step_id: nextStepId,
     updated_at: new Date().toISOString()
   };

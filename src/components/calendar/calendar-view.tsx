@@ -4,22 +4,11 @@ import { useState, useMemo } from 'react'
 import { format, addMonths, subMonths, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, isToday, parseISO, isAfter, isBefore, startOfDay } from 'date-fns'
 import { ChevronLeft, ChevronRight, Clock, User, Gift, Info, Plus, Cloud } from 'lucide-react'
 import { getFloridaDate, formatFlorida } from '@/lib/timezone'
+import { Lead } from '@/types/leads'
 import { LeadDetailsModal } from '@/components/leads/lead-details-modal'
 import { NewLeadModal } from '@/components/leads/new-lead-modal'
 import { type ExternalCalendarEvent } from '@/lib/integrations/calendar/sync-engine'
 
-interface Lead {
-    id: string
-    name: string
-    email: string | null
-    phone: string | null
-    notes: string | null
-    birth_date: string | null
-    meeting_at: string | null
-    status: string
-    apple_event_id?: string | null
-    google_event_id?: string | null
-}
 
 interface ExternalEvent {
     id: string

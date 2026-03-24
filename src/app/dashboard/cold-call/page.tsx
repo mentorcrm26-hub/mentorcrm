@@ -1,27 +1,40 @@
 import { startOfWeek, format } from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
 import { getColdCallData } from './actions'
-import { ColdCallBoard } from '@/components/dashboard/cold-call-board'
+import { ColdCallBoard, ColdCallData } from '@/components/dashboard/cold-call-board'
 
 export const dynamic = 'force-dynamic'
+
+const TIMEZONE = 'America/New_York' // Orlando, Florida (EST/EDT)
 
 export default async function ColdCallPage({
     searchParams
 }: {
-    searchParams: { week?: string }
+    searchParams: Promise<{ week?: string }>
 }) {
-    // Determine the start of the week for display
-    // Default to current week's Monday (or Sunday depending on setup, but image shows Monday)
-    const now = new Date()
-    // Force Monday start regardless of how the date is passed
-    const defaultStart = startOfWeek(now, { weekStartsOn: 1 })
-    const baseDate = searchParams.week ? new Date(searchParams.week) : defaultStart
+    const params = await searchParams
+    // Use Orlando/Eastern timezone so the week boundary is correct
+    // regardless of where the server is running (Vercel uses UTC)
+    const nowInEastern = toZonedTime(new Date(), TIMEZONE)
+    const defaultStart = startOfWeek(nowInEastern, { weekStartsOn: 1 })
+
+    let baseDate: Date
+    if (params.week) {
+        // Parse yyyy-MM-dd as a local date to avoid UTC shift issues
+        const [y, m, d] = params.week.split('-').map(Number)
+        baseDate = new Date(y, m - 1, d)
+    } else {
+        baseDate = defaultStart
+    }
     const weekStartDate = startOfWeek(baseDate, { weekStartsOn: 1 })
 
     const response = await getColdCallData(format(weekStartDate, 'yyyy-MM-dd'))
     
-    if (!response.success) {
-        return <div className="p-8 text-red-500 font-bold">Error: {response.error}</div>
+    if (!response.success || !response.data) {
+        return <div className="p-8 text-red-500 font-bold">Error: {response.error || 'Failed to load data'}</div>
     }
+
+    const data = response.data as ColdCallData
 
     return (
         <div className="flex flex-col gap-8 h-full">
@@ -34,7 +47,7 @@ export default async function ColdCallPage({
 
             <main className="flex-1 pb-10">
                 <ColdCallBoard 
-                    initialData={response.data} 
+                    initialData={data} 
                     currentWeekStart={format(weekStartDate, 'yyyy-MM-dd')}
                 />
             </main>

@@ -2,28 +2,24 @@
 
 import { useState } from 'react'
 import { Gift, CalendarDays, ArrowRight, MessageSquareText, Mail } from 'lucide-react'
+import { Lead } from '@/types/leads'
 import { SendMessageModal } from '@/components/leads/send-message-modal'
 
-type Lead = {
-    id: string
-    name: string
-    birth_date: string | null
-    phone: string | null
-    email: string | null
+type LeadWithBirthday = Lead & {
     bMonth?: number
     bDay?: number
 }
 
 interface BirthdaysViewProps {
-    monthBirthdays: Lead[]
-    upcomingList: Lead[]
+    monthBirthdays: LeadWithBirthday[]
+    upcomingList: LeadWithBirthday[]
     currentDay: number
 }
 
 export function BirthdaysView({ monthBirthdays, upcomingList, currentDay }: BirthdaysViewProps) {
     const [messageModalState, setMessageModalState] = useState<{
         isOpen: boolean,
-        lead: Lead | null,
+        lead: LeadWithBirthday | null,
         type: 'whatsapp' | 'sms' | 'email' | null
     }>({ isOpen: false, lead: null, type: null })
 
@@ -186,7 +182,6 @@ export function BirthdaysView({ monthBirthdays, upcomingList, currentDay }: Birt
             <SendMessageModal
                 isOpen={messageModalState.isOpen}
                 onClose={() => setMessageModalState(prev => ({ ...prev, isOpen: false }))}
-                // @ts-ignore
                 lead={messageModalState.lead}
                 type={messageModalState.type}
             />
