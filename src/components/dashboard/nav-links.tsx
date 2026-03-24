@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, TrendingUp, MessageSquare, Workflow, Calendar as CalendarIcon, Gift, Variable, Zap, Settings, Archive, PhoneCall, PenLine } from 'lucide-react'
+import { LayoutDashboard, Users, TrendingUp, MessageSquare, Calendar as CalendarIcon, Gift, Variable, Zap, Settings, Archive, PhoneCall, PenLine } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 

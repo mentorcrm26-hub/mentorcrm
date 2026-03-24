@@ -191,7 +191,7 @@ export function TeamClient({ initialMembers: members }: { initialMembers: Member
                         </div>
                         <div className="p-6">
                             <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4 font-medium">
-                                Review the message before sending credentials to the agent's phone over your connected integration.
+                                Review the message before sending credentials to the agent&apos;s phone over your connected integration.
                             </p>
                             <textarea
                                 value={credMessage}

@@ -41,7 +41,7 @@ export default async function ColdCallPage({
             <header className="flex items-center justify-between pb-6 border-b border-zinc-200 dark:border-white/10 shrink-0">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Cold Call & Performance</h1>
-                    <p className="text-zinc-500 dark:text-zinc-400 mt-1">Track your team's weekly targets and daily outreach metrics.</p>
+                    <p className="text-zinc-500 dark:text-zinc-400 mt-1">Track your team&apos;s weekly targets and daily outreach metrics.</p>
                 </div>
             </header>
 

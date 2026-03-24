@@ -46,7 +46,7 @@ export function BirthdaysView({ monthBirthdays, upcomingList, currentDay }: Birt
                         </div>
                         <div>
                             <h2 className="text-base font-semibold text-indigo-900 dark:text-indigo-200">Upcoming in the next 7 days</h2>
-                            <p className="text-sm text-indigo-700 dark:text-indigo-400">Don't miss the chance to send a message!</p>
+                            <p className="text-sm text-indigo-700 dark:text-indigo-400">Don&apos;t miss the chance to send a message!</p>
                         </div>
                     </div>
 
