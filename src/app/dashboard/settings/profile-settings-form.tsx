@@ -157,7 +157,7 @@ export function ProfileSettingsForm({ initialData }: { initialData: ProfileData 
                     <button 
                         type="submit"
                         disabled={isLoading}
-                        className="inline-flex items-center justify-center rounded-lg text-sm font-bold transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500 bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 h-9 px-6 py-2 shrink-0 active:scale-95 disabled:opacity-50"
+                        className="inline-flex items-center justify-center rounded-lg text-sm font-bold transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500 bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 h-9 px-6 py-2 shrink-0 active:scale-95 disabled:opacity-50 cursor-pointer"
                     >
                         {isLoading ? 'Saving...' : (
                             <span className="flex items-center gap-2">

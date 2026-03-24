@@ -159,14 +159,14 @@ export function TeamClient({ initialMembers: members }: { initialMembers: Member
                             <button 
                                 onClick={() => setDeletingMemberId(null)} 
                                 disabled={isSubmitting}
-                                className="px-4 py-2.5 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors text-zinc-700 dark:text-zinc-300"
+                                className="px-4 py-2.5 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors text-zinc-700 dark:text-zinc-300 cursor-pointer"
                             >
                                 Cancel
                             </button>
                             <button 
                                 onClick={() => performDelete(deletingMemberId)}
                                 disabled={isSubmitting}
-                                className="px-5 py-2.5 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-bold rounded-xl text-sm flex items-center gap-2 transition-all shadow-md active:scale-95"
+                                className="px-5 py-2.5 bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-bold rounded-xl text-sm flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
                             >
                                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin"/> : 'Yes, remove'}
                             </button>
@@ -184,7 +184,7 @@ export function TeamClient({ initialMembers: members }: { initialMembers: Member
                             </h3>
                             <button
                                 onClick={() => setSendingCredsMember(null)}
-                                className="p-2 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 rounded-full transition-colors"
+                                className="p-2 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 rounded-full transition-colors cursor-pointer"
                             >
                                 <X className="w-4 h-4" />
                             </button>
@@ -199,7 +199,7 @@ export function TeamClient({ initialMembers: members }: { initialMembers: Member
                                 className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-sm mb-6 h-48 resize-none focus:ring-2 focus:ring-emerald-500/50 transition-all font-medium text-zinc-700 dark:text-zinc-300"
                             />
                             <div className="flex justify-end gap-3">
-                                <button disabled={isSendingCreds} onClick={() => setSendingCredsMember(null)} className="px-4 py-2.5 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors text-zinc-700 dark:text-zinc-300">
+                                <button disabled={isSendingCreds} onClick={() => setSendingCredsMember(null)} className="px-4 py-2.5 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors text-zinc-700 dark:text-zinc-300 cursor-pointer">
                                     Cancel
                                 </button>
                                 <button 
@@ -215,7 +215,7 @@ export function TeamClient({ initialMembers: members }: { initialMembers: Member
                                             toast.error(res.error || 'Failed to send message via Evolution')
                                         }
                                     }} 
-                                    className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold rounded-xl text-sm flex items-center gap-2 transition-all shadow-md active:scale-95"
+                                    className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold rounded-xl text-sm flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
                                 >
                                     {isSendingCreds ? <Loader2 className="w-4 h-4 animate-spin"/> : 'Send Integration Message'}
                                 </button>
@@ -238,7 +238,7 @@ export function TeamClient({ initialMembers: members }: { initialMembers: Member
                     {capacityCount < MAX_CAPACITY && (
                         <button
                             onClick={showForm ? clearForm : openCreate}
-                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${showForm ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
+                            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${showForm ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
                         >
                             {!showForm && <Plus className="w-4 h-4" />}
                             {showForm ? 'Cancel' : 'Add Member'}
@@ -305,7 +305,7 @@ export function TeamClient({ initialMembers: members }: { initialMembers: Member
                         </div>
 
                         <div className="pt-4 flex justify-end">
-                            <button disabled={isSubmitting} type="submit" className="flex items-center justify-center gap-2 px-6 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-sm font-bold rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity">
+                            <button disabled={isSubmitting} type="submit" className="flex items-center justify-center gap-2 px-6 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-sm font-bold rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity cursor-pointer">
                                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : (editingMember ? 'Save Changes' : 'Create and Send Access')}
                             </button>
                         </div>
@@ -351,7 +351,7 @@ export function TeamClient({ initialMembers: members }: { initialMembers: Member
                                                 setCredMessage(`Olá ${member.full_name || ''}! Seu acesso ao Mentor CRM foi criado.\n\nLogin: ${member.email}\nSenha temporária: [DIGITE A SENHA AQUI]\n\nAcesse no link: https://www.mentorcrm.site/login`);
                                             }}
                                             title="Enviar credenciais via integração"
-                                            className="p-1.5 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 rounded-lg transition-colors shrink-0"
+                                            className="p-1.5 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/40 rounded-lg transition-colors shrink-0 cursor-pointer"
                                         >
                                             <WhatsappIcon className="w-4 h-4" />
                                         </button>
@@ -368,14 +368,14 @@ export function TeamClient({ initialMembers: members }: { initialMembers: Member
                                     setPhoneStr(formatPhoneUI(member.phone || ""));
                                     window.scrollTo({ top: 0, behavior: 'smooth' });
                                 }}
-                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors"
+                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors cursor-pointer"
                             >
                                 <Edit2 className="w-3.5 h-3.5" /> Edit
                             </button>
                             {idx !== 0 && (
                                 <button 
                                     onClick={() => handleDeleteAction(member.id)}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-md transition-colors"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-md transition-colors cursor-pointer"
                                 >
                                     <Trash2 className="w-3.5 h-3.5" /> Remove
                                 </button>
@@ -387,7 +387,7 @@ export function TeamClient({ initialMembers: members }: { initialMembers: Member
                 {capacityCount < MAX_CAPACITY && !showForm && (
                     <button 
                         onClick={openCreate}
-                        className="p-5 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl flex flex-col items-center justify-center text-zinc-500 hover:text-indigo-600 hover:border-indigo-300 dark:hover:border-indigo-700 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-all min-h-[180px]"
+                        className="p-5 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl flex flex-col items-center justify-center text-zinc-500 hover:text-indigo-600 hover:border-indigo-300 dark:hover:border-indigo-700 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-all min-h-[180px] cursor-pointer"
                     >
                         <Plus className="w-8 h-8 mb-2" />
                         <span className="text-sm font-bold">Add Member</span>

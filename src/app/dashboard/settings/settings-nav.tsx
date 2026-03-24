@@ -58,7 +58,7 @@ export function SettingsNav() {
                         key={item.href}
                         href={item.href}
                         className={`
-                            flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors shrink-0
+                            flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors shrink-0 cursor-pointer
                             ${isActive
                                 ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white'
                                 : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-white'

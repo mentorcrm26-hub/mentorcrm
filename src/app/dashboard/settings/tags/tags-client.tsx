@@ -81,7 +81,7 @@ export function TagsClient({ initialTags }: { initialTags: any[] }) {
                                     key={c.value}
                                     type="button"
                                     onClick={() => setColor(c.value)}
-                                    className={`w-8 h-8 rounded-full shadow-sm transition-all focus:outline-none ${color === c.value ? 'ring-2 ring-offset-2 ring-zinc-400 dark:ring-zinc-600 scale-110' : 'hover:scale-105 opacity-80'}`}
+                                    className={`w-8 h-8 rounded-full shadow-sm transition-all focus:outline-none cursor-pointer ${color === c.value ? 'ring-2 ring-offset-2 ring-zinc-400 dark:ring-zinc-600 scale-110' : 'hover:scale-105 opacity-80'}`}
                                     style={{ backgroundColor: c.value }}
                                     title={c.label}
                                 />
@@ -92,7 +92,7 @@ export function TagsClient({ initialTags }: { initialTags: any[] }) {
                     <button
                         type="submit"
                         disabled={isSubmitting || !name.trim()}
-                        className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                        className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
                         {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                         Create Tag
@@ -139,7 +139,7 @@ export function TagsClient({ initialTags }: { initialTags: any[] }) {
                             <button
                                 onClick={() => handleDelete(tag.id)}
                                 disabled={deletingId === tag.id}
-                                className="absolute top-2 right-2 p-1.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-400 hover:text-red-500 hover:border-red-200 dark:hover:border-red-900/50 shadow-sm opacity-0 group-hover:opacity-100 transition-all focus:opacity-100 z-20"
+                                className="absolute top-2 right-2 p-1.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-400 hover:text-red-500 hover:border-red-200 dark:hover:border-red-900/50 shadow-sm opacity-0 group-hover:opacity-100 transition-all focus:opacity-100 z-20 cursor-pointer"
                                 title="Delete Tag"
                             >
                                 {deletingId === tag.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}

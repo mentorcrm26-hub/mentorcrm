@@ -146,7 +146,7 @@ export function CalendarIntegrationsClient({
                             {isGoogleConfigured ? (
                                 <button
                                     onClick={() => setConfirmDisconnect({ isOpen: true, provider: 'google' })}
-                                    className="w-full inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-red-200 dark:border-red-900/50 bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 h-10 px-4 py-2 gap-2"
+                                    className="w-full inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-red-200 dark:border-red-900/50 bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 h-10 px-4 py-2 gap-2 cursor-pointer"
                                 >
                                     <Trash2 className="w-4 h-4" /> Desconectar
                                 </button>
@@ -171,7 +171,7 @@ export function CalendarIntegrationsClient({
                         <div className="flex items-center gap-2">
                             <button 
                                 onClick={() => setIsAppleTipsOpen(true)}
-                                className="w-7 h-7 flex items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800 hover:scale-110 transition-all"
+                                className="w-7 h-7 flex items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800 hover:scale-110 transition-all cursor-pointer"
                                 title="Sync Tips"
                             >
                                 <Info className="w-4 h-4" />
@@ -199,7 +199,7 @@ export function CalendarIntegrationsClient({
                             {isAppleConfigured ? (
                                 <button
                                     onClick={() => setConfirmDisconnect({ isOpen: true, provider: 'apple' })}
-                                    className="w-full inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-red-200 dark:border-red-900/50 bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 h-10 px-4 py-2 gap-2"
+                                    className="w-full inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-red-200 dark:border-red-900/50 bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 h-10 px-4 py-2 gap-2 cursor-pointer"
                                 >
                                     <Trash2 className="w-4 h-4" /> Desconectar
                                 </button>
@@ -230,7 +230,7 @@ export function CalendarIntegrationsClient({
                                     <p className="text-xs text-zinc-500 font-medium">Step {appleStep} of 2</p>
                                 </div>
                             </div>
-                            <button onClick={() => setIsAppleModalOpen(false)} className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <button onClick={() => setIsAppleModalOpen(false)} className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
@@ -270,7 +270,7 @@ export function CalendarIntegrationsClient({
                                     </div>
                                     <button
                                         onClick={() => setAppleStep(2)}
-                                        className="w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl py-3 text-sm font-bold flex items-center justify-center gap-2 hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors"
+                                        className="w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl py-3 text-sm font-bold flex items-center justify-center gap-2 hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors cursor-pointer"
                                     >
                                         I have my password <ArrowRight className="w-4 h-4" />
                                     </button>
@@ -307,14 +307,14 @@ export function CalendarIntegrationsClient({
                                         <button
                                             type="button"
                                             onClick={() => setAppleStep(1)}
-                                            className="px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-sm font-medium transition-colors"
+                                            className="px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-sm font-medium transition-colors cursor-pointer"
                                         >
                                             Back
                                         </button>
                                         <button
                                             type="submit"
                                             disabled={isLoading || !appleEmail || !applePassword}
-                                            className="flex-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl py-2.5 text-sm font-bold flex items-center justify-center gap-2 hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50"
+                                            className="flex-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl py-2.5 text-sm font-bold flex items-center justify-center gap-2 hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors disabled:opacity-50 cursor-pointer"
                                         >
                                             <Lock className="w-4 h-4" /> {isLoading ? 'Connecting...' : 'Secure Connect'}
                                         </button>
@@ -373,7 +373,7 @@ export function CalendarIntegrationsClient({
 
                             <button
                                 onClick={() => setIsAppleTipsOpen(false)}
-                                className="w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl py-3 text-sm font-bold hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors mt-2"
+                                className="w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl py-3 text-sm font-bold hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors mt-2 cursor-pointer"
                             >
                                 Got it, thanks!
                             </button>
@@ -397,14 +397,14 @@ export function CalendarIntegrationsClient({
                         <div className="flex gap-3 pt-2">
                             <button
                                 onClick={() => setConfirmDisconnect({ isOpen: false, provider: null })}
-                                className="flex-1 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-sm font-bold transition-colors"
+                                className="flex-1 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-sm font-bold transition-colors cursor-pointer"
                             >
                                 Cancelar
                             </button>
                             <button
                                 onClick={handleDisconnect}
                                 disabled={isLoading}
-                                className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-xl py-2.5 text-sm font-bold transition-colors disabled:opacity-50"
+                                className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-xl py-2.5 text-sm font-bold transition-colors disabled:opacity-50 cursor-pointer"
                             >
                                 {isLoading ? 'Removing...' : 'Disconnect'}
                             </button>

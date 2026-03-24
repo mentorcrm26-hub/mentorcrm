@@ -120,7 +120,7 @@ export function WhatsAppIntegrationCard({
                             <button
                                 onClick={() => setIsConfirmDisconnectOpen(true)}
                                 disabled={isLoading}
-                                className="w-full inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-red-200 dark:border-red-900/50 bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 h-10 px-4 py-2 gap-2"
+                                className="w-full inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-red-200 dark:border-red-900/50 bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 h-10 px-4 py-2 gap-2 cursor-pointer"
                             >
                                 <Trash2 className="w-4 h-4" /> Disconnect
                             </button>
@@ -129,7 +129,7 @@ export function WhatsAppIntegrationCard({
                                 <button
                                     onClick={() => handleGetQR(integration.credentials.instanceName)}
                                     disabled={isLoading}
-                                    className="flex-1 inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 h-10 px-4 py-2 gap-2"
+                                    className="flex-1 inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 h-10 px-4 py-2 gap-2 cursor-pointer"
                                 >
                                     <QrCode className="w-4 h-4" /> Scan QR
                                 </button>
@@ -137,7 +137,7 @@ export function WhatsAppIntegrationCard({
                                     onClick={() => setIsConfirmDisconnectOpen(true)}
                                     disabled={isLoading}
                                     title="Cancel Connection Setup"
-                                    className="inline-flex shrink-0 items-center justify-center rounded-lg text-sm font-medium transition-colors border border-red-200 dark:border-red-900/50 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 h-10 w-10 px-0 py-0 flex-col"
+                                    className="inline-flex shrink-0 items-center justify-center rounded-lg text-sm font-medium transition-colors border border-red-200 dark:border-red-900/50 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 h-10 w-10 px-0 py-0 flex-col cursor-pointer"
                                 >
                                     <Trash2 className="w-[18px] h-[18px]" />
                                 </button>
@@ -145,7 +145,7 @@ export function WhatsAppIntegrationCard({
                         ) : (
                             <button
                                 onClick={() => setIsCreateModalOpen(true)}
-                                className="w-full inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 h-10 px-4 py-2 gap-2"
+                                className="w-full inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 h-10 px-4 py-2 gap-2 cursor-pointer"
                             >
                                 <Plus className="w-4 h-4" /> Connect WhatsApp
                             </button>
@@ -160,7 +160,7 @@ export function WhatsAppIntegrationCard({
                     <div className="bg-white dark:bg-zinc-950 w-full max-w-md rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
                         <div className="flex justify-between items-center p-5 border-b border-zinc-100 dark:border-zinc-800">
                             <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">New WhatsApp Connection</h2>
-                            <button onClick={() => setIsCreateModalOpen(false)} className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300">
+                            <button onClick={() => setIsCreateModalOpen(false)} className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 cursor-pointer">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
@@ -189,7 +189,7 @@ export function WhatsAppIntegrationCard({
                             <button 
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg py-2.5 text-sm font-bold transition-colors disabled:opacity-50"
+                                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg py-2.5 text-sm font-bold transition-colors disabled:opacity-50 cursor-pointer"
                             >
                                 {isLoading ? 'Connecting...' : 'Connect Now'}
                             </button>
@@ -204,7 +204,7 @@ export function WhatsAppIntegrationCard({
                     <div className="bg-white dark:bg-zinc-950 w-full max-w-sm rounded-[2rem] shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden p-8 text-center space-y-6">
                         <div className="flex justify-between items-center mb-2">
                             <h2 className="text-xl font-bold">Connect your Phone</h2>
-                            <button onClick={() => { setIsQRModalOpen(false); setPollingActive(false); }} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                            <button onClick={() => { setIsQRModalOpen(false); setPollingActive(false); }} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
@@ -254,14 +254,14 @@ export function WhatsAppIntegrationCard({
                             <button 
                                 onClick={handleDisconnect}
                                 disabled={isLoading}
-                                className="w-full bg-red-600 hover:bg-red-700 text-white rounded-2xl py-3.5 text-sm font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
+                                className="w-full bg-red-600 hover:bg-red-700 text-white rounded-2xl py-3.5 text-sm font-bold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                             >
                                 {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Yes, Disconnect'}
                             </button>
                             <button 
                                 onClick={() => setIsConfirmDisconnectOpen(false)}
                                 disabled={isLoading}
-                                className="w-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold py-3 transition-colors"
+                                className="w-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold py-3 transition-colors cursor-pointer"
                             >
                                 Cancel
                             </button>
