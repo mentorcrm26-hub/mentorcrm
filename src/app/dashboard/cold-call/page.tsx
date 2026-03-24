@@ -28,7 +28,7 @@ export default async function ColdCallPage({
     }
     const weekStartDate = startOfWeek(baseDate, { weekStartsOn: 1 })
 
-    const response = await getColdCallData(format(weekStartDate, 'yyyy-MM-dd'))
+    const response = await getColdCallData(format(weekStartDate, 'yyyy-MM-dd')) as any
     
     if (!response.success || !response.data) {
         return <div className="p-8 text-red-500 font-bold">Error: {response.error || 'Failed to load data'}</div>

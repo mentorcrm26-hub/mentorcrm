@@ -67,7 +67,7 @@ export function LeadPlaybookWidget({ leadId }: Props) {
     setIsProcessing(true);
     setChoices(null);
 
-    const res = await executeWorkflowStep(activeWorkflow.id, activeWorkflow.current_step_id, choiceHandle);
+    const res = await executeWorkflowStep(activeWorkflow.id, activeWorkflow.current_step_id, choiceHandle) as any;
     
     if (res.success) {
       if (res.needsChoice) {
