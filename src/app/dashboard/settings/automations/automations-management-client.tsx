@@ -105,7 +105,7 @@ export function AutomationsManagementClient({
                         setCurrent({ name: '', trigger_event: 'new_lead', is_active: true, trigger_condition: { status: 'Agendado' } });
                         setIsEditing(true);
                     }}
-                    className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+                    className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20 cursor-pointer"
                 >
                     <Plus className="w-4 h-4" /> Create Automation
                 </button>
@@ -233,7 +233,7 @@ export function AutomationsManagementClient({
                                 </h3>
                                 <p className="text-sm text-zinc-500">Configure how this automation should behave.</p>
                             </div>
-                            <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-xl transition-all">
+                            <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-xl transition-all cursor-pointer">
                                 <X className="w-5 h-5 text-zinc-400" />
                             </button>
                         </div>
@@ -306,14 +306,14 @@ export function AutomationsManagementClient({
                                 <button
                                     type="submit"
                                     disabled={isLoading}
-                                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                                 >
                                     <Save className="w-4 h-4" /> {isLoading ? 'Saving...' : 'Save Automation'}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setIsEditing(false)}
-                                    className="px-6 py-3 text-zinc-500 font-bold hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200 transition-all text-sm"
+                                    className="px-6 py-3 text-zinc-500 font-bold hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200 transition-all text-sm cursor-pointer"
                                 >
                                     Cancel
                                 </button>
@@ -402,8 +402,7 @@ export function AutomationsManagementClient({
                                     }}
                                     className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-xs focus:ring-2 focus:ring-indigo-500/50 text-zinc-900 dark:text-white pr-10"
                                 />
-                                {settings.profile_phone && (
-                                    <button
+                                {settings.profile_phone && (                                    <button
                                         type="button"
                                         onClick={() => {
                                             let val = settings.profile_phone.replace(/\D/g, '');
@@ -414,15 +413,16 @@ export function AutomationsManagementClient({
                                             if (val.length > 6) masked = `(${val.slice(0, 3)}) ${val.slice(3, 6)}-${val.slice(6)}`;
                                             else if (val.length > 3) masked = `(${val.slice(0, 3)}) ${val.slice(3)}`;
                                             else if (val.length > 0) masked = `(${val}`;
-
+ 
                                             setSettings({ ...settings, professional_phone: masked });
                                             toast.success('Phone synced from profile');
                                         }}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-indigo-500 transition-colors"
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-indigo-500 transition-colors cursor-pointer"
                                         title="Sync with Personal Profile"
                                     >
                                         <RefreshCw className="w-3.5 h-3.5" />
                                     </button>
+
                                 )}
                             </div>
                         </div>
@@ -464,7 +464,7 @@ export function AutomationsManagementClient({
                     <button 
                         onClick={handleSaveSettings}
                         disabled={isLoading}
-                        className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-6 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all active:scale-95 flex items-center gap-2 disabled:opacity-50"
+                        className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-6 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all active:scale-95 flex items-center gap-2 disabled:opacity-50 cursor-pointer"
                     >
                         <Save className="w-4 h-4" /> {isLoading ? 'Saving...' : 'Save Reminders Configuration'}
                     </button>

@@ -197,7 +197,7 @@ export function NewLeadModal({
             {showTrigger && (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors shadow-sm flex items-center gap-2"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors shadow-sm flex items-center gap-2 cursor-pointer"
                 >
                     <Plus className="w-4 h-4" />
                     New Lead
@@ -226,7 +226,7 @@ export function NewLeadModal({
                             </div>
                             <button
                                 onClick={() => { setIsOpen(false); resetForm(); }}
-                                className="p-2 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 rounded-full transition-colors"
+                                className="p-2 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 rounded-full transition-colors cursor-pointer"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -279,7 +279,7 @@ export function NewLeadModal({
                                                         key={lead.id}
                                                         type="button"
                                                         onClick={() => handleSelectLead(lead)}
-                                                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-left transition-colors border-b last:border-0 border-zinc-100 dark:border-zinc-800"
+                                                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-left transition-colors border-b last:border-0 border-zinc-100 dark:border-zinc-800 cursor-pointer"
                                                     >
                                                         <div className="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
                                                             <User className="w-4 h-4" />
@@ -361,7 +361,7 @@ export function NewLeadModal({
                             <button
                                 type="button"
                                 onClick={() => { setIsOpen(false); resetForm(); }}
-                                className="px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors"
+                                className="px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                             >
                                 Cancel
                             </button>
@@ -369,7 +369,7 @@ export function NewLeadModal({
                                 type="submit"
                                 form="schedule-form"
                                 disabled={isSubmitting}
-                                className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md flex items-center gap-2 active:scale-95"
+                                className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md flex items-center gap-2 active:scale-95 cursor-pointer"
                             >
                                 {isSubmitting ? 'Saving...' : (mode === 'appointment' ? 'Confirm & Schedule' : (selectedLeadId ? 'Save Changes' : 'Add Lead'))}
                             </button>

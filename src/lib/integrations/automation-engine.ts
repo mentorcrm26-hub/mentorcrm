@@ -39,8 +39,9 @@ export async function triggerAutomation(event: 'new_lead' | 'status_change' | 'm
       if (automation.template.type === 'email' && lead.email) {
         await sendEmail({
           to: lead.email,
-          subject: automation.template.subject || 'Notificação Mentor CRM',
-          html: parsedContent,
+          subject: automation.template.subject || 'Message from Mentor CRM',
+          html: parsedContent.replace(/\n/g, '<br>'),
+          replyTo: defaultSender?.email || undefined,
         });
       } else if (automation.template.type === 'whatsapp' && lead.phone) {
         await sendWhatsAppMessage({
@@ -91,11 +92,12 @@ export async function manualSendMessage(messageOrTemplateId: string, lead: any) 
   }
 
   if (type === 'email' && lead.email) {
-    console.log(`[Email] Enviando para: ${lead.email}`);
+    console.log(`[Email] Sending to: ${lead.email}`);
     return await sendEmail({
       to: lead.email,
-      subject: subject || 'Notificação Mentor CRM',
+      subject: subject || 'Message from Mentor CRM',
       html: content.replace(/\n/g, '<br>'),
+      replyTo: sender?.email || undefined,
     });
   } else if (type === 'whatsapp' && lead.phone) {
     return await sendWhatsAppMessage({

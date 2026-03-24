@@ -391,7 +391,7 @@ function Cell({ value, isTarget, isEditing, onEdit, onSave, onCancel, isLoading,
                         <button 
                             onClick={() => onSave(parseInt(tempValue) || 0)} 
                             disabled={isLoading}
-                            className="flex-1 p-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex justify-center disabled:opacity-50"
+                            className="flex-1 p-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex justify-center disabled:opacity-50 cursor-pointer"
                         >
                             {isLoading ? (
                                 <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -402,7 +402,7 @@ function Cell({ value, isTarget, isEditing, onEdit, onSave, onCancel, isLoading,
                         <button 
                             onClick={onCancel} 
                             disabled={isLoading}
-                            className="flex-1 p-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors flex justify-center disabled:opacity-50"
+                            className="flex-1 p-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors flex justify-center disabled:opacity-50 cursor-pointer"
                         >
                             <X className="w-3.5 h-3.5" />
                         </button>
@@ -416,7 +416,7 @@ function Cell({ value, isTarget, isEditing, onEdit, onSave, onCancel, isLoading,
         <button 
             onClick={onEdit}
             className={`
-                group/cell min-w-[60px] p-2.5 rounded-xl transition-all border
+                group/cell min-w-[60px] p-2.5 rounded-xl transition-all border cursor-pointer
                 ${isTarget ? 'bg-indigo-50/30 border-indigo-100 dark:bg-indigo-900/10 dark:border-indigo-900/30' : 'bg-transparent border-transparent'}
                 ${isToday ? 'ring-2 ring-indigo-500/20' : ''}
                 hover:border-indigo-500/30 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20 hover:scale-105

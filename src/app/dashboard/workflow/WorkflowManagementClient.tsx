@@ -263,8 +263,8 @@ export function WorkflowManagementClient({ initialWorkflows, templates, users, v
     const edgesToSave = edges.map(edge => ({
       source: edge.source,
       target: edge.target,
-      sourceHandle: edge.sourceHandle,
-      label: edge.label
+      sourceHandle: edge.sourceHandle || undefined,
+      label: edge.label as string | undefined
     }));
 
     const res = await saveWorkflow(currentWorkflow, stepsToSave as any, edgesToSave);
@@ -309,7 +309,7 @@ export function WorkflowManagementClient({ initialWorkflows, templates, users, v
               </div>
               <button
                 onClick={startNewWorkflow}
-                className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-3xl font-black uppercase tracking-widest text-xs flex items-center gap-3 transition-all active:scale-95 shadow-2xl shadow-indigo-500/40"
+                className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-3xl font-black uppercase tracking-widest text-xs flex items-center gap-3 transition-all active:scale-95 shadow-2xl shadow-indigo-500/40 cursor-pointer"
               >
                 <Plus className="w-5 h-5" />
                 Build System
@@ -324,7 +324,7 @@ export function WorkflowManagementClient({ initialWorkflows, templates, users, v
                       <Play className="w-6 h-6 fill-current" />
                     </div>
                     <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all -translate-y-2 group-hover:translate-y-0">
-                      <button onClick={() => editWorkflow(wf)} className="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-xl hover:bg-indigo-500 hover:text-white"><Settings2 className="w-4 h-4" /></button>
+                      <button onClick={() => editWorkflow(wf)} className="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-xl hover:bg-indigo-500 hover:text-white cursor-pointer"><Settings2 className="w-4 h-4" /></button>
                     </div>
                   </div>
                   <h3 className="text-2xl font-black tracking-tight mb-2 uppercase">{wf.name}</h3>
@@ -344,7 +344,7 @@ export function WorkflowManagementClient({ initialWorkflows, templates, users, v
               <div className="flex items-center gap-6">
                 <button 
                   onClick={() => setIsEditing(false)} 
-                  className="p-3 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-2xl transition-colors border border-zinc-200 dark:border-zinc-800"
+                  className="p-3 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-2xl transition-colors border border-zinc-200 dark:border-zinc-800 cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </button>
@@ -363,7 +363,7 @@ export function WorkflowManagementClient({ initialWorkflows, templates, users, v
                 <button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] flex items-center gap-3 shadow-xl shadow-emerald-500/20 disabled:opacity-50 transition-all active:scale-95"
+                  className="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] flex items-center gap-3 shadow-xl shadow-emerald-500/20 disabled:opacity-50 transition-all active:scale-95 cursor-pointer"
                 >
                   <Save className="w-4 h-4" />
                   Deploy Playbook
@@ -396,15 +396,15 @@ export function WorkflowManagementClient({ initialWorkflows, templates, users, v
                 
                 <Panel position={'bottom-left' as PanelPosition} className="flex flex-col gap-3 mb-4 ml-4">
                   <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl p-3 rounded-[32px] border border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-row gap-3">
-                    <button onClick={() => addActionNode('message')} className="group relative flex items-center justify-center w-12 h-12 bg-indigo-600 text-white rounded-2xl hover:scale-110 transition-all shadow-lg">
+                    <button onClick={() => addActionNode('message')} className="group relative flex items-center justify-center w-12 h-12 bg-indigo-600 text-white rounded-2xl hover:scale-110 transition-all shadow-lg cursor-pointer">
                       <MessageSquare className="w-5 h-5" />
                       <span className="absolute bottom-16 px-4 py-2 bg-zinc-900 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase font-black tracking-widest whitespace-nowrap">Add Message</span>
                     </button>
-                    <button onClick={() => addActionNode('gate')} className="group relative flex items-center justify-center w-12 h-12 bg-amber-500 text-white rounded-2xl hover:scale-110 transition-all shadow-lg">
+                    <button onClick={() => addActionNode('gate')} className="group relative flex items-center justify-center w-12 h-12 bg-amber-500 text-white rounded-2xl hover:scale-110 transition-all shadow-lg cursor-pointer">
                       <GitBranch className="w-5 h-5" />
                       <span className="absolute bottom-16 px-4 py-2 bg-zinc-900 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase font-black tracking-widest whitespace-nowrap">Add Condition</span>
                     </button>
-                    <button onClick={() => addActionNode('forward')} className="group relative flex items-center justify-center w-12 h-12 bg-emerald-600 text-white rounded-2xl hover:scale-110 transition-all shadow-lg">
+                    <button onClick={() => addActionNode('forward')} className="group relative flex items-center justify-center w-12 h-12 bg-emerald-600 text-white rounded-2xl hover:scale-110 transition-all shadow-lg cursor-pointer">
                       <UserPlus className="w-5 h-5" />
                       <span className="absolute bottom-16 px-4 py-2 bg-zinc-900 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase font-black tracking-widest whitespace-nowrap">Add Forward</span>
                     </button>
@@ -422,7 +422,7 @@ export function WorkflowManagementClient({ initialWorkflows, templates, users, v
                 >
                   <div className="flex justify-between items-center mb-8">
                     <h3 className="text-xl font-black tracking-tighter uppercase whitespace-pre-wrap">Card Settings</h3>
-                    <button onClick={() => setSelectedNode(null)} className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full"><X className="w-5 h-5" /></button>
+                    <button onClick={() => setSelectedNode(null)} className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full cursor-pointer"><X className="w-5 h-5" /></button>
                   </div>
 
                   <div className="space-y-6 flex-1 overflow-y-auto pr-2 custom-scrollbar">
@@ -467,7 +467,7 @@ export function WorkflowManagementClient({ initialWorkflows, templates, users, v
                   <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
                     <button 
                       onClick={deleteSelectedNode}
-                      className="w-full p-4 text-red-500 font-bold uppercase tracking-widest text-[10px] hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition-colors flex items-center justify-center gap-2"
+                      className="w-full p-4 text-red-500 font-bold uppercase tracking-widest text-[10px] hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" />
                       Destroy Card

@@ -305,7 +305,7 @@ export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agen
                                                                 <div className="flex items-center gap-1.5">
                                                                     <button
                                                                         onClick={() => setMessageModalState({ isOpen: true, lead, type: 'whatsapp' })}
-                                                                        className="flex p-1.5 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-900/30 text-emerald-600 transition-colors"
+                                                                         className="flex p-1.5 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-900/30 text-emerald-600 transition-colors cursor-pointer"
                                                                         title="Send WhatsApp"
                                                                     >
                                                                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -316,14 +316,14 @@ export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agen
                                                                     </button>
                                                                     <button
                                                                         onClick={() => setMessageModalState({ isOpen: true, lead, type: 'sms' })}
-                                                                        className="flex p-1.5 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-500 transition-colors"
+                                                                         className="flex p-1.5 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-500 transition-colors cursor-pointer"
                                                                         title="Send SMS"
                                                                     >
                                                                         <MessageSquareText className="w-4 h-4" />
                                                                     </button>
                                                                     <button
                                                                         onClick={() => setMessageModalState({ isOpen: true, lead, type: 'email' })}
-                                                                        className="flex p-1.5 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-indigo-500 transition-colors"
+                                                                         className="flex p-1.5 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-indigo-500 transition-colors cursor-pointer"
                                                                         title="Send Email"
                                                                     >
                                                                         <Mail className="w-4 h-4" />
@@ -387,7 +387,7 @@ export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agen
                                     <AlertTriangle className="w-6 h-6 shrink-0" />
                                     <h3 className="font-semibold text-lg text-zinc-900 dark:text-zinc-100">Cancel Meeting?</h3>
                                 </div>
-                                <button onClick={() => setDowngradeConf(null)} className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300">
+                                <button onClick={() => setDowngradeConf(null)} className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-pointer">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
@@ -405,20 +405,22 @@ export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agen
                             </div>
                             <div className="p-4 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex gap-3 justify-end">
                                 <button
-                                    onClick={() => setDowngradeConf(null)}
-                                    className="px-4 py-2 font-medium text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                                >
-                                    Keep in Scheduled
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        commitMove(downgradeConf.lead.id, downgradeConf.newStatus, true)
-                                        setDowngradeConf(null)
-                                    }}
-                                    className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-sm font-bold flex items-center gap-2 active:scale-95 transition-all shadow-sm"
-                                >
-                                    <CalendarX className="w-4 h-4" /> Move & Cancel Meeting
-                                </button>
+                                        onClick={() => setDowngradeConf(null)}
+                                        className="flex-1 px-4 py-2.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded-xl font-bold text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all cursor-pointer"
+                                    >
+                                        Go Back
+                                    </button>
+                                    <button
+                                        onClick={async () => {
+                                            if (!downgradeConf) return
+                                            await updateLeadStatus(downgradeConf.lead.id, downgradeConf.newStatus)
+                                            setDowngradeConf(null)
+                                        }}
+                                        className="flex-1 px-4 py-2.5 bg-rose-600 text-white rounded-xl font-bold text-sm hover:bg-rose-700 transition-all shadow-lg shadow-rose-500/20 active:scale-95 cursor-pointer"
+                                    >
+                                        Confirm Cancellation
+                                    </button>
+
                             </div>
                         </div>
                     </div>
