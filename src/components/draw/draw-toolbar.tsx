@@ -4,9 +4,10 @@ import { useState, useRef, MutableRefObject } from 'react'
 import {
     Pen, Square, Circle, Minus, Type, Eraser,
     Trash2, Undo2, Redo2, MousePointer2,
+    PersonStanding, User
 } from 'lucide-react'
 
-type Tool = 'select' | 'pen' | 'rect' | 'circle' | 'line' | 'text' | 'eraser'
+type Tool = 'select' | 'pen' | 'rect' | 'circle' | 'line' | 'text' | 'eraser' | 'man' | 'woman'
 
 const COLORS = [
     '#1e1e1e', '#ef4444', '#f97316', '#eab308',
@@ -209,6 +210,46 @@ export function DrawToolbar({ fabricRef, onUndo, onRedo, canUndo, canRedo }: Dra
             }
             canvas.on('mouse:down', onMouseDown)
         }
+
+        if (tool === 'man' || tool === 'woman') {
+            canvas.isDrawingMode = false
+            canvas.selection = false
+            canvas.defaultCursor = 'crosshair'
+
+            const onMouseDown = async (opt: any) => {
+                const p = canvas.getScenePoint(opt.e)
+                const fab2 = await import('fabric')
+                
+                let pathData = '';
+                if (tool === 'man') {
+                    // Stick Man Path
+                    pathData = "M 10 5 m -5 0 a 5 5 0 1 0 10 0 a 5 5 0 1 0 -10 0 M 10 10 L 10 22 M 5 14 L 15 14 M 10 22 L 6 32 M 10 22 L 14 32";
+                } else {
+                    // Stick Woman Path (with dress/triangle body)
+                    pathData = "M 10 5 m -5 0 a 5 5 0 1 0 10 0 a 5 5 0 1 0 -10 0 M 10 10 L 5 25 L 15 25 Z M 5 14 L 15 14 M 8 25 L 7 32 M 12 25 L 13 32";
+                }
+
+                const figure = new fab2.Path(pathData, {
+                    left: p.x,
+                    top: p.y,
+                    fill: 'transparent',
+                    stroke: strokeColor,
+                    strokeWidth: 2,
+                    scaleX: 1.5,
+                    scaleY: 1.5,
+                    originX: 'center',
+                    originY: 'center'
+                });
+
+                canvas.add(figure);
+                canvas.setActiveObject(figure);
+                canvas.off('mouse:down', onMouseDown)
+                canvas.selection = true
+                canvas.defaultCursor = 'default'
+                applyTool('select')
+            }
+            canvas.on('mouse:down', onMouseDown)
+        }
     }
 
     const updateBrushColor = (color: string) => {
@@ -257,6 +298,8 @@ export function DrawToolbar({ fabricRef, onUndo, onRedo, canUndo, canRedo }: Dra
         { id: 'circle', icon: <Circle className="w-4 h-4" />, label: 'Circle' },
         { id: 'line', icon: <Minus className="w-4 h-4" />, label: 'Line' },
         { id: 'text', icon: <Type className="w-4 h-4" />, label: 'Text' },
+        { id: 'man', icon: <PersonStanding className="w-4 h-4" />, label: 'Stick Man' },
+        { id: 'woman', icon: <User className="w-4 h-4" />, label: 'Stick Woman' },
     ]
 
     return (
@@ -297,28 +340,24 @@ export function DrawToolbar({ fabricRef, onUndo, onRedo, canUndo, canRedo }: Dra
 
             <div className="my-1 border-t border-zinc-100 dark:border-zinc-800" />
 
-            {/* Stroke color palette */}
-            <div className="flex flex-col gap-0.5">
-                {COLORS.map(c => (
-                    <button
-                        key={c}
-                        onClick={() => updateBrushColor(c)}
-                        title={c}
-                        className={`w-full aspect-square rounded-lg border-2 transition-all ${strokeColor === c ? 'border-indigo-500 scale-110' : 'border-transparent hover:scale-105'}`}
-                        style={{ backgroundColor: c === 'transparent' ? undefined : c, outline: c === '#ffffff' ? '1px solid #e5e7eb' : undefined }}
-                    />
-                ))}
-                {/* Custom color picker */}
+            {/* Stroke color picker optimized */}
+            <div className="flex flex-col gap-1 items-center pb-1">
+                <span className="text-[8px] font-bold text-zinc-400 uppercase">Color</span>
                 <button
                     onClick={() => colorInputRef.current?.click()}
-                    title="Custom color"
-                    className="w-full aspect-square rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 text-[8px] font-bold text-zinc-400 hover:border-indigo-400 transition-colors"
-                    style={{ background: `conic-gradient(red, yellow, lime, cyan, blue, magenta, red)` }}
-                />
+                    title="Change stroke color"
+                    className="w-10 h-10 rounded-xl border-2 border-zinc-200 dark:border-zinc-800 transition-all hover:scale-110 shadow-sm relative overflow-hidden group"
+                    style={{ backgroundColor: strokeColor === 'transparent' ? 'transparent' : strokeColor }}
+                >
+                    <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {/* Small rainbow indicator at corner */}
+                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-gradient-to-br from-red-500 via-green-500 to-blue-500 rounded-tl-sm" />
+                </button>
                 <input
                     ref={colorInputRef}
                     type="color"
                     className="sr-only"
+                    value={strokeColor === 'transparent' ? '#000000' : strokeColor}
                     onChange={e => updateBrushColor(e.target.value)}
                 />
             </div>

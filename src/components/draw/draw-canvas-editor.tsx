@@ -157,8 +157,18 @@ export function DrawCanvasEditor({ drawing }: DrawCanvasEditorProps) {
             await updateDrawingCanvasData(drawing.id, canvasData)
 
             // 2. Generate and upload PNG thumbnail
-            const png = fabricRef.current.toDataURL({ format: 'png', quality: 0.8, multiplier: 0.5 })
-            await uploadDrawingThumbnail(drawing.id, png)
+            const png = fabricRef.current.toDataURL({ 
+                format: 'png', 
+                quality: 1, 
+                multiplier: 1,
+                backgroundColor: 'white' 
+            })
+            const uploadRes = await uploadDrawingThumbnail(drawing.id, png)
+            
+            if (!uploadRes.success) {
+                console.error('Thumbnail upload failed:', uploadRes.error)
+                toast.error(`Warning: Preview could not be generated: ${uploadRes.error}`)
+            }
 
             // 3. Save title if changed
             if (title !== drawing.title) {
@@ -166,6 +176,7 @@ export function DrawCanvasEditor({ drawing }: DrawCanvasEditorProps) {
             }
 
             toast.success('Drawing saved!')
+            router.refresh()
         } catch {
             toast.error('Failed to save drawing')
         } finally {

@@ -48,13 +48,31 @@ do $$ begin
   using (tenant_id = public.current_user_tenant_id());
 exception when duplicate_object then null; end $$;
 
--- 5. Storage bucket setup (run this manually in Supabase Dashboard → Storage)
--- Create a bucket named "drawings" with:
---   Public: true (for thumbnail preview URLs)
---   File size limit: 5MB
---   Allowed MIME types: image/png, image/jpeg
---
--- Or via Supabase SQL editor:
--- insert into storage.buckets (id, name, public)
--- values ('drawings', 'drawings', true)
--- on conflict (id) do nothing;
+-- 5. Storage bucket setup
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('drawings', 'drawings', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- 6. Storage RLS Policies (Fix for: new row violates row-level security policy)
+-- Users must be authenticated to upload
+CREATE POLICY "Authenticated users can upload drawings"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'drawings');
+
+-- Users can select/read thumbnails (public access)
+CREATE POLICY "Public preview access for drawings"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'drawings');
+
+-- Users can update/delete their own drawing files
+CREATE POLICY "Authenticated users can update their drawings"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (bucket_id = 'drawings');
+
+CREATE POLICY "Authenticated users can delete their drawings"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'drawings');

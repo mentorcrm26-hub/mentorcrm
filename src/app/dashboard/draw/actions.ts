@@ -232,32 +232,54 @@ export async function duplicateDrawing(id: string) {
 // ─── Upload thumbnail to Supabase Storage ────────────────────────────────────
 
 export async function uploadDrawingThumbnail(id: string, base64Png: string) {
-    const { supabase, tenantId } = await getTenantId()
-    if (!tenantId) return { success: false, error: 'Unauthorized', url: null }
+    try {
+        const { supabase, tenantId } = await getTenantId()
+        if (!tenantId) {
+            console.error('[Upload] No tenantId found')
+            return { success: false, error: 'Unauthorized', url: null }
+        }
 
-    // Convert base64 to binary
-    const base64Data = base64Png.replace(/^data:image\/png;base64,/, '')
-    const buffer = Buffer.from(base64Data, 'base64')
+        // Convert base64 to binary
+        const base64Data = base64Png.replace(/^data:image\/png;base64,/, '')
+        const buffer = Buffer.from(base64Data, 'base64')
 
-    const path = `${tenantId}/${id}/thumbnail.png`
+        // Use a unique filename to bypass ANY caching (Storage/CDN/Browser)
+        const timestamp = Date.now()
+        const path = `${tenantId}/${id}/thumbnail_${timestamp}.png`
 
-    const { error: uploadError } = await supabase.storage
-        .from('drawings')
-        .upload(path, buffer, {
-            contentType: 'image/png',
-            upsert: true,
-        })
+        // 1. Upload to bucket
+        const { error: uploadError } = await supabase.storage
+            .from('drawings')
+            .upload(path, buffer, {
+                contentType: 'image/png',
+                cacheControl: '3600',
+                upsert: true,
+            })
 
-    if (uploadError) return { success: false, error: uploadError.message, url: null }
+        if (uploadError) {
+            console.error(`[Upload] Storage error for ${path}:`, uploadError.message)
+            return { success: false, error: uploadError.message, url: null }
+        }
 
-    const { data: { publicUrl } } = supabase.storage
-        .from('drawings')
-        .getPublicUrl(path)
+        // 2. Get public URL
+        const { data: { publicUrl } } = supabase.storage
+            .from('drawings')
+            .getPublicUrl(path)
 
-    // Save URL to the drawing record
-    await updateDrawingThumbnail(id, publicUrl)
+        console.log(`[Upload] Successful for ${id}. URL: ${publicUrl}`)
 
-    return { success: true, url: publicUrl }
+        // 3. Update DB record (also revalidates path)
+        const dbRes = await updateDrawingThumbnail(id, publicUrl)
+        if (!dbRes.success) {
+            console.error(`[Upload] DB Update error:`, dbRes.error)
+            return { success: false, error: dbRes.error, url: null }
+        }
+
+        return { success: true, url: publicUrl }
+    } catch (e: any) {
+        console.error('[Upload] Critical error:', e.message)
+        return { success: false, error: e.message, url: null }
+    }
 }
 
 // ─── Lead Linking ─────────────────────────────────────────────────────────────

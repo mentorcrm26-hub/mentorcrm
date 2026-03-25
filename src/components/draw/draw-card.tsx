@@ -16,6 +16,7 @@ export function DrawCard({ drawing, onDelete, onDuplicate }: DrawCardProps) {
     const router = useRouter()
     const [menuOpen, setMenuOpen] = useState(false)
     const [confirmDelete, setConfirmDelete] = useState(false)
+    const [imageError, setImageError] = useState(false)
 
     const openEditor = () => router.push(`/dashboard/draw/${drawing.id}`)
 
@@ -36,10 +37,12 @@ export function DrawCard({ drawing, onDelete, onDuplicate }: DrawCardProps) {
                 onClick={openEditor}
                 className="relative h-44 bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center overflow-hidden"
             >
-                {drawing.thumbnail_url ? (
+                {drawing.thumbnail_url && !imageError ? (
                     <img
-                        src={drawing.thumbnail_url}
+                        src={`${drawing.thumbnail_url}${drawing.thumbnail_url.includes('?') ? '&' : '?'}v=${new Date(drawing.updated_at).getTime()}`}
                         alt={drawing.title}
+                        onLoad={() => setImageError(false)}
+                        onError={() => setImageError(true)}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                 ) : (
