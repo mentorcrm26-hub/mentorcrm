@@ -77,8 +77,21 @@ export function ColdCallBoard({
     const startDate = new Date(_yr, _mo - 1, _dy)
     const [editingCell, setEditingCell] = useState<{ day: string, activityId: string, value: number, isTarget: boolean } | null>(null)
     const [isSaving, setIsSaving] = useState(false)
-    // Local data state for optimistic updates (target and daily values update instantly after save)
+    const [showSalesRow, setShowSalesRow] = useState(true)
+    // Local data state for optimistic updates
     const [data, setData] = useState<ColdCallData>(initialData)
+
+    // Load preference from localStorage
+    useEffect(() => {
+        const saved = localStorage.getItem('cold-call-show-sales')
+        if (saved !== null) setShowSalesRow(saved === 'true')
+    }, [])
+
+    const toggleSalesRow = () => {
+        const newVal = !showSalesRow
+        setShowSalesRow(newVal)
+        localStorage.setItem('cold-call-show-sales', String(newVal))
+    }
 
     // Sync local state when the server re-renders with new props (router.refresh)
     useEffect(() => {
@@ -193,7 +206,7 @@ export function ColdCallBoard({
             ['Activity', 'Target', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Total', '%']
         ]
 
-        const body = ACTIVITIES.map(act => {
+        const body = ACTIVITIES.filter(a => a.id !== 'sales' || showSalesRow).map(act => {
             const actuals = days.map(d => getStat(d, act.id))
             const total = getWeeklyTotal(act.id)
             const target = getTarget(act.id)
@@ -251,7 +264,7 @@ export function ColdCallBoard({
             <div className="space-y-4">
                 <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest px-1">Week {weekNumber} Metrics</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    {ACTIVITIES.map((activity) => {
+                    {ACTIVITIES.filter(a => a.id !== 'sales' || showSalesRow).map((activity) => {
                         const actual = getWeeklyTotal(activity.id)
                         const target = getTarget(activity.id)
                         const percentage = target > 0 ? Math.round((actual / target) * 100) : 0
@@ -288,7 +301,7 @@ export function ColdCallBoard({
             <div className="space-y-4">
                 <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest px-1">{monthName} Metrics</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
-                    {ACTIVITIES.map((activity) => (
+                    {ACTIVITIES.filter(a => a.id !== 'sales' || showSalesRow).map((activity) => (
                         <div key={`month-${activity.id}`} className="bg-white dark:bg-zinc-900/50 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-all hover:bg-zinc-50 dark:hover:bg-zinc-900">
                              <div className="flex flex-col items-center text-center gap-2">
                                 <div className={`p-2 rounded-xl ${activity.lightBg} ${activity.color}`}>
@@ -330,6 +343,16 @@ export function ColdCallBoard({
                     </div>
                     
                     <div className="flex items-center gap-2">
+                        <label className="flex items-center gap-2 px-3 py-1.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl cursor-pointer hover:bg-zinc-100 transition-colors mr-2">
+                            <input 
+                                type="checkbox" 
+                                checked={showSalesRow}
+                                onChange={toggleSalesRow}
+                                className="w-3.5 h-3.5 accent-indigo-600 rounded"
+                            />
+                            <span className="text-[10px] font-bold text-zinc-500 uppercase">Show Sales Row</span>
+                        </label>
+
                         <button 
                             onClick={handleDownloadPDF}
                             className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-indigo-400 hover:text-indigo-600 transition-all cursor-pointer"
@@ -374,7 +397,7 @@ export function ColdCallBoard({
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                            {ACTIVITIES.map((activity) => (
+                            {ACTIVITIES.filter(a => a.id !== 'sales' || showSalesRow).map((activity) => (
                                 <tr key={activity.id} className="group hover:bg-zinc-50/50 dark:hover:bg-zinc-900/30 transition-colors">
                                     <td className="px-6 py-5">
                                         <div className="flex items-center gap-3">
