@@ -73,41 +73,46 @@ export default async function SignupPage({
     const t = translations[lang];
 
     return (
-        <div className="bg-white/70 backdrop-blur-[40px] border border-white/60 p-10 md:p-14 rounded-[3.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.06)] relative overflow-hidden group">
+        <div className="glass-strong p-10 md:p-14 rounded-[3.5rem] shadow-[0_32px_100px_rgba(0,12,36,0.5)] relative overflow-hidden group border-white/10 animate-fade-up">
             <div className="mb-10 text-center flex flex-col items-center">
-                <Link href="/" className="mb-8 hover:opacity-80 transition-opacity">
-                    <img src="/logo.png" alt="Mentor CRM" className="h-20 w-auto mix-blend-multiply" />
+                <Link href="/" className="flex items-center gap-2 group mb-12">
+                    <div className="h-10 w-10 bg-brand-500 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <span className="text-white font-display font-black text-xl">M</span>
+                    </div>
+                    <span className="font-display font-bold text-xl tracking-tight text-white">
+                        MENTOR<span className="text-brand-300">CRM</span>
+                    </span>
                 </Link>
-                <h1 className="text-sm font-black tracking-[0.4em] uppercase text-zinc-900 mb-3">{t.title}</h1>
-                <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400">{t.subtitle}</p>
+                <h1 className="text-xs font-display font-black tracking-[0.4em] uppercase text-brand-300 mb-3">{t.title}</h1>
+                <p className="text-[10px] font-display font-black uppercase tracking-[0.4em] text-white/30">{t.subtitle}</p>
             </div>
 
             {p?.error && (
-                <div className="mb-8 flex items-center gap-4 bg-red-500/5 border border-red-500/10 p-5 rounded-2xl">
+                <div className="mb-8 flex items-center gap-4 bg-red-500/10 border border-red-500/20 p-5 rounded-2xl">
                     <AlertCircle className="h-4 w-4 text-red-500 shrink-0" />
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-red-500 leading-relaxed">{p.msg || t.defaultError}</p>
+                    <p className="text-[10px] font-display font-black uppercase tracking-widest text-red-500 leading-relaxed">{p.msg || t.defaultError}</p>
                 </div>
             )}
 
             <SignupForm t={t} />
 
-            <div className="mt-10 pt-10 border-t border-zinc-100 text-center">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-6">{t.alreadyHaveAccount}</p>
+            <div className="mt-10 pt-10 border-t border-white/5 text-center">
+                <p className="text-[10px] font-display font-black uppercase tracking-widest text-white/20 mb-6">{t.alreadyHaveAccount}</p>
                 <div className="flex flex-col items-center gap-4">
-                    <Link href="/login" className="group text-[10px] font-black uppercase tracking-widest text-zinc-900 flex items-center justify-center gap-2">
+                    <Link href="/login" className="group text-[10px] font-display font-black uppercase tracking-widest text-brand-300 flex items-center justify-center gap-2 hover:text-white transition-colors">
                         {t.loginLink}
-                        <ArrowRight className="h-3 w-3 transform group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
             </div>
 
-            <div className="mt-12 text-center flex items-center justify-center gap-6 opacity-30">
-                <span className="text-[9px] font-black text-zinc-400 tracking-[0.3em] uppercase flex items-center gap-2">
-                    <CheckCircle2 className="h-3 w-3 text-emerald-500" /> ELITE ENCRYPTION
+            <div className="mt-12 text-center flex items-center justify-center gap-6 opacity-40">
+                <span className="text-[9px] font-display font-black text-white/40 tracking-[0.3em] uppercase flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-brand-400" /> ELITE ENCRYPTION
                 </span>
-                <div className="h-1 w-1 bg-zinc-200 rounded-full"></div>
-                <span className="text-[9px] font-black text-zinc-400 tracking-[0.3em] uppercase flex items-center gap-2">
-                    <CheckCircle2 className="h-3 w-3 text-emerald-500" /> SECURE ACCESS
+                <div className="h-1 w-1 bg-white/10 rounded-full"></div>
+                <span className="text-[9px] font-display font-black text-white/40 tracking-[0.3em] uppercase flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-brand-400" /> SECURE ACCESS
                 </span>
             </div>
         </div>

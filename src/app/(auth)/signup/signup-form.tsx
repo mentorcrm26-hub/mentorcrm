@@ -35,9 +35,9 @@ export default function SignupForm({ t }: SignupFormProps) {
         <form className="flex flex-col gap-6" action={signup}>
             {/* Name */}
             <div className="flex flex-col gap-3">
-                <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase" htmlFor="full_name">{t.fullName}</label>
+                <label className="text-[10px] font-display font-black tracking-[0.2em] text-white/30 uppercase" htmlFor="full_name">{t.fullName}</label>
                 <input
-                    className="border border-zinc-200 bg-zinc-50 px-6 py-4 text-sm text-zinc-900 placeholder-zinc-300 rounded-2xl focus:outline-none focus:border-mentor-blue/30 focus:bg-white transition-all shadow-sm"
+                    className="bg-white/5 border border-white/10 px-6 py-4 text-sm text-white placeholder-white/20 rounded-2xl focus:outline-none focus:border-brand-500/50 focus:bg-white/10 transition-all shadow-inner"
                     id="full_name"
                     name="full_name"
                     type="text"
@@ -48,9 +48,9 @@ export default function SignupForm({ t }: SignupFormProps) {
 
             {/* Email */}
             <div className="flex flex-col gap-3">
-                <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase" htmlFor="email">{t.emailLabel}</label>
+                <label className="text-[10px] font-display font-black tracking-[0.2em] text-white/30 uppercase" htmlFor="email">{t.emailLabel}</label>
                 <input
-                    className="border border-zinc-200 bg-zinc-50 px-6 py-4 text-sm text-zinc-900 placeholder-zinc-300 rounded-2xl focus:outline-none focus:border-mentor-blue/30 focus:bg-white transition-all shadow-sm"
+                    className="bg-white/5 border border-white/10 px-6 py-4 text-sm text-white placeholder-white/20 rounded-2xl focus:outline-none focus:border-brand-500/50 focus:bg-white/10 transition-all shadow-inner"
                     id="email"
                     name="email"
                     type="email"
@@ -61,9 +61,9 @@ export default function SignupForm({ t }: SignupFormProps) {
 
             {/* Phone (Masked) */}
             <div className="flex flex-col gap-3">
-                <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase" htmlFor="phone">{t.phoneLabel || 'TELEFONE (US)'}</label>
+                <label className="text-[10px] font-display font-black tracking-[0.2em] text-white/30 uppercase" htmlFor="phone">{t.phoneLabel || 'TELEFONE (US)'}</label>
                 <input
-                    className="border border-zinc-200 bg-zinc-50 px-6 py-4 text-sm text-zinc-900 placeholder-zinc-300 rounded-2xl focus:outline-none focus:border-mentor-blue/30 focus:bg-white transition-all shadow-sm"
+                    className="bg-white/5 border border-white/10 px-6 py-4 text-sm text-white placeholder-white/20 rounded-2xl focus:outline-none focus:border-brand-500/50 focus:bg-white/10 transition-all shadow-inner"
                     id="phone"
                     name="phone"
                     type="text"
@@ -76,9 +76,9 @@ export default function SignupForm({ t }: SignupFormProps) {
 
             {/* Password */}
             <div className="flex flex-col gap-3">
-                <label className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase" htmlFor="password">{t.passwordLabel}</label>
+                <label className="text-[10px] font-display font-black tracking-[0.2em] text-white/30 uppercase" htmlFor="password">{t.passwordLabel}</label>
                 <input
-                    className="border border-zinc-200 bg-zinc-50 px-6 py-4 text-sm text-zinc-900 placeholder-zinc-300 rounded-2xl focus:outline-none focus:border-mentor-blue/30 focus:bg-white transition-all shadow-sm"
+                    className="bg-white/5 border border-white/10 px-6 py-4 text-sm text-white placeholder-white/20 rounded-2xl focus:outline-none focus:border-brand-500/50 focus:bg-white/10 transition-all shadow-inner"
                     id="password"
                     name="password"
                     type="password"
@@ -89,9 +89,9 @@ export default function SignupForm({ t }: SignupFormProps) {
             </div>
 
             {/* Terms */}
-            <div className="flex items-start gap-4 p-5 bg-zinc-50 border border-zinc-100 rounded-2xl mt-2 shadow-inner">
-                <input type="checkbox" id="terms" name="terms" className="mt-1 h-4 w-4 accent-mentor-blue rounded border-zinc-200" required />
-                <label htmlFor="terms" className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.05em] leading-relaxed">
+            <div className="flex items-start gap-4 p-5 bg-white/5 border border-white/10 rounded-2xl mt-2 shadow-inner">
+                <input type="checkbox" id="terms" name="terms" className="mt-1 h-4 w-4 accent-brand-500 rounded border-white/10 bg-transparent" required />
+                <label htmlFor="terms" className="text-[10px] text-white/30 font-display font-black uppercase tracking-[0.05em] leading-relaxed">
                     {t.terms}
                 </label>
             </div>
@@ -100,7 +100,7 @@ export default function SignupForm({ t }: SignupFormProps) {
             <div className="pt-4">
                 <button
                     type="submit"
-                    className="group relative flex w-full h-16 items-center justify-center bg-zinc-900 px-8 text-[11px] font-black uppercase tracking-[0.4em] text-white transition-all hover:bg-mentor-blue rounded-2xl shadow-xl shadow-zinc-200"
+                    className="group relative flex w-full h-16 items-center justify-center bg-brand-500 hover:bg-brand-600 px-8 text-xs font-display font-black uppercase tracking-[0.4em] text-white transition-all rounded-2xl shadow-[0_10px_30px_rgba(0,112,204,0.4)] active:scale-95"
                 >
                     {t.submit}
                 </button>

@@ -5,8 +5,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-sora);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -40,10 +40,28 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
-  --color-mentor-blue: #0055A4;
-  --color-mentor-teal: #009FA1;
-  --color-mentor-green: #37B34A;
-  --color-mentor-yellow: #FEDD00;
+  --color-brand-900: #001A3D;
+  --color-brand-800: #002B63;
+  --color-brand-700: #003D8C;
+  --color-brand-600: #0055A4;
+  --color-brand-500: #0070CC;
+  --color-brand-400: #3399E6;
+  --color-brand-300: #66B8FF;
+
+  --animate-mesh-shift: mesh-shift 18s ease-in-out infinite alternate;
+  --animate-fade-up: fade-up 0.8s ease-out forwards;
+  
+  @keyframes mesh-shift {
+    0%   { background-position: 0% 0%, 100% 0%, 50% 100%, 40% 60%, 0% 0%; }
+    33%  { background-position: 5% 10%, 90% 15%, 55% 95%, 45% 55%, 0% 0%; }
+    66%  { background-position: -5% 5%, 95% -5%, 45% 105%, 35% 65%, 0% 0%; }
+    100% { background-position: 10% -5%, 85% 20%, 60% 90%, 50% 50%, 0% 0%; }
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 }
 
 :root {
@@ -124,3 +142,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+
+  .text-display {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+}

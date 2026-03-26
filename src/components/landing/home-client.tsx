@@ -24,7 +24,8 @@ import {
   Plus,
   Check,
   ChevronDown,
-  Shield
+  Shield,
+  Play
 } from 'lucide-react';
 import { LocaleSelector } from './locale-selector';
 
@@ -431,8 +432,10 @@ const translations = {
 export function HomeClient() {
   const [activeTab, setActiveTab] = useState(0);
   const [lang, setLang] = useState<keyof typeof translations>('en');
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
+    // Language detection
     const locale = document.cookie
       .split('; ')
       .find((row) => row.startsWith('NEXT_LOCALE='))
@@ -440,31 +443,62 @@ export function HomeClient() {
     if (locale && translations[locale]) {
       setLang(locale);
     }
+
+    // Scroll listener
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const t = translations[lang];
 
   return (
-    <div className="relative min-h-screen w-full bg-zinc-50 text-zinc-900 overflow-x-hidden selection:bg-mentor-blue/10 selection:text-mentor-blue font-sans">
+    <div className="relative min-h-screen w-full bg-brand-900 text-white/90 overflow-x-hidden selection:bg-brand-500/30 selection:text-brand-300 font-sans">
 
-      {/* Background Subtle Atmosphere */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-5%] w-[60%] h-[60%] bg-blue-500/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[10%] right-[-10%] w-[50%] h-[50%] bg-mentor-teal/5 rounded-full blur-[150px]" />
+      {/* ─── ANIMATED BACKGROUND ─── */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[linear-gradient(160deg,#000C24_0%,#001333_40%,#001F50_70%,#000C24_100%)]" />
+        <div className="absolute inset-0 opacity-45 animate-mesh-shift" 
+          style={{
+            background: `
+              radial-gradient(ellipse 80% 60% at 15% 40%, rgba(0,85,164,0.45) 0%, transparent 65%),
+              radial-gradient(ellipse 60% 50% at 85% 15%, rgba(0,51,128,0.35) 0%, transparent 60%),
+              radial-gradient(ellipse 50% 70% at 60% 85%, rgba(0,112,204,0.25) 0%, transparent 55%),
+              radial-gradient(ellipse 40% 40% at 40% 60%, rgba(51,153,230,0.1) 0%, transparent 50%)
+            `,
+            backgroundSize: '200% 200%'
+          }}
+        />
         <div className="absolute inset-0 bg-[url('https://grain-y.com/assets/grain.png')] opacity-[0.03] mix-blend-overlay"></div>
       </div>
 
-      {/* Nav: Refactored Global Menu */}
-      <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-6xl">
-        <div className="bg-white/80 backdrop-blur-2xl border border-white/40 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.06)] px-8 py-3 rounded-[2rem] flex items-center justify-between gap-8">
-
+      {/* ─── NAVIGATION ─── */}
+      <nav className={`fixed left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-[900px] transition-all duration-500 ease-out ${scrolled ? 'top-4' : 'top-6'}`}>
+        <div className={`
+          px-6 py-3 rounded-full flex items-center justify-between gap-6 shadow-2xl transition-all duration-500
+          ${scrolled 
+            ? 'bg-brand-900/90 backdrop-blur-3xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] py-2.5' 
+            : 'glass border-white/10'
+          }
+        `}>
+          
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
-            <img src="/logo.png" alt="Mentor CRM" className="h-15 w-auto" />
+          <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
+            <div className={`
+              bg-brand-500 rounded-lg flex items-center justify-center shadow-[0_0_20px_rgba(0,112,204,0.5)] group-hover:scale-110 transition-transform
+              ${scrolled ? 'h-7 w-7' : 'h-8 w-8'}
+            `}>
+              <span className={`text-white font-display font-black ${scrolled ? 'text-base' : 'text-lg'}`}>M</span>
+            </div>
+            <span className={`font-display font-bold tracking-tight text-white hidden sm:block ${scrolled ? 'text-base' : 'text-lg'}`}>
+              MENTOR<span className="text-brand-300">CRM</span>
+            </span>
           </Link>
 
-          {/* Center Menu */}
-          <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
+          {/* Links */}
+          <div className="hidden md:flex items-center gap-8">
             {[
               { label: t.navFeatures, href: '#features' },
               { label: t.navHowItWorks, href: '#how-it-works' },
@@ -473,152 +507,151 @@ export function HomeClient() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 hover:text-mentor-blue transition-colors relative group"
+                className={`text-sm font-medium transition-colors hover:text-white ${scrolled ? 'text-white/50' : 'text-white/70'}`}
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-mentor-blue transition-all group-hover:w-full"></span>
               </Link>
             ))}
           </div>
 
-          {/* CTA Buttons */}
-          <div className="flex items-center gap-4 flex-shrink-0">
-            <Link href="/login" className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 hover:text-mentor-blue transition-colors">
+          {/* Action */}
+          <div className="flex items-center gap-3">
+            <Link href="/login" className="hidden sm:block text-sm font-medium text-white/50 hover:text-white transition-colors px-4">
               {t.login}
             </Link>
             <Link
               href="/login"
-              className="h-10 px-6 bg-zinc-900 text-[10px] font-black uppercase tracking-[0.3em] text-white hover:bg-mentor-blue transition-all rounded-full flex items-center justify-center whitespace-nowrap shadow-lg"
+              className={`
+                bg-brand-500 hover:bg-brand-400 text-white text-xs font-bold rounded-full transition-all shadow-[0_4px_15px_rgba(0,112,204,0.4)] active:scale-95
+                ${scrolled ? 'px-4 py-2' : 'px-5 py-2.5'}
+              `}
             >
               {t.navStartFree}
             </Link>
-            <LocaleSelector />
+            <div className="hidden xs:block">
+              <LocaleSelector />
+            </div>
           </div>
         </div>
       </nav>
 
       <main className="relative z-10 pt-20">
 
-        {/* HERO SECTION */}
-        <section className="relative pt-44 pb-32 px-6 overflow-hidden">
-          <div className="max-w-7xl mx-auto text-center relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 text-mentor-blue mb-8"
-            >
+        {/* ─── SECTION 1: HERO ─── */}
+        <section id="hero" className="relative pt-44 pb-24 px-6 overflow-hidden">
+          <div className="max-w-5xl mx-auto text-center relative z-10">
+            
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-md border border-white/10 px-4 py-1.5 rounded-full mb-10 animate-fade-up">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mentor-blue opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-mentor-blue"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-400 shadow-[0_0_8px_#66B8FF]"></span>
               </span>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em]">{t.badge}</span>
-            </motion.div>
+              <span className="text-xs font-semibold text-brand-300 tracking-wide uppercase">{t.badge}</span>
+            </div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-6xl md:text-8xl font-black text-zinc-900 leading-[0.9] tracking-tighter mb-8 max-w-5xl mx-auto"
-            >
-              {t.heroHeadline}
-            </motion.h1>
+            {/* Headline */}
+            <h1 className="text-display font-display font-extrabold text-white mb-8 animate-fade-up [animation-delay:100ms]">
+              {t.heroHeadline.split('Spreadsheet')[0]}
+              <span className="bg-gradient-to-r from-brand-300 to-brand-500 bg-clip-text text-transparent italic shrink-0">Spreadsheet</span>
+            </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="max-w-2xl mx-auto text-zinc-500 text-lg md:text-xl leading-relaxed mb-12"
-            >
+            {/* Subheadline */}
+            <p className="text-lg md:text-xl text-white/60 leading-relaxed max-w-2xl mx-auto mb-12 animate-fade-up [animation-delay:200ms]">
               {t.heroSub}
-            </motion.p>
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
-            >
-              <Link
-                href="/login"
-                className="w-full sm:w-auto px-8 py-5 bg-zinc-900 text-white font-black text-sm uppercase tracking-widest rounded-full hover:bg-mentor-blue hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-zinc-900/20"
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 animate-fade-up [animation-delay:300ms]">
+              <Link 
+                href="/login" 
+                className="w-full sm:w-auto px-10 py-5 bg-gradient-to-br from-brand-400 to-brand-600 rounded-full font-bold text-white shadow-[0_8px_30px_rgba(0,112,204,0.5)] hover:shadow-[0_12px_45px_rgba(0,112,204,0.7)] transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2"
               >
                 {t.heroCtaPrimary}
+                <ArrowRight className="h-5 w-5" />
               </Link>
-              <Link
-                href="#"
-                className="w-full sm:w-auto px-8 py-5 bg-white text-zinc-900 font-black text-sm uppercase tracking-widest rounded-full border border-zinc-200 hover:border-mentor-blue hover:text-mentor-blue transition-all"
-              >
+              <button className="w-full sm:w-auto px-10 py-5 glass rounded-full font-bold text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+                <Play className="h-5 w-5 fill-current" />
                 {t.heroCtaSecondary}
-              </Link>
-            </motion.div>
+              </button>
+            </div>
 
-            {/* Social Proof Text */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="text-[11px] font-bold text-zinc-400 font-black uppercase tracking-[0.2em]"
-            >
-              {t.heroSocial}
-            </motion.div>
+            {/* Social Proof */}
+            <div className="glass px-8 py-5 rounded-3xl inline-flex flex-wrap items-center justify-center gap-6 animate-fade-up [animation-delay:400ms]">
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <Star key={s} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-sm font-medium text-white/50">
+                <span className="text-white">4.9/5</span> from 150 Life Planners
+              </p>
+              <div className="h-4 w-px bg-white/10 hidden sm:block"></div>
+              <p className="text-sm font-medium text-white/50">
+                <span className="text-white">45,000+</span> policies tracked
+              </p>
+            </div>
           </div>
         </section>
 
 
-        {/* SECTION 3: PAIN AMPLIFICATION */}
-        <section className="py-32 px-6 bg-white relative overflow-hidden">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-20">
-              <h2 className="text-[10px] font-black tracking-[0.4em] text-mentor-blue uppercase mb-6">{t.painTitle}</h2>
-              <div className="h-1 bg-zinc-100 w-24 mx-auto rounded-full" />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        {/* ─── SECTION 2: PAIN AMPLIFICATION ─── */}
+        <section id="pain" className="py-32 px-6 relative overflow-hidden">
+          <div className="max-w-5xl mx-auto text-center relative z-10">
+            <h2 className="text-3xl md:text-5xl font-display font-extrabold text-white mb-6 uppercase tracking-tight italic animate-fade-up">
+              {t.painTitle}
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 mt-12">
               {[
                 { title: t.painCard1Title, desc: t.painCard1Desc, icon: <AlertCircle className="h-8 w-8 text-red-500" /> },
-                { title: t.painCard2Title, desc: t.painCard2Desc, icon: <BarChart3 className="h-8 w-8 text-zinc-400" /> },
-                { title: t.painCard3Title, desc: t.painCard3Desc, icon: <Clock className="h-8 w-8 text-zinc-400" /> }
+                { title: t.painCard2Title, desc: t.painCard2Desc, icon: <BarChart3 className="h-8 w-8 text-white/40" /> },
+                { title: t.painCard3Title, desc: t.painCard3Desc, icon: <Clock className="h-8 w-8 text-white/40" /> }
               ].map((card, i) => (
-                <div key={i} className="bg-zinc-50 border border-zinc-100 p-10 rounded-[2.5rem] hover:shadow-xl transition-all group">
-                  <div className="mb-8">{card.icon}</div>
-                  <h3 className="text-2xl font-bold mb-4 tracking-tight">{card.title}</h3>
-                  <p className="text-zinc-500 font-medium leading-relaxed">{card.desc}</p>
+                <div key={i} className="glass-strong p-8 text-left group relative overflow-hidden transition-transform hover:-translate-y-2 animate-fade-up" style={{ animationDelay: `${i * 100}ms` }}>
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
+                  <div className="mb-6 group-hover:scale-110 transition-transform">{card.icon}</div>
+                  <h3 className="text-xl font-display font-bold text-white mb-4 leading-tight">{card.title}</h3>
+                  <p className="text-white/50 text-sm leading-relaxed">{card.desc}</p>
                 </div>
               ))}
             </div>
 
-            <p className="text-center text-xl md:text-2xl font-bold text-zinc-900 max-w-3xl mx-auto italic leading-relaxed">
+            <p className="text-center text-lg md:text-xl font-display font-light text-white/70 max-w-3xl mx-auto italic leading-relaxed animate-fade-up [animation-delay:400ms] border-l-2 border-brand-400 pl-8 text-left">
               "{t.painClosing}"
             </p>
           </div>
         </section>
 
-        {/* SECTION 4: STATS BAR */}
-        <section className="py-20 bg-zinc-900 overflow-hidden relative">
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_50%_50%,#0055A4_0%,transparent_70%)]" />
-          <div className="max-w-7xl mx-auto px-6 relative z-10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+        {/* ─── SECTION 3: STATS BAR ─── */}
+        <section className="py-12 px-6 relative">
+          <div className="max-w-5xl mx-auto">
+            <div className="glass-strong grid grid-cols-2 lg:grid-cols-4 gap-8 p-10 md:p-12 shadow-[0_30px_100px_rgba(0,12,36,0.5)]">
               {[
                 { label: t.statPolicies, val: '45k+' },
                 { label: t.statIncrease, val: '35%' },
                 { label: t.statTime, val: '10h' },
                 { label: t.statRating, val: '4.9★' }
               ].map((stat, i) => (
-                <div key={i} className="text-center border-l border-white/10 first:border-0 pl-8 first:pl-0">
-                  <p className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tighter">{stat.val}</p>
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{stat.label}</p>
+                <div key={i} className="text-center animate-fade-up" style={{ animationDelay: `${i * 100}ms` }}>
+                  <p className="text-4xl md:text-5xl font-display font-extrabold bg-gradient-to-br from-white to-brand-300 bg-clip-text text-transparent mb-2 tracking-tighter italic">
+                    {stat.val}
+                  </p>
+                  <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] leading-tight">
+                    {stat.label}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* SECTION 5: HOW IT WORKS */}
-        <section id="how-it-works" className="py-32 px-6 bg-zinc-50">
+        {/* ─── SECTION 4: HOW IT WORKS ─── */}
+        <section id="how-it-works" className="py-32 px-6 relative">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-24">
-              <h2 className="text-[10px] font-black tracking-[0.4em] text-mentor-blue uppercase mb-6">{t.howTitle}</h2>
-              <div className="h-1 bg-zinc-200 w-24 mx-auto rounded-full" />
+              <h2 className="text-sm font-display font-black tracking-[0.4em] text-brand-300 uppercase mb-6 animate-fade-up">{t.howTitle}</h2>
+              <div className="h-1 bg-gradient-to-r from-transparent via-brand-500 to-transparent w-24 mx-auto rounded-full animate-fade-up [animation-delay:100ms]" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -628,23 +661,32 @@ export function HomeClient() {
                 { title: t.howStep3, desc: t.howStep3Desc },
                 { title: t.howStep4, desc: t.howStep4Desc }
               ].map((step, i) => (
-                <div key={i} className="relative p-8 bg-white rounded-[2rem] border border-zinc-100 shadow-sm hover:shadow-lg transition-all">
-                  <h3 className="text-lg font-black mb-4 leading-tight">{step.title}</h3>
-                  <p className="text-zinc-500 font-medium text-sm leading-relaxed">{step.desc}</p>
+                <div key={i} className="relative group animate-fade-up" style={{ animationDelay: `${i * 100 + 200}ms` }}>
+                  <div className="glass-strong p-8 rounded-[2rem] transition-all hover:bg-white/10 hover:-translate-y-2 h-full">
+                    <div className="font-display text-5xl font-black text-white/5 mb-6 group-hover:text-brand-500/20 transition-colors">
+                      {step.title.split('—')[0].trim()}
+                    </div>
+                    <h3 className="text-lg font-display font-bold text-white mb-4 leading-tight">{step.title.split('—')[1]?.trim() || step.title}</h3>
+                    <p className="text-white/50 text-sm leading-relaxed">{step.desc}</p>
+                  </div>
+                  {i < 3 && (
+                    <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-px bg-gradient-to-r from-brand-500/30 to-transparent" />
+                  )}
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* SECTION 6: FEATURES */}
-        <section id="features" className="py-32 px-6 bg-white">
+        {/* ─── SECTION 5: FEATURES ─── */}
+        <section id="features" className="py-32 px-6 relative">
           <div className="max-w-7xl mx-auto">
             <div className="mb-20 text-center">
-              <h2 className="text-[10px] font-black tracking-[0.4em] text-mentor-blue uppercase mb-6 tracking-[0.5em]">{t.featTitle}</h2>
+              <h2 className="text-sm font-display font-black tracking-[0.4em] text-brand-300 uppercase mb-4 animate-fade-up">{t.featTitle}</h2>
+              <div className="h-1 bg-gradient-to-r from-transparent via-brand-500 to-transparent w-24 mx-auto rounded-full animate-fade-up [animation-delay:100ms]" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 { title: t.feat1Title, desc: t.feat1Desc, icon: <Users /> },
                 { title: t.feat2Title, desc: t.feat2Desc, icon: <Target /> },
@@ -653,41 +695,47 @@ export function HomeClient() {
                 { title: t.feat5Title, desc: t.feat5Desc, icon: <Workflow /> },
                 { title: t.feat6Title, desc: t.feat6Desc, icon: <ShieldCheck /> }
               ].map((feat, i) => (
-                <div key={i} className="p-8 border border-zinc-50 rounded-[2rem] hover:bg-zinc-50 transition-all group">
-                  <div className="h-14 w-14 bg-zinc-900 text-white rounded-2xl flex items-center justify-center mb-8 group-hover:bg-mentor-blue transition-colors shadow-lg">
+                <div key={i} className="glass-strong p-8 text-left group transition-all hover:-translate-y-2 animate-fade-up" style={{ animationDelay: `${i * 100}ms` }}>
+                  <div className="h-14 w-14 bg-brand-500/20 text-brand-300 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-brand-500 transition-colors shadow-lg shadow-brand-500/20">
                     {React.cloneElement(feat.icon as React.ReactElement<any>, { className: 'h-6 w-6' })}
                   </div>
-                  <h3 className="text-xl font-bold mb-4 tracking-tight">{feat.title}</h3>
-                  <p className="text-zinc-500 font-medium leading-relaxed text-sm">{feat.desc}</p>
+                  <h3 className="text-xl font-display font-bold text-white mb-4 tracking-tight leading-tight">{feat.title}</h3>
+                  <p className="text-white/40 text-sm leading-relaxed">{feat.desc}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* SECTION 7: TESTIMONIALS */}
-        <section className="py-32 px-6 bg-zinc-900 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-mentor-blue/10 rounded-full blur-[120px]" />
-          <div className="max-w-7xl mx-auto relative z-10">
-            <div className="text-center mb-24">
-              <h2 className="text-[10px] font-black tracking-[0.4em] text-blue-400 uppercase mb-6">{t.testTitle}</h2>
-              <p className="text-zinc-400 max-w-xl mx-auto font-medium">{t.testSub}</p>
-            </div>
+        {/* ─── SECTION 6: TESTIMONIALS ─── */}
+        <section className="py-32 px-6 relative">
+          <div className="max-w-7xl mx-auto text-center relative z-10">
+            <h2 className="text-sm font-display font-black tracking-[0.34em] text-brand-300 uppercase mb-4 animate-fade-up">{t.testTitle}</h2>
+            <p className="text-white/40 max-w-xl mx-auto mb-20 animate-fade-up [animation-delay:100ms]">{t.testSub}</p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 { quote: t.test1, author: t.test1Author, meta: t.test1Meta },
                 { quote: t.test2, author: t.test2Author, meta: t.test2Meta },
                 { quote: t.test3, author: t.test3Author, meta: t.test3Meta }
-              ].map((test, i) => (
-                <div key={i} className="bg-white/5 border border-white/10 p-10 rounded-[3rem] backdrop-blur-sm">
-                  <div className="flex gap-1 mb-6">
-                    {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-yellow-500 text-yellow-500" />)}
-                  </div>
-                  <p className="text-white/80 font-medium leading-relaxed mb-8 italic">"{test.quote}"</p>
+              ].map((testi, i) => (
+                <div key={i} className="glass-strong p-10 text-left flex flex-col justify-between animate-fade-up transition-all hover:-translate-y-2" style={{ animationDelay: `${i * 100 + 200}ms` }}>
                   <div>
-                    <p className="text-white font-black uppercase text-[11px] tracking-widest">{test.author}</p>
-                    <p className="text-zinc-500 text-[10px] font-bold mt-1 uppercase leading-tight">{test.meta}</p>
+                    <div className="flex gap-1 text-yellow-400 mb-6">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star key={s} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                    <p className="text-white/80 font-sans italic leading-relaxed mb-10 text-lg">"{testi.quote}"</p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-display font-bold shadow-lg shadow-brand-500/20 flex-shrink-0">
+                      {testi.author[0]}
+                    </div>
+                    <div>
+                      <p className="text-white font-display font-bold text-sm tracking-tight">{testi.author}</p>
+                      <p className="text-white/30 text-[10px] font-bold uppercase tracking-wider mt-1">{testi.meta}</p>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -695,46 +743,51 @@ export function HomeClient() {
           </div>
         </section>
 
-        {/* SECTION 8: OBJECTION KILLER */}
-        <section className="py-32 px-6 bg-white">
+        {/* ─── SECTION 5: OBJECTION KILLER ─── */}
+        <section className="py-32 px-6 relative">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-center text-[10px] font-black tracking-[0.4em] text-mentor-blue uppercase mb-20">{t.objTitle}</h2>
+            <h2 className="text-sm font-display font-black tracking-[0.4em] text-brand-300 uppercase mb-20 text-center animate-fade-up">{t.objTitle}</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {[
                 { q: t.obj1Q, a: t.obj1A },
                 { q: t.obj2Q, a: t.obj2A },
                 { q: t.obj3Q, a: t.obj3A },
                 { q: t.obj4Q, a: t.obj4A }
               ].map((obj, i) => (
-                <div key={i} className="space-y-4">
-                  <h3 className="text-lg font-black tracking-tight">{obj.q}</h3>
-                  <p className="text-zinc-500 font-medium leading-relaxed text-[15px]">{obj.a}</p>
+                <div key={i} className="glass-strong p-10 group animate-fade-up" style={{ animationDelay: `${i * 100 + 100}ms` }}>
+                  <h3 className="text-xl font-display font-bold text-white mb-4 leading-tight group-hover:text-brand-300 transition-colors">{obj.q}</h3>
+                  <p className="text-white/50 text-base leading-relaxed">{obj.a}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* SECTION 9: COMPLIANCE & TRUST */}
-        <section className="py-24 px-6 bg-zinc-50">
-          <div className="max-w-5xl mx-auto bg-white border border-zinc-200 rounded-[3rem] p-12 md:p-20 shadow-xl overflow-hidden relative">
-            <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-500/5 -rotate-12 translate-x-1/2 rounded-full" />
-            <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
-              <div className="h-24 w-24 bg-zinc-900 rounded-3xl flex items-center justify-center shrink-0 shadow-2xl">
-                <ShieldCheck className="h-10 w-10 text-white" />
+        {/* ─── SECTION 6: COMPLIANCE & TRUST ─── */}
+        <section className="py-24 px-6 relative">
+          <div className="max-w-5xl mx-auto glass-strong p-12 md:p-20 rounded-[3rem] shadow-2xl overflow-hidden relative group animate-fade-up">
+            <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-500/5 -rotate-12 translate-x-1/2 rounded-full blur-3xl" />
+            
+            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
+              <div className="h-24 w-24 bg-brand-500 rounded-3xl flex items-center justify-center shrink-0 shadow-[0_0_40px_rgba(0,112,204,0.4)] group-hover:scale-105 transition-transform">
+                <ShieldCheck className="h-12 w-12 text-white" />
               </div>
-              <div>
-                <h2 className="text-2xl font-black mb-4">Enterprise-Grade Security for Independent Planners</h2>
-                <p className="text-zinc-500 font-medium max-w-xl">
+              
+              <div className="text-center lg:text-left">
+                <h2 className="text-3xl font-display font-black text-white mb-4 animate-fade-up [animation-delay:100ms]">
+                  Enterprise-Grade Security for Independent Planners
+                </h2>
+                <p className="text-white/60 font-sans text-lg max-w-xl mx-auto lg:mx-0 mb-10 animate-fade-up [animation-delay:200ms]">
                   Mentor CRM uses 256-bit encryption and U.S.-based servers. Our logs are pre-structured to help with FINRA books-and-records inquiries. Your client data is yours — export it any time.
                 </p>
-                <div className="flex flex-wrap gap-6 mt-8">
-                  <span className="flex items-center gap-2 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500" /> AES-256 Encrypted
+                
+                <div className="flex flex-wrap justify-center lg:justify-start gap-8 animate-fade-up [animation-delay:300ms]">
+                  <span className="flex items-center gap-3 text-brand-300 font-display font-black text-xs uppercase tracking-[0.2em]">
+                    <CheckCircle2 className="h-5 w-5 text-brand-400" /> AES-256 Encrypted
                   </span>
-                  <span className="flex items-center gap-2 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Daily Cloud Backups
+                  <span className="flex items-center gap-3 text-brand-300 font-display font-black text-xs uppercase tracking-[0.2em]">
+                    <CheckCircle2 className="h-5 w-5 text-brand-400" /> Daily Cloud Backups
                   </span>
                 </div>
               </div>
@@ -742,66 +795,70 @@ export function HomeClient() {
           </div>
         </section>
 
-        {/* SECTION 10: PRICING */}
-        <section id="pricing" className="py-32 px-6 bg-white">
+        {/* ─── SECTION 7: PRICING ─── */}
+        <section id="pricing" className="py-32 px-6 relative">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-24">
-              <h2 className="text-[10px] font-black tracking-[0.4em] text-mentor-blue uppercase mb-6">{t.priceTitle}</h2>
-              <p className="text-zinc-500 font-medium">{t.priceSub}</p>
+            <div className="text-center mb-20">
+              <h2 className="text-sm font-display font-black tracking-[0.4em] text-brand-300 uppercase mb-4 animate-fade-up">{t.priceTitle}</h2>
+              <p className="text-white/40 font-display text-lg animate-fade-up [animation-delay:100ms]">{t.priceSub}</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
               {/* Tier 1 */}
-              <div className="p-12 border border-zinc-100 rounded-[3rem] hover:shadow-2xl transition-all flex flex-col">
-                <h3 className="text-[11px] font-black tracking-[0.3em] text-zinc-400 uppercase mb-8">{t.tier1Name}</h3>
-                <p className="text-5xl font-black tracking-tighter mb-10">{t.tier1Price}</p>
+              <div className="glass-strong p-10 flex flex-col animate-fade-up [animation-delay:200ms] hover:bg-white/5 transition-colors">
+                <h3 className="text-xs font-display font-black tracking-[0.3em] text-white/40 uppercase mb-8">{t.tier1Name}</h3>
+                <div className="mb-10">
+                  <p className="text-5xl font-display font-extrabold text-white tracking-tighter">{t.tier1Price}</p>
+                </div>
                 <div className="space-y-4 mb-12 flex-1">
                   {[t.tier1Feat1, t.tier1Feat2, t.tier1Feat3, t.tier1Feat4].map((f, i) => (
-                    <div key={i} className="flex items-center gap-3 text-sm font-medium text-zinc-600">
-                      <Check className="h-4 w-4 text-emerald-500" /> {f}
+                    <div key={i} className="flex items-center gap-3 text-sm font-medium text-white/60">
+                      <Check className="h-4 w-4 text-brand-400" /> {f}
                     </div>
                   ))}
                 </div>
-                <Link href="/login" className="w-full py-4 bg-zinc-900 border border-zinc-900 text-white rounded-full text-center text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-zinc-900 transition-all">
+                <Link href="/login" className="w-full py-4 glass rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:bg-white/10 transition-all">
                   {t.tier1Cta}
                 </Link>
               </div>
 
               {/* Tier 2 - Featured */}
-              <div className="p-12 border-2 border-mentor-blue rounded-[3rem] shadow-2xl scale-105 relative z-10 flex flex-col bg-white">
-                <div className="absolute top-0 right-12 -translate-y-1/2 bg-mentor-blue text-white px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg">Most Popular</div>
-                <h3 className="text-[11px] font-black tracking-[0.3em] text-mentor-blue uppercase mb-8">{t.tier2Name}</h3>
+              <div className="glass-strong p-12 border-2 border-brand-500 shadow-[0_30px_100px_rgba(0,112,204,0.3)] scale-105 relative z-10 flex flex-col animate-fade-up [animation-delay:300ms]">
+                <div className="absolute top-0 right-12 -translate-y-1/2 bg-brand-500 text-white px-4 py-1.5 rounded-full text-[10px] font-display font-black uppercase tracking-widest shadow-lg animate-pulse">
+                  Most Popular
+                </div>
+                <h3 className="text-xs font-display font-black tracking-[0.3em] text-brand-300 uppercase mb-8">{t.tier2Name}</h3>
                 <div className="mb-10">
-                  <p className="text-5xl font-black tracking-tighter">{t.tier2Price}</p>
-                  <p className="text-[11px] font-bold text-zinc-400 mt-1">{t.tier2PriceYearly}</p>
+                  <p className="text-6xl font-display font-extrabold text-white tracking-tighter italic">{t.tier2Price}</p>
+                  <p className="text-xs font-bold text-white/40 mt-1">{t.tier2PriceYearly}</p>
                 </div>
                 <div className="space-y-4 mb-12 flex-1">
                   {[t.tier2Feat1, t.tier2Feat2, t.tier2Feat3, t.tier2Feat4, t.tier2Feat5].map((f, i) => (
-                    <div key={i} className="flex items-center gap-3 text-sm font-bold text-zinc-900">
-                      <Check className="h-4 w-4 text-mentor-blue" /> {f}
+                    <div key={i} className="flex items-center gap-3 text-sm font-bold text-white">
+                      <Check className="h-4 w-4 text-brand-400" /> {f}
                     </div>
                   ))}
                 </div>
-                <Link href="/login" className="w-full py-5 bg-mentor-blue text-white rounded-full text-center text-[10px] font-black uppercase tracking-widest hover:bg-zinc-900 transition-all shadow-xl shadow-mentor-blue/20">
+                <Link href="/login" className="w-full py-5 bg-gradient-to-r from-brand-500 to-brand-700 text-white rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:shadow-[0_10px_30px_rgba(0,112,204,0.5)] transition-all shadow-xl">
                   {t.tier2Cta}
                 </Link>
               </div>
 
               {/* Tier 3 */}
-              <div className="p-12 border border-zinc-100 rounded-[3rem] hover:shadow-2xl transition-all flex flex-col">
-                <h3 className="text-[11px] font-black tracking-[0.3em] text-zinc-400 uppercase mb-8">{t.tier3Name}</h3>
+              <div className="glass-strong p-10 flex flex-col animate-fade-up [animation-delay:400ms] hover:bg-white/5 transition-colors">
+                <h3 className="text-xs font-display font-black tracking-[0.3em] text-white/40 uppercase mb-8">{t.tier3Name}</h3>
                 <div className="mb-10">
-                  <p className="text-5xl font-black tracking-tighter">{t.tier3Price}</p>
-                  <p className="text-[11px] font-bold text-zinc-400 mt-1">{t.tier3Meta}</p>
+                  <p className="text-5xl font-display font-extrabold text-white tracking-tighter">{t.tier3Price}</p>
+                  <p className="text-xs font-bold text-white/40 mt-1">{t.tier3Meta}</p>
                 </div>
                 <div className="space-y-4 mb-12 flex-1">
                   {[t.tier3Feat1, t.tier3Feat2, t.tier3Feat3, t.tier3Feat4, t.tier3Feat5].map((f, i) => (
-                    <div key={i} className="flex items-center gap-3 text-sm font-medium text-zinc-600">
-                      <Check className="h-4 w-4 text-zinc-400" /> {f}
+                    <div key={i} className="flex items-center gap-3 text-sm font-medium text-white/60">
+                      <Check className="h-4 w-4 text-white/40" /> {f}
                     </div>
                   ))}
                 </div>
-                <Link href="/login" className="w-full py-4 bg-white border border-zinc-200 text-zinc-900 rounded-full text-center text-[10px] font-black uppercase tracking-widest hover:border-zinc-900 transition-all">
+                <Link href="/login" className="w-full py-4 glass rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:bg-white/10 transition-all">
                   {t.tier3Cta}
                 </Link>
               </div>
@@ -809,11 +866,11 @@ export function HomeClient() {
           </div>
         </section>
 
-        {/* SECTION 11: FAQ */}
-        <section className="py-32 px-6 bg-zinc-50">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-[10px] font-black tracking-[0.4em] text-mentor-blue uppercase mb-20 text-center">{t.faqTitle}</h2>
-            <div className="grid grid-cols-1 gap-6">
+        {/* ─── SECTION 8: FAQ ─── */}
+        <section className="py-32 px-6 relative">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-sm font-display font-black tracking-[0.4em] text-brand-300 uppercase mb-20 text-center animate-fade-up">{t.faqTitle}</h2>
+            <div className="grid grid-cols-1 gap-4">
               {[
                 { q: t.faq1Q, a: t.faq1A },
                 { q: t.faq2Q, a: t.faq2A },
@@ -824,62 +881,78 @@ export function HomeClient() {
                 { q: t.faq7Q, a: t.faq7A },
                 { q: t.faq8Q, a: t.faq8A }
               ].map((faq, i) => (
-                <div key={i} className="bg-white border border-zinc-200 p-8 rounded-[2rem] shadow-sm">
-                  <h3 className="text-base font-black tracking-tight mb-4">{faq.q}</h3>
-                  <p className="text-zinc-500 font-medium text-sm leading-relaxed">{faq.a}</p>
+                <div key={i} className="glass-strong p-8 group animate-fade-up" style={{ animationDelay: `${i * 100}ms` }}>
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="text-lg font-display font-bold text-white leading-tight group-hover:text-brand-300 transition-colors uppercase tracking-tight">{faq.q}</h3>
+                    <Plus className="h-5 w-5 text-brand-500 flex-shrink-0 mt-1" />
+                  </div>
+                  <p className="mt-4 text-white/50 text-base leading-relaxed">{faq.a}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* SECTION 12: FINAL CTA */}
-        <section className="py-40 px-6 relative overflow-hidden bg-zinc-900">
-           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#0055A4_0%,transparent_70%)] opacity-30" />
-           <div className="max-w-4xl mx-auto text-center relative z-10">
-              <h2 className="text-4xl md:text-6xl font-black text-white leading-tight mb-8 tracking-tighter">
-                {t.finalTitle}
-              </h2>
-              <p className="text-zinc-400 text-lg md:text-xl font-medium mb-12 max-w-2xl mx-auto">
-                {t.finalSub}
-              </p>
+        {/* ─── SECTION 9: FINAL CTA ─── */}
+        <section className="py-48 px-6 relative overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(0,112,204,0.2),transparent_70%)]" />
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <h2 className="text-display font-display font-extrabold text-white mb-8 animate-fade-up">
+              {t.finalTitle}
+            </h2>
+            <p className="text-white/60 text-xl font-display mb-12 max-w-2xl mx-auto animate-fade-up [animation-delay:100ms]">
+              {t.finalSub}
+            </p>
+            <div className="flex flex-col items-center gap-6 animate-fade-up [animation-delay:200ms]">
               <Link
                 href="/login"
-                className="inline-flex h-20 items-center px-12 bg-white text-zinc-900 text-[11px] font-black uppercase tracking-[0.4em] rounded-full hover:bg-mentor-blue hover:text-white transition-all shadow-2xl scale-110 mb-8"
+                className="px-14 py-6 bg-gradient-to-br from-brand-400 to-brand-600 rounded-full font-display font-black text-xs text-white uppercase tracking-[0.4em] shadow-[0_20px_50px_rgba(0,112,204,0.5)] hover:shadow-[0_25px_60px_rgba(0,112,204,0.7)] hover:scale-110 active:scale-95 transition-all"
               >
                 {t.finalCta}
               </Link>
-              <p className="text-zinc-500 text-[10px] uppercase font-black tracking-widest">{t.finalFoot}</p>
-           </div>
+              <p className="text-white/40 text-[10px] uppercase font-display font-black tracking-widest leading-loose">
+                {t.finalFoot}
+              </p>
+            </div>
+          </div>
         </section>
 
       </main>
 
-      {/* SECTION 13: FOOTER */}
-      <footer className="py-24 px-6 bg-white border-t border-zinc-100">
+      {/* ─── FOOTER ─── */}
+      <footer className="py-24 px-6 relative border-t border-white/5 bg-brand-900/50 backdrop-blur-3xl">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-16 mb-20">
             <div className="flex flex-col items-center md:items-start gap-8">
-              <img src="/logo.png" alt="Mentor CRM" className="h-16 w-auto grayscale opacity-50 contrast-125" />
-              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest max-w-[200px] text-center md:text-left leading-relaxed">
+              <Link href="/" className="flex items-center gap-2 group">
+                <div className="h-10 w-10 bg-brand-500 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <span className="text-white font-display font-black text-xl">M</span>
+                </div>
+                <span className="font-display font-bold text-xl tracking-tight text-white">
+                  MENTOR<span className="text-brand-300">CRM</span>
+                </span>
+              </Link>
+              <p className="text-[10px] font-display font-black text-white/30 uppercase tracking-[0.2em] max-w-[250px] text-center md:text-left leading-relaxed">
                 {t.footerText}
               </p>
             </div>
             
-            <div className="flex gap-12 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
-              <Link href="/terms" className="hover:text-mentor-blue transition-colors">{t.terms}</Link>
-              <Link href="/privacy" className="hover:text-mentor-blue transition-colors">{t.privacy}</Link>
-              <Link href="#" className="hover:text-mentor-blue transition-colors">{t.support}</Link>
-              <Link href="/login" className="hover:text-mentor-blue transition-colors">{t.login}</Link>
+            <div className="flex flex-wrap justify-center gap-12 text-[10px] font-display font-black text-white/40 uppercase tracking-widest">
+              <Link href="/terms" className="hover:text-brand-300 transition-colors">{t.terms}</Link>
+              <Link href="/privacy" className="hover:text-brand-300 transition-colors">{t.privacy}</Link>
+              <Link href="#" className="hover:text-brand-300 transition-colors">{t.support}</Link>
+              <Link href="/login" className="hover:text-brand-300 transition-colors">{t.login}</Link>
             </div>
           </div>
           
-          <div className="pt-12 border-t border-zinc-50 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest">© 2026 Mentor CRM. All rights reserved.</p>
-            <div className="flex gap-6">
-               <div className="h-4 w-4 rounded-full bg-zinc-100" />
-               <div className="h-4 w-4 rounded-full bg-zinc-100" />
-               <div className="h-4 w-4 rounded-full bg-zinc-100" />
+          <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-[10px] font-display font-bold text-white/20 uppercase tracking-widest italic">
+              © 2026 Mentor CRM. All rights reserved.
+            </p>
+            <div className="flex gap-4">
+               <div className="h-3 w-3 rounded-full bg-brand-500/20" />
+               <div className="h-3 w-3 rounded-full bg-brand-500/20" />
+               <div className="h-3 w-3 rounded-full bg-brand-500/20" />
             </div>
           </div>
         </div>
