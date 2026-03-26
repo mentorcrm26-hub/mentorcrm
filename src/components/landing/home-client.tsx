@@ -17,205 +17,414 @@ import {
   Layers,
   CheckCircle2,
   MousePointer2,
-  Lock
+  Lock,
+  Star,
+  Clock,
+  AlertCircle,
+  Plus,
+  Check,
+  ChevronDown,
+  Shield
 } from 'lucide-react';
 import { LocaleSelector } from './locale-selector';
 
 const translations = {
   en: {
-    badge: 'CRM BUILT FOR LIFE PLANNERS',
-    heroLine1: 'Your Referrals Deserve a Better',
-    heroLine2: 'System Than a Spreadsheet.',
-    subHero: 'Mentor CRM helps Life Planners track, follow up, and close — without dropping the ball. Track every prospect across all your carriers and know exactly who to call today.',
-    cta: 'Start Tracking Your Prospects Free',
-    login: 'LOGIN',
-    demo: 'WATCH 2-MIN DEMO',
     navFeatures: 'Features',
-    navSolutions: 'How It Works',
-    navAutomation: 'Niche',
-    navSecurity: 'Security',
-    feat1Title: 'Precision Pipeline',
-    feat1Desc: 'See your entire pipeline at a glance — from first contact to policy issued.',
-    feat2Title: 'Automated Sequences',
-    feat2Desc: 'Automated follow-up sequences that keep you top-of-mind without manual work.',
-    feat3Title: 'Follow-up Reminders',
-    feat3Desc: 'Set reminders so you never go more than X days without touching a warm prospect.',
-    captureTitle: 'RELATIONSHIP-FIRST CAPTURE',
-    captureHeadline: <>Capture referrals from anywhere, <br/>so no prospect gets <span className="text-zinc-400">lost.</span></>,
-    captureDesc: 'Integrate with your referral sources. Instantly record names, phone numbers, and products needed in less than 30 seconds.',
-    newLeadLabel: 'New Referral Received',
-    assignLabel: 'Track',
-    distTitle: 'BUILT FOR LIFE PLANNERS',
-    distHeadline: <>Finally, a CRM that understands <br/>how <span className="italic font-light">you actually work.</span></>,
-    distDesc: 'Designed for independent professionals, not call centers. Relationship tracking that follows your specific workflow.',
-    card1Title: 'Referral-Centric',
-    card1Desc: 'Built around tracking relationships and referrals, not cold lead volume.',
-    card2Title: 'Multi-Carrier Support',
-    card2Desc: 'Tag prospects by carrier (National Life, Pacific Life, etc.) and product type.',
-    card3Title: 'Consistent Follow-up',
-    card3Desc: 'Keep yourself in front of prospects at the right time to hit your monthly goals.',
-    statsTitle: 'NICHE RESULTS',
-    statsHeadline: <>Serving Life Planners across <span className="text-blue-500">the United States.</span></>,
-    stat1: 'Closed Policies',
-    stat1Val: '+45k',
-    stat2: 'First Month Increase',
-    stat2Val: '35%',
-    stat3: 'Admin Time Saved',
-    stat3Val: '10h/wk',
-    securityTitle: 'U.S. SECURE STORAGE & COMPLIANCE',
-    securityHeadline: <>Regulated-industry <span className="italic font-light">standards.</span></>,
-    securityDesc: 'Mentor CRM stores your prospect data securely in the United States, with end-to-end encryption. Compatible with FINRA/DOI standards and your carrier portals.',
-    finalCtaHeadline: <>Stop losing policies to <br/><span className="text-mentor-blue">your spreadsheet.</span></>,
-    createAccount: 'Start Tracking Your Prospects Free',
-    footer: '© 2026 MENTOR CRM. SERVING LIFE PLANNERS IN THE USA.',
+    navHowItWorks: 'How It Works',
+    navPricing: 'Pricing',
+    navStartFree: 'Start Free — No Card Needed',
+    badge: 'Built for Life Planners and Insurance Professionals',
+    heroHeadline: 'Stop Losing Policies to a Spreadsheet',
+    heroSub: 'Mentor CRM gives Life Planners a referral-tracking system that follows up automatically — so the only reason a prospect doesn\'t close is because they said no, not because you forgot them.',
+    heroCtaPrimary: 'Start Free — See Your Pipeline in 10 Minutes',
+    heroCtaSecondary: 'Watch the 2-Minute Walkthrough →',
+    heroSocial: '★★★★★ 4.9/5 from 150 Life Planners | 45,000+ policies tracked | No credit card required',
+    
+    // Pain Section
+    painTitle: 'The Spreadsheet Is Where Referrals Go to Die',
+    painCard1Title: '"You forgot to follow up — again."',
+    painCard1Desc: 'A warm referral from three months ago. You meant to call. It\'s still in row 47 of your spreadsheet with no follow-up date. They bought from someone else.',
+    painCard2Title: '"Your pipeline is a lie."',
+    painCard2Desc: 'You have no idea which prospects are ready to schedule, which ones went cold, or how many policies you have in progress. You\'re guessing.',
+    painCard3Title: '"You\'re spending 10 hours a week on admin."',
+    painCard3Desc: 'Updating spreadsheets. Writing reminder emails to yourself. None of that closes policies.',
+    painClosing: 'If you are running your referral business on a spreadsheet, you are not running a business. You are running a memory contest — and memory always loses.',
+
+    // Stats Bar
+    statPolicies: '45,000+ Policies Tracked Inside Mentor CRM',
+    statIncrease: '35% Avg. Increase in Closings — First Month',
+    statTime: '10 hrs Per Week Saved on Admin Work',
+    statRating: '4.9★ Average Rating from 150 Life Planners',
+
+    // How It Works
+    howTitle: 'HOW IT WORKS',
+    howStep1: '01 — Add Your Referral — 30 Seconds',
+    howStep1Desc: 'Takes less time than typing a row in your spreadsheet.',
+    howStep2: '02 — Your Follow-Up Sequence Starts Automatically',
+    howStep2Desc: 'Triggers reminders Day 3, 7 and 14. You don\'t need to remember.',
+    howStep3: '03 — See Exactly Who Is Ready to Schedule',
+    howStep3Desc: 'Cold, warm, scheduled, pending policy. No more guessing.',
+    howStep4: '04 — Close and Log in 15 Seconds',
+    howStep4Desc: 'Mark policy issued, log carrier, record product type.',
+
+    // Features
+    featTitle: 'Relationship tracking, automated.',
+    feat1Title: 'Track Relationships, Not Cold Leads',
+    feat1Desc: 'Every contact is tied to who sent them and what they need.',
+    feat2Title: 'Tag Every Prospect by Carrier and Product',
+    feat2Desc: 'National Life, Pacific Life, Transamerica, Prudential — or custom.',
+    feat3Title: 'Never Let a Warm Prospect Go Cold',
+    feat3Desc: 'Set max days between touches. Mentor CRM brings them to the top automatically.',
+    feat4Title: 'A Real Pipeline — Not a Color-Coded Spreadsheet',
+    feat4Desc: 'See close rate, carrier conversion, and where your revenue is coming from.',
+    feat5Title: 'Follow-Up Sequences That Run Without You',
+    feat5Desc: 'Pre-built for Days 3, 7, 14, 30. Custom by product type.',
+    feat6Title: 'Never Go More than X Days Without a Touch',
+    feat6Desc: 'You define the rule. The system ensures you follow it.',
+
+    // Testimonials
+    testTitle: 'What Life Planners Are Saying',
+    testSub: 'These are not CRM power users. These are independent Life Planners who wanted to stop losing referrals.',
+    test1: '"I used to track my prospects in a spreadsheet and I was constantly letting warm prospects go cold on follow-ups. After switching to Mentor CRM, I closed 3 policies in my first month — just by following up with people I had already forgotten about."',
+    test1Author: 'James R.',
+    test1Meta: 'Life Planner | National Life & Pacific Life | Florida',
+    test2: '"Before Mentor CRM, I had no idea what my pipeline looked like. Now I know exactly who to call every morning. I closed 5 policies last week alone."',
+    test2Author: 'Sarah M.',
+    test2Meta: 'Life Planner | Transamerica | Texas',
+    test3: '"I was spending 10 hours a week updating my spreadsheet. Now it takes me 30 seconds after a call. I finally have my weekends back."',
+    test3Author: 'Michael D.',
+    test3Meta: 'Life Planner | Prudential | California',
+
+    // Objection Killer
+    objTitle: 'You\'re Probably Thinking One of These Things',
+    obj1Q: '"I don\'t have time to learn a new system."',
+    obj1A: 'Add your first referral in 30 seconds. No training, no onboarding call needed.',
+    obj2Q: '"My spreadsheet already works."',
+    obj2A: 'Your spreadsheet doesn\'t send reminders. It doesn\'t surface prospects automatically. You don\'t notice the loss — it just doesn\'t appear.',
+    obj3Q: '"I\'ve tried CRMs before and they\'re too complicated."',
+    obj3A: 'Mentor CRM wasn\'t built for teams of 50. It was built for you — a Life Planner with a referral business. It comes pre-structured.',
+    obj4Q: '"What if I don\'t like it?"',
+    obj4A: 'Start free. No card. If you use it for 30 days and don\'t close anything extra — email us and we\'ll show you what to adjust.',
+
+    // Pricing
+    priceTitle: 'Start Free. Scale When You\'re Ready.',
+    priceSub: 'No credit card required. No sales call. No forced annual contract.',
+    tier1Name: 'STARTER',
+    tier1Price: '$0/mo',
+    tier1Feat1: 'Up to 50 Prospects',
+    tier1Feat2: 'Manual Follow-up',
+    tier1Feat3: '1 Carrier Tag',
+    tier1Feat4: 'Basic Analytics',
+    tier1Cta: 'Start Free — No Card Needed',
+    tier2Name: 'PROFESSIONAL',
+    tier2Price: '$39/mo',
+    tier2PriceYearly: 'or $390/year',
+    tier2Feat1: 'Unlimited Prospects',
+    tier2Feat2: 'Automated Sequences (3/7/14/30)',
+    tier2Feat3: 'Multi-carrier Tags',
+    tier2Feat4: 'Full Analytics',
+    tier2Feat5: 'Priority Email Support',
+    tier2Cta: 'Start Professional Free for 14 Days',
+    tier3Name: 'TEAM',
+    tier3Price: '$89/mo',
+    tier3Meta: '(3 users included)',
+    tier3Feat1: 'Unlimited Prospects',
+    tier3Feat2: 'Full Automation',
+    tier3Feat3: 'Team Analytics View',
+    tier3Feat4: 'Onboarding Call',
+    tier3Feat5: '$25/mo per add. user',
+    tier3Cta: 'Talk to Us About Team',
+
+    // FAQ
+    faqTitle: 'Frequently Asked Questions',
+    faq1Q: 'Is it really made for Life Planners or is it a generic CRM?',
+    faq1A: 'It\'s built specifically for the referral-based workflow of Life Planners. No cold lead features, no call center queues, no unnecessary complexity.',
+    faq2Q: 'I already use Salesforce/HubSpot. Why change?',
+    faq2A: 'Generic CRMs need a dedicated admin to work well. Mentor CRM works on Day 1 because it\'s pre-built for your specific business model.',
+    faq3Q: 'What happens when I hit the 50 prospect limit?',
+    faq3A: 'You can upgrade instantly. Your data is never deleted, and you can archive old prospects to free up space.',
+    faq4Q: 'Can I import my current spreadsheet?',
+    faq4A: 'Yes. We have a simple CSV import tool and a 1-page guide inside the app to help you migrate in minutes.',
+    faq5Q: 'What does "FINRA Compatible" mean in practice?',
+    faq5A: 'Our log structure aligns with common books-and-records requirements. It doesn\'t replace your firm\'s compliance system, but it makes record-keeping easier.',
+    faq6Q: 'Does it connect with carrier portals?',
+    faq6A: 'Not directly via API yet. You log your policy status manually in 15 seconds. Direct integrations are on our roadmap.',
+    faq7Q: 'Is my data secure?',
+    faq7A: 'Yes. U.S.-based servers, end-to-end encryption, and GDPR/CCPA compliance. You can export or delete your data at any time.',
+    faq8Q: 'What if I have more than 3 people on my team?',
+    faq8A: 'Our Team plan starts with 3 seats. You can add more for $25/mo each. For large agencies, contact us for custom pricing.',
+
+    // Final CTA
+    finalTitle: 'The Referral You Got This Week Will Not Wait Forever',
+    finalSub: 'Every day a warm prospect sits in your spreadsheet without a follow-up is a day closer to them buying from someone else. Start free. No card.',
+    finalCta: 'Start Free — Build Your Pipeline in 10 Minutes',
+    finalFoot: 'Joins 150+ Life Planners already using Mentor CRM. Cancel anytime.',
+
+    // Footer
+    login: 'Login',
     terms: 'Terms',
     privacy: 'Privacy',
     support: 'English Support',
-    badge1: 'GDPR & CCPA Compliant',
-    badge2: 'FINRA Compatible',
-    howItWorksTitle: 'HOW IT WORKS',
-    howStep1: 'Add a Referral',
-    howStep1Desc: 'A referral comes in. Add name, phone, and product needed. 30 seconds.',
-    howStep2: 'Set your Sequence',
-    howStep2Desc: 'Mentor CRM reminds you on day 3, 7, 14 — automatically.',
-    howStep3: 'Track your Stage',
-    howStep3Desc: 'See who\'s ready to schedule, who needs one more call.',
-    howStep4: 'Close and Record',
-    howStep4Desc: 'Log the policy and carrier. Keep the relationship active for future referrals.',
-    socialTitle: 'TRUSTED BY LIFE PLANNERS',
-    socialQuote: '"I used to track my prospects on a spreadsheet. After switching to Mentor CRM, I closed 3 policies in my first month just by following up with people I had forgotten about."',
-    socialAuthor: '[Nome], Life Planner',
-    socialMeta: 'Representing National Life & Pacific Life'
+    footerText: '© 2026 MENTOR CRM. SERVING LIFE PLANNERS IN THE USA.'
   },
   pt: {
-    badge: 'CRM CONSTRUÍDO PARA LIFE PLANNERS',
-    heroLine1: 'Suas Indicações Merecem um Sistema',
-    heroLine2: 'Melhor que uma Planilha.',
-    subHero: 'Mentor CRM ajuda Life Planners a rastrear, fazer follow-up e fechar — sem perder oportunidades. Acompanhe cada prospect entre todas as suas seguradoras.',
-    cta: 'Comece a Rastrear Prospects Grátis',
-    login: 'ENTRAR',
-    demo: 'ASSISTIR DEMO 2-MIN',
     navFeatures: 'Recursos',
-    navSolutions: 'Como Funciona',
-    navAutomation: 'Nicho',
-    navSecurity: 'Segurança',
-    feat1Title: 'Pipeline de Precisão',
-    feat1Desc: 'Visualize todo o seu pipeline num relance — do primeiro contato à apólice emitida.',
-    feat2Title: 'Sequências Automáticas',
-    feat2Desc: 'Sequências de follow-up que mantêm você na mente do cliente sem esforço manual.',
-    feat3Title: 'Lembretes de Follow-up',
-    feat3Desc: 'Configure lembretes para nunca passar mais de X dias sem falar com um prospect quente.',
-    captureTitle: 'RELACIONAMENTO PRIMEIRO',
-    captureHeadline: <>Capture indicações de qualquer lugar, <br/>para nenhum prospect ser <span className="text-zinc-400">esquecido.</span></>,
-    captureDesc: 'Integre com suas fontes de indicação. Registre nomes, telefones e produtos em menos de 30 segundos.',
-    newLeadLabel: 'Nova Indicação Recebida',
-    assignLabel: 'Rastrear',
-    distTitle: 'FEITO PARA LIFE PLANNERS',
-    distHeadline: <>Finalmente, um CRM que entende <br/>como <span className="italic font-light">você realmente trabalha.</span></>,
-    distDesc: 'Desenvolvido para profissionais independentes, não call centers. Rastreio de relacionamento que segue seu fluxo real.',
-    card1Title: 'Foco em Indicações',
-    card1Desc: 'Construído para rastrear relacionamentos e indicações, não volume de leads frios.',
-    card2Title: 'Suporte Multi-Seguradora',
-    card2Desc: 'Marque prospects por seguradora (National Life, Pacific Life, etc) e tipo de produto.',
-    card3Title: 'Follow-up Consistente',
-    card3Desc: 'Mantenha-se presente para os prospects no momento certo para bater suas metas mensais.',
-    statsTitle: 'RESULTADOS NO NICHO',
-    statsHeadline: <>Atendendo Life Planners <span className="text-blue-500">nos Estados Unidos.</span></>,
-    stat1: 'Apólices Fechadas',
-    stat1Val: '+45k',
-    stat2: 'Aumento no 1º Mês',
-    stat2Val: '35%',
-    stat3: 'Tempo Admin Salvo',
-    stat3Val: '10h/sem',
-    securityTitle: 'ARMAZENAMENTO SEGURO NOS EUA',
-    securityHeadline: <>Padrões de <span className="italic font-light">indústria regulada.</span></>,
-    securityDesc: 'Mentor CRM armazena seus dados nos EUA com criptografia ponta a ponta. Compatível com padrões FINRA/DOI e portais de seguradoras.',
-    finalCtaHeadline: <>Pare de perder apólices para <br/><span className="text-mentor-blue">sua planilha.</span></>,
-    createAccount: 'Comece a Rastrear Prospects Grátis',
-    footer: '© 2026 MENTOR CRM. ATENDENDO LIFE PLANNERS NOS EUA.',
+    navHowItWorks: 'Como Funciona',
+    navPricing: 'Preços',
+    navStartFree: 'Comece Grátis — Sem Cartão',
+    badge: 'Feito para Life Planners e Profissionais de Seguros',
+    heroHeadline: 'Pare de Perder Apólices para uma Planilha',
+    heroSub: 'O Mentor CRM oferece aos Life Planners um sistema de rastreamento de indicações que faz follow-up automaticamente — para que a única razão de um prospect não fechar seja porque ele disse não, não porque você o esqueceu.',
+    heroCtaPrimary: 'Comece Grátis — Veja seu Pipeline em 10 Minutos',
+    heroCtaSecondary: 'Assista à Demonstração de 2 Minutos →',
+    heroSocial: '★★★★★ 4.9/5 de 150 Life Planners | 45.000+ apólices rastreadas | Sem cartão de crédito',
+    
+    painTitle: 'A Planilha é Onde as Indicações Morrem',
+    painCard1Title: '"Você esqueceu do follow-up — de novo."',
+    painCard1Desc: 'Uma indicação quente de três meses atrás. Você pretendia ligar. Ainda está na linha 47 da sua planilha sem data de retorno. Eles compraram de outra pessoa.',
+    painCard2Title: '"Seu pipeline é uma mentira."',
+    painCard2Desc: 'Você não tem ideia de quais prospects estão prontos para agendar, quais esfriaram ou quantas apólices estão em andamento. Você está chutando.',
+    painCard3Title: '"Você gasta 10 horas por semana em admin."',
+    painCard3Desc: 'Atualizando planilhas. Escrevendo lembretes para você mesmo. Nada disso fecha apólices.',
+    painClosing: 'Se você gerencia seu negócio de indicações em uma planilha, você não gerencia um negócio. Você gerencia um concurso de memória — e a memória sempre perde.',
+
+    statPolicies: '45.000+ Apólices Rastradas no Mentor CRM',
+    statIncrease: '35% de Aumento Médio em Fechamentos — 1º Mês',
+    statTime: '10 horas por semana economizadas em admin',
+    statRating: '4.9★ Avaliação Média de 150 Life Planners',
+
+    howTitle: 'COMO FUNCIONA',
+    howStep1: '01 — Adicione sua Indicação — 30 Segundos',
+    howStep1Desc: 'Leva menos tempo do que digitar uma linha na sua planilha.',
+    howStep2: '02 — Sua Sequência de Follow-Up Começa Automaticamente',
+    howStep2Desc: 'Dispara lembretes nos Dias 3, 7 e 14. Você não precisa lembrar.',
+    howStep3: '03 — Veja Exatamente Quem Está Pronto para Agendar',
+    howStep3Desc: 'Frio, morno, agendado, apólice pendente. Sem mais achismos.',
+    howStep4: '04 — Feche e Registre em 15 Segundos',
+    howStep4Desc: 'Marque apólice emitida, registre a seguradora e o tipo de produto.',
+
+    featTitle: 'Rastreamento de relacionamento, automatizado.',
+    feat1Title: 'Rastreie Relacionamentos, não Leads Frios',
+    feat1Desc: 'Cada contato está ligado a quem o enviou e do que ele precisa.',
+    feat2Title: 'Marque cada Prospect por Seguradora e Produto',
+    feat2Desc: 'National Life, Pacific Life, Transamerica, Prudential — ou personalizado.',
+    feat3Title: 'Nunca Deixe um Prospect Quente Esfriar',
+    feat3Desc: 'Defina dias máximos entre contatos. O CRM os traz para o topo automaticamente.',
+    feat4Title: 'Um Pipeline Real — Não uma Planilha Colorida',
+    feat4Desc: 'Veja taxa de fechamento, conversão por seguradora e de onde vem sua receita.',
+    feat5Title: 'Sequências de Follow-Up que Rodam sem Você',
+    feat5Desc: 'Prontas para os Dias 3, 7, 14, 30. Customizadas por produto.',
+    feat6Title: 'Nunca Fique Mais de X Dias sem um Contato',
+    feat6Desc: 'Você define a regra. O sistema garante que você a cumpra.',
+
+    testTitle: 'O Que os Life Planners Estão Dizendo',
+    testSub: 'Estes não são usuários avançados de CRM. São Life Planners independentes que queriam parar de perder indicações.',
+    test1: '"Eu costumava rastrear meus prospects em uma planilha e constantemente deixava prospects quentes esfriarem. Após mudar para o Mentor CRM, fechei 3 apólices no meu primeiro mês — apenas fazendo follow-up com pessoas que eu já tinha esquecido."',
+    test1Author: 'James R.',
+    test1Meta: 'Life Planner | National Life & Pacific Life | Flórida',
+    test2: '"Antes do Mentor CRM, eu não tinha ideia de como era meu pipeline. Agora sei exatamente para quem ligar toda manhã. Fechei 5 apólices só na semana passada."',
+    test2Author: 'Sarah M.',
+    test2Meta: 'Life Planner | Transamerica | Texas',
+    test3: '"Eu gastava 10 horas por semana atualizando minha planilha. Agora levo 30 segundos após uma chamada. Finalmente tenho meus fins de semana de volta."',
+    test3Author: 'Michael D.',
+    test3Meta: 'Life Planner | Prudential | Califórnia',
+
+    objTitle: 'Você Provavelmente Está Pensando em Uma Dessas Coisas',
+    obj1Q: '"Não tenho tempo para aprender um novo sistema."',
+    obj1A: 'Adicione seu primeiro referral em 30 segundos. Sem treinamento, sem necessidade de chamada de integração.',
+    obj2Q: '"Minha planilha já funciona."',
+    obj2A: 'Sua planilha não envia lembretes. Ela não traz prospects automaticamente. Você não nota a perda — ela simplesmente não aparece.',
+    obj3Q: '"Já tentei CRMs antes e eles são muito complicados."',
+    obj3A: 'O Mentor CRM não foi feito para times de 50. Foi feito para você — um Life Planner com um negócio de indicações. Ele já vem estruturado.',
+    obj4Q: '"E se eu não gostar?"',
+    obj4A: 'Comece grátis. Sem cartão. Se usar por 30 dias e não fechar nada extra — mande um email e mostraremos o que ajustar.',
+
+    priceTitle: 'Comece Grátis. Creça Quando Estiver Pronto.',
+    priceSub: 'Sem cartão de crédito. Sem chamada de vendas. Sem contrato anual forçado.',
+    tier1Name: 'STARTER',
+    tier1Price: '$0/mês',
+    tier1Feat1: 'Até 50 Prospects',
+    tier1Feat2: 'Follow-up Manual',
+    tier1Feat3: '1 Tag de Seguradora',
+    tier1Feat4: 'Analytics Básico',
+    tier1Cta: 'Comece Grátis — Sem Cartão',
+    tier2Name: 'PROFESSIONAL',
+    tier2Price: '$39/mês',
+    tier2PriceYearly: 'ou $390/ano',
+    tier2Feat1: 'Prospectos Ilimitados',
+    tier2Feat2: 'Sequências Automáticas (3/7/14/30)',
+    tier2Feat3: 'Tags Multi-seguradora',
+    tier2Feat4: 'Analytics Completo',
+    tier2Feat5: 'Suporte Prioritário por Email',
+    tier2Cta: 'Teste Professional Grátis por 14 Dias',
+    tier3Name: 'TEAM',
+    tier3Price: '$89/mês',
+    tier3Meta: '(3 usuários inclusos)',
+    tier3Feat1: 'Prospectos Ilimitados',
+    tier3Feat2: 'Automação Completa',
+    tier3Feat3: 'Visão de Analytics do Time',
+    tier3Feat4: 'Chamada de Integração',
+    tier3Feat5: '$25/mês por usuário adicional',
+    tier3Cta: 'Fale Conosco Sobre o Plano Team',
+
+    faqTitle: 'Perguntas Frequentes',
+    faq1Q: 'É realmente feito para Life Planners ou é um CRM genérico?',
+    faq1A: 'É feito especificamente para o fluxo baseado em indicações dos Life Planners. Sem recursos de cold leads, sem filas de call center, sem complexidade desnecessária.',
+    faq2Q: 'Já uso Salesforce/HubSpot. Por que mudar?',
+    faq2A: 'CRMs genéricos precisam de um admin dedicado para funcionar bem. O Mentor CRM funciona no Dia 1 porque é pré-construído para o seu modelo de negócio.',
+    faq3Q: 'O que acontece quando atingo o limite de 50 prospects?',
+    faq3A: 'Você pode fazer o upgrade instantaneamente. Seus dados nunca são deletados, e você pode arquivar prospects antigos para liberar espaço.',
+    faq4Q: 'Posso importar minha planilha atual?',
+    faq4A: 'Sim. Temos uma ferramenta simples de importação CSV e um guia de 1 página dentro do app para ajudar na migração em minutos.',
+    faq5Q: 'O que "Compatível com FINRA" significa na prática?',
+    faq5A: 'Nossa estrutura de logs está alinhada com requisitos comuns de livros e registros. Não substitui o sistema de compliance da sua empresa, mas facilita o registro.',
+    faq6Q: 'Conecta com portais de seguradoras?',
+    faq6A: 'Não diretamente via API ainda. Você registra o status da apólice manualmente em 15 segundos. Integrações diretas estão em nosso roteiro.',
+    faq7Q: 'Meus dados estão seguros?',
+    faq7A: 'Sim. Servidores nos EUA, criptografia ponta a ponta e conformidade com GDPR/CCPA. Você pode exportar ou deletar seus dados a qualquer momento.',
+    faq8Q: 'E se eu tiver mais de 3 pessoas no time?',
+    faq8A: 'Nosso plano Team começa com 3 licenças. Você pode adicionar mais por $25/mês cada. Para grandes agências, entre em contato para preços personalizados.',
+
+    finalTitle: 'A Indicação Que Você Recebeu Esta Semana Não Esperará Para Sempre',
+    finalSub: 'Cada dia que um prospect quente fica na sua planilha sem follow-up é um dia mais perto de ele comprar de outra pessoa. Comece grátis. Sem cartão.',
+    finalCta: 'Comece Grátis — Monte seu Pipeline em 10 Minutos',
+    finalFoot: 'Junte-se a 150+ Life Planners que já usam o Mentor CRM. Cancele quando quiser.',
+
+    login: 'Entrar',
     terms: 'Termos',
     privacy: 'Privacidade',
     support: 'Suporte em Inglês',
-    badge1: 'Conformidade GDPR & CCPA',
-    badge2: 'Compatível com FINRA',
-    howItWorksTitle: 'COMO FUNCIONA',
-    howStep1: 'Adicione uma Indicação',
-    howStep1Desc: 'Uma indicação chega. Adicione nome, telefone e produto. 30 segundos.',
-    howStep2: 'Defina sua Sequência',
-    howStep2Desc: 'O Mentor CRM lembra você no dia 3, 7, 14 — automaticamente.',
-    howStep3: 'Acompanhe o Estágio',
-    howStep3Desc: 'Veja quem está pronto para agendar, quem precisa de mais uma chamada.',
-    howStep4: 'Feche e Registre',
-    howStep4Desc: 'Registre a apólice e seguradora. Mantenha o relacionamento ativo para indicações futuras.',
-    socialTitle: 'CONFIADO POR LIFE PLANNERS',
-    socialQuote: '"Eu usava uma planilha. Após mudar para o Mentor CRM, fechei 3 apólices no meu primeiro mês apenas fazendo follow-up com pessoas que eu tinha esquecido."',
-    socialAuthor: '[Nome], Life Planner',
-    socialMeta: 'Representando National Life & Pacific Life'
+    footerText: '© 2026 MENTOR CRM. ATENDENDO LIFE PLANNERS NOS EUA.'
   },
   es: {
-    badge: 'CRM CONSTRUIDO PARA LIFE PLANNERS',
-    heroLine1: 'Tus Referencias Merecen un Sistema',
-    heroLine2: 'Mejor que una Hoja de Cálculo.',
-    subHero: 'Mentor CRM ayuda a los Life Planners a rastrear, seguir y cerrar — sin perder oportunidades. Rastrea cada prospecto en todas tus compañías.',
-    cta: 'Comienza a Rastrear Prospectos Gratis',
-    login: 'ENTRAR',
-    demo: 'VER DEMO 2-MIN',
     navFeatures: 'Recursos',
-    navSolutions: 'Cómo Funciona',
-    navAutomation: 'Nicho',
-    navSecurity: 'Seguridad',
-    feat1Title: 'Pipeline de Precisión',
-    feat1Desc: 'Visualiza todo tu pipeline de un vistazo — desde el primer contacto hasta la póliza emitida.',
-    feat2Title: 'Secuencias Automáticas',
-    feat2Desc: 'Secuencias de seguimiento que te mantienen en la mente del cliente sin esfuerzo manual.',
-    feat3Title: 'Recordatorios de Seguimiento',
-    feat3Desc: 'Configura recordatorios para no pasar más de X días sin hablar con un prospecto caliente.',
-    captureTitle: 'RELACIONES PRIMERO',
-    captureHeadline: <>Captura referencias de cualquier lugar, <br/>para que ningún prospecto se <span className="text-zinc-400">pierda.</span></>,
-    captureDesc: 'Integra con tus fuentes de referencia. Registra nombres, teléfonos y productos en menos de 30 segundos.',
-    newLeadLabel: 'Nueva Referencia Recibida',
-    assignLabel: 'Rastrear',
-    distTitle: 'HECHO PARA LIFE PLANNERS',
-    distHeadline: <>Finalmente, un CRM que entiende <br/>cómo <span className="italic font-light">realmente trabajas.</span></>,
-    distDesc: 'Desarrollado para profesionales independientes, no call centers. Rastreo de relaciones que sigue tu flujo real.',
-    card1Title: 'Foco en Referencias',
-    card1Desc: 'Construido para rastrear relaciones y referencias, no volumen de leads fríos.',
-    card2Title: 'Soporte Multi-Compañía',
-    card2Desc: 'Marca prospectos por compañía (National Life, Pacific Life, etc) y tipo de producto.',
-    card3Title: 'Seguimiento Consistente',
-    card3Desc: 'Mantente presente en el momento adecuado para alcanzar tus metas mensuales.',
-    statsTitle: 'RESULTADOS EN EL NICHO',
-    statsHeadline: <>Sirviendo a Life Planners en <span className="text-blue-500">los Estados Unidos.</span></>,
-    stat1: 'Pólizas Cerradas',
-    stat1Val: '+45k',
-    stat2: 'Aumento en 1º Mes',
-    stat2Val: '35%',
-    stat3: 'Tiempo Admin Ahorrado',
-    stat3Val: '10h/sem',
-    securityTitle: 'ALMACENAMIENTO SEGURO EN EE.UU.',
-    securityHeadline: <>Estándares de la <span className="italic font-light">industria regulada.</span></>,
-    securityDesc: 'Mentor CRM almacena tus datos en EE.UU. con cifrado de extremo a extremo. Compatible con estándares FINRA/DOI y portales de compañías.',
-    finalCtaHeadline: <>Deja de perder pólizas por culpa de <br/><span className="text-mentor-blue">tu hoja de cálculo.</span></>,
-    createAccount: 'Comienza a Rastrear Prospectos Gratis',
-    footer: '© 2026 MENTOR CRM. SIRVIENDO A LIFE PLANNERS EN EE.UU.',
+    navHowItWorks: 'Cómo Funciona',
+    navPricing: 'Precios',
+    navStartFree: 'Comienza Gratis — Sin Tarjeta',
+    badge: 'Hecho para Life Planners y Profesionales de Seguros',
+    heroHeadline: 'Deja de Perder Pólizas por una Hoja de Cálculo',
+    heroSub: 'Mentor CRM les da a los Life Planners un sistema de seguimiento de referencias que hace seguimiento automáticamente — para que la única razón por la que un prospecto no cierre sea porque dijo que no, no porque lo olvidaste.',
+    heroCtaPrimary: 'Comienza Gratis — Mira tu Pipeline en 10 Minutos',
+    heroCtaSecondary: 'Mira la Demostración de 2 Minutos →',
+    heroSocial: '★★★★★ 4.9/5 de 150 Life Planners | 45,000+ pólizas rastreadas | Sin tarjeta de crédito',
+    
+    painTitle: 'La Hoja de Cálculo es Donde las Referencias mueren',
+    painCard1Title: '"Olvidaste el seguimiento — de nuevo."',
+    painCard1Desc: 'Una referencia caliente de hace tres meses. Tenías la intención de llamar. Todavía está en la fila 47 con sin fecha de seguimiento. Compraron a otra persona.',
+    painCard2Title: '"Tu pipeline es una mentira."',
+    painCard2Desc: 'No tienes idea de qué prospectos están listos para agendar, cuáles se enfriaron o cuántas pólizas están en progreso. Estás adivinando.',
+    painCard3Title: '"Pasas 10 horas a la semana en administración."',
+    painCard3Desc: 'Actualizando hojas de cálculo. Escribiendo recordatorios para ti mismo. Nada de eso cierra pólizas.',
+    painClosing: 'Si manejas tu negocio de referencias en una hoja de cálculo, no manejas un negocio. Manejas un concurso de memoria — y la memoria siempre pierde.',
+
+    statPolicies: '45,000+ Pólizas Rastreadas en Mentor CRM',
+    statIncrease: '35% de Aumento Promedio en Cierres — 1er Mes',
+    statTime: '10 horas por semana ahorradas en administración',
+    statRating: '4.9★ Calificación Promedio de 150 Life Planners',
+
+    howTitle: 'CÓMO FUNCIONA',
+    howStep1: '01 — Añade tu Referencia — 30 Segundos',
+    howStep1Desc: 'Toma menos tiempo que escribir una fila en tu hoja de cálculo.',
+    howStep2: '02 — Tu Secuencia de Seguimiento Comienza Automáticamente',
+    howStep2Desc: 'Activa recordatorios los Días 3, 7 y 14. No necesitas recordar.',
+    howStep3: '03 — Mira Exactamente Quién Está Listo para Agendar',
+    howStep3Desc: 'Frío, tibio, agendado, póliza pendiente. No más suposiciones.',
+    howStep4: '04 — Cierra y Registra en 15 Segundos',
+    howStep4Desc: 'Marca póliza emitida, registra la compañía y el tipo de producto.',
+
+    featTitle: 'Seguimiento de relaciones, automatizado.',
+    feat1Title: 'Rastrea Relaciones, no Leads Fríos',
+    feat1Desc: 'Cada contacto está vinculado a quién lo envió y qué necesita.',
+    feat2Title: 'Marca cada Prospecto por Compañía y Producto',
+    feat2Desc: 'National Life, Pacific Life, Transamerica, Prudential — o personalizado.',
+    feat3Title: 'Nunca Dejes que un Prospecto Caliente se Enfríe',
+    feat3Desc: 'Define días máximos entre contactos. El CRM los trae arriba automáticamente.',
+    feat4Title: 'Un Pipeline Real — No una Hoja de Cálculo de Colores',
+    feat4Desc: 'Mira tasa de cierre, conversión por compañía y de dónde provienen tus ingresos.',
+    feat5Title: 'Secuencias de Seguimiento que Corren sin Ti',
+    feat5Desc: 'Pre-construidas para los Días 3, 7, 14, 30. Personalizadas por producto.',
+    feat6Title: 'Nunca Pases más de X Días sin un Contacto',
+    feat6Desc: 'Tú defines la regla. El sistema asegura que la cumplas.',
+
+    testTitle: 'Lo Que los Life Planners Están Diciendo',
+    testSub: 'Estos no son usuarios avanzados de CRM. Son Life Planners independientes que querían dejar de perder referencias.',
+    test1: '"Solía rastrear mis prospectos en una hoja de cálculo y constantemente dejaba que los prospectos calientes se enfriaran. Tras cambiar a Mentor CRM, cerré 3 pólizas en mi primer mes — solo haciendo seguimiento con personas que ya había olvidado."',
+    test1Author: 'James R.',
+    test1Meta: 'Life Planner | National Life & Pacific Life | Florida',
+    test2: '"Antes de Mentor CRM, no tenía idea de cómo era mi pipeline. Ahora sé exactamente a quién llamar cada mañana. Cerré 5 pólizas solo la semana pasada."',
+    test2Author: 'Sarah M.',
+    test2Meta: 'Life Planner | Transamerica | Texas',
+    test3: '"Pasaba 10 horas a la semana actualizando mi hoja de cálculo. Ahora me toma 30 segundos tras una llamada. Finalmente tengo mis fines de semana de vuelta."',
+    test3Author: 'Michael D.',
+    test3Meta: 'Life Planner | Prudential | California',
+
+    objTitle: 'Probablemente Estás Pensando una de Estas Cosas',
+    obj1Q: '"No tengo tiempo para aprender un nuevo sistema."',
+    obj1A: 'Añade tu primera referencia en 30 segundos. Sin formación, sin necesidad de llamada de integración.',
+    obj2Q: '"Mi hoja de cálculo ya funciona."',
+    obj2A: 'Tu hoja de cálculo no envía recordatorios. No trae prospectos automáticamente. No notas la pérdida — simplemente no aparece.',
+    obj3Q: '"He probado CRMs antes y son muy complicados."',
+    obj3A: 'Mentor CRM no fue construido para equipos de 50. Fue construido para ti — un Life Planner con un negocio de referencias. Ya viene estructurado.',
+    obj4Q: '"¿Y si no me gusta?"',
+    obj4A: 'Comienza gratis. Sin tarjeta. Si lo usas por 30 días y no cierras nada extra — envíanos un email y te mostraremos qué ajustar.',
+
+    priceTitle: 'Comienza Gratis. Escala Cuando Estés Listo.',
+    priceSub: 'Sin tarjeta de crédito. Sin llamada de ventas. Sin contrato anual forzado.',
+    tier1Name: 'STARTER',
+    tier1Price: '$0/mes',
+    tier1Feat1: 'Hasta 50 Prospectos',
+    tier1Feat2: 'Seguimiento Manual',
+    tier1Feat3: '1 Etiqueta de Compañía',
+    tier1Feat4: 'Analytics Básico',
+    tier1Cta: 'Comienza Gratis — Sin Tarjeta',
+    tier2Name: 'PROFESSIONAL',
+    tier2Price: '$39/mes',
+    tier2PriceYearly: 'o $390/año',
+    tier2Feat1: 'Prospectos Ilimitados',
+    tier2Feat2: 'Secuencias Automáticas (3/7/14/30)',
+    tier2Feat3: 'Etiquetas Multi-compañía',
+    tier2Feat4: 'Analytics Completo',
+    tier2Feat5: 'Soporte Prioritario por Email',
+    tier2Cta: 'Prueba Professional Gratis por 14 Días',
+    tier3Name: 'TEAM',
+    tier3Price: '$89/mes',
+    tier3Meta: '(3 usuarios incluidos)',
+    tier3Feat1: 'Prospectos Ilimitados',
+    tier3Feat2: 'Automatización Completa',
+    tier3Feat3: 'Vista de Analytics del Equipo',
+    tier3Feat4: 'Llamada de Integración',
+    tier3Feat5: '$25/mes por usuario adicional',
+    tier3Cta: 'Háblanos del Plan Team',
+
+    faqTitle: 'Preguntas Frecuentes',
+    faq1Q: '¿Realmente está hecho para Life Planners o es un CRM genérico?',
+    faq1A: 'Está construido específicamente para el flujo basado en referencias de los Life Planners. Sin funciones de leads fríos, sin colas de call center, sin complejidad innecesaria.',
+    faq2Q: 'Ya uso Salesforce/HubSpot. ¿Por qué cambiar?',
+    faq2A: 'Los CRMs genéricos necesitan un admin dedicado para funcionar bien. Mentor CRM funciona el Día 1 porque está pre-construido para tu modelo de negocio.',
+    faq3Q: '¿Qué pasa cuando alcanzo el límite de 50 prospectos?',
+    faq3A: 'Puedes hacer el upgrade al instante. Tus datos nunca se borran, y puedes archivar prospectos antiguos para liberar espacio.',
+    faq4Q: '¿Puedo importar mi hoja de cálculo actual?',
+    faq4A: 'Sí. Tenemos una herramienta simple de importación CSV e una guía de 1 página dentro de la app para ayudar en la migración en minutos.',
+    faq5Q: '¿Qué significa "Compatible con FINRA" en la práctica?',
+    faq5A: 'Nuestra estructura de registros se alinea con requisitos comunes de libros y registros. No reemplaza el sistema de cumplimiento de tu empresa, mas facilita el registro.',
+    faq6Q: '¿Conecta con portales de compañías?',
+    faq6A: 'No directamente vía API todavía. Registras el estado de la póliza manualmente en 15 segundos. Las integraciones directas estão en nuestra hoja de ruta.',
+    faq7Q: '¿Están mis datos seguros?',
+    faq7A: 'Sí. Servidores en EE.UU., cifrado de extremo a extremo y cumplimiento de GDPR/CCPA. Puedes exportar o borrar tus datos en cualquier momento.',
+    faq8Q: '¿Qué si tengo más de 3 personas en el equipo?',
+    faq8A: 'Nuestro plan Team comienza con 3 licencias. Puedes añadir más por $25/mo cada una. Para grandes agencias, contáctanos para precios personalizados.',
+
+    finalTitle: 'La Referencia Que Recibiste Esta Semana No Esperará Para Siempre',
+    finalSub: 'Cada día que un prospecto tibio se queda en tu hoja de cálculo sin seguimiento es un día más cerca de que compre a otra persona. Comienza gratis. Sin tarjeta.',
+    finalCta: 'Comienza Gratis — Monta tu Pipeline en 10 Minutos',
+    finalFoot: 'Únete a 150+ Life Planners que ya usan Mentor CRM. Cancela en cualquier momento.',
+
+    login: 'Login',
     terms: 'Términos',
     privacy: 'Privacidad',
     support: 'Soporte en Inglés',
-    badge1: 'Conformidad GDPR & CCPA',
-    badge2: 'Compatible con FINRA',
-    howItWorksTitle: 'CÓMO FUNCIONA',
-    howStep1: 'Añade una Referencia',
-    howStep1Desc: 'Llega una referencia. Añade nombre, teléfono y producto. 30 segundos.',
-    howStep2: 'Define tu Secuencia',
-    howStep2Desc: 'Mentor CRM te recuerda en el día 3, 7, 14 — automáticamente.',
-    howStep3: 'Sigue el Estado',
-    howStep3Desc: 'Mira quién está listo para agendar, quién necesita una llamada más.',
-    howStep4: 'Cierra y Registra',
-    howStep4Desc: 'Registra la póliza y la compañía. Mantén la relación activa para futuras referencias.',
-    socialTitle: 'CONFIADO POR LIFE PLANNERS',
-    socialQuote: '"Usaba una hoja de cálculo. Después de cambiar a Mentor CRM, cerré 3 pólizas en mi primer mes solo haciendo seguimiento con personas que había olvidado."',
-    socialAuthor: '[Nome], Life Planner',
-    socialMeta: 'Representando a National Life & Pacific Life'
+    footerText: '© 2026 MENTOR CRM. SIRVIENDO A LIFE PLANNERS EN EE.UU.'
   }
 };
 
@@ -256,19 +465,20 @@ export function HomeClient() {
 
           {/* Center Menu */}
           <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
-            {[t.navFeatures, t.navSolutions, t.navAutomation, t.navSecurity].map((link, i) => {
-              const ids = ['features', 'solutions', 'niche', 'security'];
-              return (
-                <Link
-                  key={link}
-                  href={`#${ids[i]}`}
-                    className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 hover:text-mentor-blue transition-colors relative group"
-                >
-                  {link}
-                  <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-mentor-blue transition-all group-hover:w-full"></span>
-                </Link>
-              );
-            })}
+            {[
+              { label: t.navFeatures, href: '#features' },
+              { label: t.navHowItWorks, href: '#how-it-works' },
+              { label: t.navPricing, href: '#pricing' }
+            ].map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 hover:text-mentor-blue transition-colors relative group"
+              >
+                {link.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-mentor-blue transition-all group-hover:w-full"></span>
+              </Link>
+            ))}
           </div>
 
           {/* CTA Buttons */}
@@ -280,11 +490,8 @@ export function HomeClient() {
               href="/login"
               className="h-10 px-6 bg-zinc-900 text-[10px] font-black uppercase tracking-[0.3em] text-white hover:bg-mentor-blue transition-all rounded-full flex items-center justify-center whitespace-nowrap shadow-lg"
             >
-              {t.demo}
+              {t.navStartFree}
             </Link>
-            
-            <div className="h-6 w-[1px] bg-zinc-200 hidden sm:block mx-1" />
-            
             <LocaleSelector />
           </div>
         </div>
@@ -292,240 +499,242 @@ export function HomeClient() {
 
       <main className="relative z-10 pt-20">
 
-        {/* HERO: CRYSTAL COMMAND CENTER */}
-        <section className="min-h-screen flex flex-col items-center justify-center px-6 relative">
-          <div className="max-w-7xl w-full text-center relative z-10">
-
+        {/* HERO SECTION */}
+        <section className="relative pt-44 pb-32 px-6 overflow-hidden">
+          <div className="max-w-7xl mx-auto text-center relative z-10">
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mb-8 inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white border border-zinc-200 shadow-sm"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 text-mentor-blue mb-8"
             >
-              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] font-black tracking-[0.4em] text-zinc-800 uppercase leading-none">{t.badge}</span>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mentor-blue opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-mentor-blue"></span>
+              </span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em]">{t.badge}</span>
             </motion.div>
 
             <motion.h1
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-[clamp(3rem,9vw,6.5rem)] font-bold leading-[0.9] tracking-tight text-zinc-900 mb-10"
+              className="text-6xl md:text-8xl font-black text-zinc-900 leading-[0.9] tracking-tighter mb-8 max-w-5xl mx-auto"
             >
-              {t.heroLine1} <br />
-              <span className="text-mentor-blue italic font-light">{t.heroLine2}</span>
+              {t.heroHeadline}
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="max-w-2xl mx-auto text-zinc-500 text-lg md:text-xl font-medium leading-relaxed mb-16"
+              className="max-w-2xl mx-auto text-zinc-500 text-lg md:text-xl leading-relaxed mb-12"
             >
-              {t.subHero}
+              {t.heroSub}
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="flex flex-col md:flex-row items-center justify-center gap-6"
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
             >
               <Link
                 href="/login"
-                className="group relative inline-flex h-20 items-center gap-6 px-12 bg-zinc-900 text-[11px] font-black uppercase tracking-[0.4em] text-white hover:bg-mentor-blue transition-all duration-500 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
+                className="w-full sm:w-auto px-8 py-5 bg-zinc-900 text-white font-black text-sm uppercase tracking-widest rounded-full hover:bg-mentor-blue hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-zinc-900/20"
               >
-                <span>{t.cta}</span>
-                <ChevronRight className="h-4 w-4 transform group-hover:translate-x-2 transition-transform" />
+                {t.heroCtaPrimary}
               </Link>
               <Link
                 href="#"
-                className="group relative inline-flex h-20 items-center gap-6 px-12 bg-white border border-zinc-200 text-[11px] font-black uppercase tracking-[0.4em] text-zinc-900 hover:border-mentor-blue transition-all duration-500 rounded-[2.5rem] shadow-sm"
+                className="w-full sm:w-auto px-8 py-5 bg-white text-zinc-900 font-black text-sm uppercase tracking-widest rounded-full border border-zinc-200 hover:border-mentor-blue hover:text-mentor-blue transition-all"
               >
-                <span>{t.demo}</span>
-                <div className="h-8 w-8 rounded-full bg-zinc-100 flex items-center justify-center group-hover:bg-mentor-blue transition-colors">
-                  <ChevronRight className="h-4 w-4 text-zinc-400 group-hover:text-white" />
-                </div>
+                {t.heroCtaSecondary}
               </Link>
             </motion.div>
-          </div>
 
-          {/* AS SEEN ON / TRUSTED BY LOGOS */}
-          <div className="absolute bottom-10 left-0 w-full overflow-hidden opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
-             <div className="flex items-center justify-center gap-12 md:gap-24 px-6 animate-pulse">
-                <span className="text-xl font-black tracking-tighter">National Life Group</span>
-                <span className="text-xl font-bold tracking-tight">PACIFIC LIFE</span>
-                <span className="text-xl font-serif italic">Transamerica</span>
-                <span className="text-xl font-black">Prudential</span>
-             </div>
-          </div>
-
-
-          {/* Floating UI Elements Decoration */}
-          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+            {/* Social Proof Text */}
             <motion.div
-              animate={{ y: [0, -20, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-1/4 right-[5%] bg-white/40 backdrop-blur-xl border border-white/60 p-6 rounded-2xl shadow-xl hidden xl:block"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-[11px] font-bold text-zinc-400 font-black uppercase tracking-[0.2em]"
             >
-              <div className="flex gap-4 mb-4">
-                <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center"><Zap className="h-4 w-4 text-mentor-blue" /></div>
-                <div className="space-y-1">
-                  <div className="h-2 w-20 bg-zinc-200 rounded" />
-                  <div className="h-2 w-12 bg-zinc-100 rounded" />
-                </div>
-              </div>
-              <div className="h-[2px] w-full bg-zinc-100" />
+              {t.heroSocial}
             </motion.div>
           </div>
         </section>
 
 
+        {/* SECTION 3: PAIN AMPLIFICATION */}
+        <section className="py-32 px-6 bg-white relative overflow-hidden">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-20">
+              <h2 className="text-[10px] font-black tracking-[0.4em] text-mentor-blue uppercase mb-6">{t.painTitle}</h2>
+              <div className="h-1 bg-zinc-100 w-24 mx-auto rounded-full" />
+            </div>
 
-        {/* SECTION: NICHE - BUILT FOR LIFE PLANNERS */}
-        <section id="niche" className="py-40 px-6">
-          <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
-            <h2 className="text-[10px] font-black tracking-[0.5em] text-mentor-blue uppercase mb-6">{t.distTitle}</h2>
-            <h3 className="text-4xl md:text-5xl font-bold tracking-tight mb-10 max-w-3xl">
-              {t.distHeadline}
-            </h3>
-            <p className="text-lg text-zinc-500 font-medium leading-relaxed mb-16 max-w-2xl">
-              {t.distDesc}
-            </p>
-
-            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
               {[
-                { title: t.card1Title, icon: <Users />, desc: t.card1Desc },
-                { title: t.card2Title, icon: <Workflow />, desc: t.card2Desc },
-                { title: t.card3Title, icon: <Zap />, desc: t.card3Desc }
+                { title: t.painCard1Title, desc: t.painCard1Desc, icon: <AlertCircle className="h-8 w-8 text-red-500" /> },
+                { title: t.painCard2Title, desc: t.painCard2Desc, icon: <BarChart3 className="h-8 w-8 text-zinc-400" /> },
+                { title: t.painCard3Title, desc: t.painCard3Desc, icon: <Clock className="h-8 w-8 text-zinc-400" /> }
               ].map((card, i) => (
-                <div key={i} className="bg-white/70 backdrop-blur-2xl border border-white/60 p-12 rounded-[3rem] shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-500 text-left">
-                  <div className="h-14 w-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-8">
-                    <div className="text-mentor-blue">{card.icon}</div>
-                  </div>
-                  <h4 className="text-lg font-bold mb-4 tracking-tight">{card.title}</h4>
-                  <p className="text-sm text-zinc-400 font-medium leading-relaxed">{card.desc}</p>
+                <div key={i} className="bg-zinc-50 border border-zinc-100 p-10 rounded-[2.5rem] hover:shadow-xl transition-all group">
+                  <div className="mb-8">{card.icon}</div>
+                  <h3 className="text-2xl font-bold mb-4 tracking-tight">{card.title}</h3>
+                  <p className="text-zinc-500 font-medium leading-relaxed">{card.desc}</p>
                 </div>
               ))}
             </div>
+
+            <p className="text-center text-xl md:text-2xl font-bold text-zinc-900 max-w-3xl mx-auto italic leading-relaxed">
+              "{t.painClosing}"
+            </p>
           </div>
         </section>
 
-        {/* SECTION: SOCIAL PROOF / TESTIMONIAL */}
-        <section className="py-40 px-6 bg-white overflow-hidden">
-          <div className="max-w-5xl mx-auto">
-             <div className="flex flex-col items-center text-center space-y-12">
-                <div className="h-1 bg-zinc-100 w-24 rounded-full" />
-                <h2 className="text-[10px] font-black tracking-[0.5em] text-zinc-400 uppercase">{t.socialTitle}</h2>
-                <p className="text-2xl md:text-3xl font-medium italic leading-relaxed text-zinc-800">
-                  {t.socialQuote}
-                </p>
-                <div className="flex flex-col items-center">
-                   <div className="h-16 w-16 rounded-full bg-zinc-200 mb-4 overflow-hidden">
-                      <img src="https://ui-avatars.com/api/?name=Life+Planner&background=0055A4&color=fff" alt="Life Planner" className="w-full h-full object-cover" />
-                   </div>
-                   <span className="text-sm font-black uppercase tracking-widest">{t.socialAuthor}</span>
-                   <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-1">{t.socialMeta}</span>
-                </div>
-             </div>
-          </div>
-        </section>
-
-        {/* SECTION: HOW IT WORKS */}
-        <section id="solutions" className="py-40 px-6 bg-zinc-50">
-           <div className="max-w-7xl mx-auto">
-              <div className="flex flex-col items-center text-center mb-20">
-                <h2 className="text-[10px] font-black tracking-[0.5em] text-mentor-blue uppercase mb-6">{t.howItWorksTitle}</h2>
-                <h3 className="text-4xl md:text-5xl font-bold tracking-tight">4 steps to a consistent pipeline</h3>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                 {[
-                   { title: t.howStep1, desc: t.howStep1Desc, icon: "01" },
-                   { title: t.howStep2, desc: t.howStep2Desc, icon: "02" },
-                   { title: t.howStep3, desc: t.howStep3Desc, icon: "03" },
-                   { title: t.howStep4, desc: t.howStep4Desc, icon: "04" }
-                 ].map((step, i) => (
-                   <div key={i} className="relative group p-8 bg-white border border-zinc-100 rounded-[2rem] shadow-sm hover:shadow-lg transition-all">
-                      <span className="text-6xl font-black text-zinc-50 group-hover:text-mentor-blue/5 transition-colors absolute top-4 right-8 select-none">{step.icon}</span>
-                      <h4 className="text-lg font-bold mb-4 relative z-10">{step.title}</h4>
-                      <p className="text-sm text-zinc-500 leading-relaxed font-medium relative z-10">{step.desc}</p>
-                   </div>
-                 ))}
-              </div>
-           </div>
-        </section>
-
-        {/* SECTION: FEATURES AS BENEFITS */}
-        <section id="features" className="py-40 px-6 bg-white relative">
-          <div className="max-w-7xl mx-auto flex flex-col items-center text-center mb-20">
-            <h2 className="text-[10px] font-black tracking-[0.5em] text-mentor-blue uppercase mb-6">{t.navFeatures}</h2>
-            <h3 className="text-4xl md:text-5xl font-bold tracking-tight">Relationship tracking, automated.</h3>
-          </div>
-
-          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-             {[
-               { title: t.feat1Title, desc: t.feat1Desc, icon: <BarChart3 /> },
-               { title: t.feat2Title, desc: t.feat2Desc, icon: <Workflow /> },
-               { title: t.feat3Title, desc: t.feat3Desc, icon: <Zap /> }
-             ].map((feat, i) => (
-               <div key={i} className="flex flex-col items-center text-center group">
-                 <div className="h-16 w-16 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center justify-center mb-8 group-hover:bg-mentor-blue group-hover:text-white transition-all shadow-sm">
-                   {feat.icon}
-                 </div>
-                 <h4 className="text-xl font-bold mb-4 tracking-tight">{feat.title}</h4>
-                 <p className="text-zinc-500 font-medium leading-relaxed">{feat.desc}</p>
-               </div>
-             ))}
-          </div>
-        </section>
-
-        {/* STATS: DATA COMMAND */}
-        <section id="stats" className="py-40 px-6 bg-zinc-900 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_20%_30%,#0055A4_0%,transparent_50%)]"></div>
-
-          <div className="max-w-7xl mx-auto relative z-10">
-            <div className="flex flex-col items-center text-center mb-20">
-              <h2 className="text-[10px] font-black tracking-[0.5em] text-blue-400 uppercase mb-6">{t.statsTitle}</h2>
-              <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-8">{t.statsHeadline}</h3>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
+        {/* SECTION 4: STATS BAR */}
+        <section className="py-20 bg-zinc-900 overflow-hidden relative">
+          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_50%_50%,#0055A4_0%,transparent_70%)]" />
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
               {[
-                { label: t.stat1, val: t.stat1Val },
-                { label: t.stat2, val: t.stat2Val },
-                { label: t.stat3, val: t.stat3Val }
+                { label: t.statPolicies, val: '45k+' },
+                { label: t.statIncrease, val: '35%' },
+                { label: t.statTime, val: '10h' },
+                { label: t.statRating, val: '4.9★' }
               ].map((stat, i) => (
-                <div key={i} className="flex flex-col items-center">
-                  <div className="h-2 w-2 rounded-full bg-blue-500 mb-6 shadow-[0_0_10px_#0055A4]" />
-                  <h4 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em] mb-4">{stat.label}</h4>
-                  <p className="text-7xl font-light tracking-tighter text-white">{stat.val}</p>
+                <div key={i} className="text-center border-l border-white/10 first:border-0 pl-8 first:pl-0">
+                  <p className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tighter">{stat.val}</p>
+                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{stat.label}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* SECURITY: TRUST ASSET */}
-        <section id="security" className="py-40 px-6">
-          <div className="max-w-5xl mx-auto bg-white border border-zinc-200 rounded-[4rem] p-12 md:p-24 relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 right-0 w-[40%] h-full bg-blue-500/5 -rotate-12 translate-x-1/2 rounded-full"></div>
+        {/* SECTION 5: HOW IT WORKS */}
+        <section id="how-it-works" className="py-32 px-6 bg-zinc-50">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-24">
+              <h2 className="text-[10px] font-black tracking-[0.4em] text-mentor-blue uppercase mb-6">{t.howTitle}</h2>
+              <div className="h-1 bg-zinc-200 w-24 mx-auto rounded-full" />
+            </div>
 
-            <div className="relative z-10 flex flex-col md:flex-row items-center gap-16">
-              <div className="h-32 w-32 bg-zinc-900 rounded-[2rem] flex items-center justify-center shrink-0 shadow-2xl">
-                <Lock className="h-12 w-12 text-white" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                { title: t.howStep1, desc: t.howStep1Desc },
+                { title: t.howStep2, desc: t.howStep2Desc },
+                { title: t.howStep3, desc: t.howStep3Desc },
+                { title: t.howStep4, desc: t.howStep4Desc }
+              ].map((step, i) => (
+                <div key={i} className="relative p-8 bg-white rounded-[2rem] border border-zinc-100 shadow-sm hover:shadow-lg transition-all">
+                  <h3 className="text-lg font-black mb-4 leading-tight">{step.title}</h3>
+                  <p className="text-zinc-500 font-medium text-sm leading-relaxed">{step.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 6: FEATURES */}
+        <section id="features" className="py-32 px-6 bg-white">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-20 text-center">
+              <h2 className="text-[10px] font-black tracking-[0.4em] text-mentor-blue uppercase mb-6 tracking-[0.5em]">{t.featTitle}</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+              {[
+                { title: t.feat1Title, desc: t.feat1Desc, icon: <Users /> },
+                { title: t.feat2Title, desc: t.feat2Desc, icon: <Target /> },
+                { title: t.feat3Title, desc: t.feat3Desc, icon: <Clock /> },
+                { title: t.feat4Title, desc: t.feat4Desc, icon: <BarChart3 /> },
+                { title: t.feat5Title, desc: t.feat5Desc, icon: <Workflow /> },
+                { title: t.feat6Title, desc: t.feat6Desc, icon: <ShieldCheck /> }
+              ].map((feat, i) => (
+                <div key={i} className="p-8 border border-zinc-50 rounded-[2rem] hover:bg-zinc-50 transition-all group">
+                  <div className="h-14 w-14 bg-zinc-900 text-white rounded-2xl flex items-center justify-center mb-8 group-hover:bg-mentor-blue transition-colors shadow-lg">
+                    {React.cloneElement(feat.icon as React.ReactElement<any>, { className: 'h-6 w-6' })}
+                  </div>
+                  <h3 className="text-xl font-bold mb-4 tracking-tight">{feat.title}</h3>
+                  <p className="text-zinc-500 font-medium leading-relaxed text-sm">{feat.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 7: TESTIMONIALS */}
+        <section className="py-32 px-6 bg-zinc-900 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-mentor-blue/10 rounded-full blur-[120px]" />
+          <div className="max-w-7xl mx-auto relative z-10">
+            <div className="text-center mb-24">
+              <h2 className="text-[10px] font-black tracking-[0.4em] text-blue-400 uppercase mb-6">{t.testTitle}</h2>
+              <p className="text-zinc-400 max-w-xl mx-auto font-medium">{t.testSub}</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[
+                { quote: t.test1, author: t.test1Author, meta: t.test1Meta },
+                { quote: t.test2, author: t.test2Author, meta: t.test2Meta },
+                { quote: t.test3, author: t.test3Author, meta: t.test3Meta }
+              ].map((test, i) => (
+                <div key={i} className="bg-white/5 border border-white/10 p-10 rounded-[3rem] backdrop-blur-sm">
+                  <div className="flex gap-1 mb-6">
+                    {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-yellow-500 text-yellow-500" />)}
+                  </div>
+                  <p className="text-white/80 font-medium leading-relaxed mb-8 italic">"{test.quote}"</p>
+                  <div>
+                    <p className="text-white font-black uppercase text-[11px] tracking-widest">{test.author}</p>
+                    <p className="text-zinc-500 text-[10px] font-bold mt-1 uppercase leading-tight">{test.meta}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 8: OBJECTION KILLER */}
+        <section className="py-32 px-6 bg-white">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-center text-[10px] font-black tracking-[0.4em] text-mentor-blue uppercase mb-20">{t.objTitle}</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              {[
+                { q: t.obj1Q, a: t.obj1A },
+                { q: t.obj2Q, a: t.obj2A },
+                { q: t.obj3Q, a: t.obj3A },
+                { q: t.obj4Q, a: t.obj4A }
+              ].map((obj, i) => (
+                <div key={i} className="space-y-4">
+                  <h3 className="text-lg font-black tracking-tight">{obj.q}</h3>
+                  <p className="text-zinc-500 font-medium leading-relaxed text-[15px]">{obj.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 9: COMPLIANCE & TRUST */}
+        <section className="py-24 px-6 bg-zinc-50">
+          <div className="max-w-5xl mx-auto bg-white border border-zinc-200 rounded-[3rem] p-12 md:p-20 shadow-xl overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-500/5 -rotate-12 translate-x-1/2 rounded-full" />
+            <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
+              <div className="h-24 w-24 bg-zinc-900 rounded-3xl flex items-center justify-center shrink-0 shadow-2xl">
+                <ShieldCheck className="h-10 w-10 text-white" />
               </div>
               <div>
-                <h2 className="text-[10px] font-black tracking-[0.5em] text-mentor-blue uppercase mb-6">{t.securityTitle}</h2>
-                <h3 className="text-3xl font-bold tracking-tight mb-6">{t.securityHeadline}</h3>
-                <p className="text-zinc-500 font-medium leading-relaxed max-w-xl">
-                  {t.securityDesc}
+                <h2 className="text-2xl font-black mb-4">Enterprise-Grade Security for Independent Planners</h2>
+                <p className="text-zinc-500 font-medium max-w-xl">
+                  Mentor CRM uses 256-bit encryption and U.S.-based servers. Our logs are pre-structured to help with FINRA books-and-records inquiries. Your client data is yours — export it any time.
                 </p>
-                <div className="flex gap-8 mt-10">
-                  <span className="text-[9px] font-black tracking-widest text-zinc-400 uppercase flex items-center gap-2">
-                    <ShieldCheck className="h-4 w-4 text-emerald-500" /> {t.badge1}
+                <div className="flex flex-wrap gap-6 mt-8">
+                  <span className="flex items-center gap-2 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500" /> AES-256 Encrypted
                   </span>
-                  <span className="text-[9px] font-black tracking-widest text-zinc-400 uppercase flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500" /> {t.badge2}
+                  <span className="flex items-center gap-2 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500" /> Daily Cloud Backups
                   </span>
                 </div>
               </div>
@@ -533,34 +742,145 @@ export function HomeClient() {
           </div>
         </section>
 
-        {/* FINAL CTA: THE CALL TO ACTION */}
-        <section className="py-20 px-6 text-center">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-10">
-              {t.finalCtaHeadline}
-            </h2>
-            <Link
-              href="/login"
-              className="group relative inline-flex h-20 items-center justify-center px-16 bg-zinc-900 text-[11px] font-black uppercase tracking-[0.5em] text-white hover:bg-mentor-blue transition-all duration-500 rounded-full shadow-2xl"
-            >
-              {t.createAccount}
-            </Link>
+        {/* SECTION 10: PRICING */}
+        <section id="pricing" className="py-32 px-6 bg-white">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-24">
+              <h2 className="text-[10px] font-black tracking-[0.4em] text-mentor-blue uppercase mb-6">{t.priceTitle}</h2>
+              <p className="text-zinc-500 font-medium">{t.priceSub}</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Tier 1 */}
+              <div className="p-12 border border-zinc-100 rounded-[3rem] hover:shadow-2xl transition-all flex flex-col">
+                <h3 className="text-[11px] font-black tracking-[0.3em] text-zinc-400 uppercase mb-8">{t.tier1Name}</h3>
+                <p className="text-5xl font-black tracking-tighter mb-10">{t.tier1Price}</p>
+                <div className="space-y-4 mb-12 flex-1">
+                  {[t.tier1Feat1, t.tier1Feat2, t.tier1Feat3, t.tier1Feat4].map((f, i) => (
+                    <div key={i} className="flex items-center gap-3 text-sm font-medium text-zinc-600">
+                      <Check className="h-4 w-4 text-emerald-500" /> {f}
+                    </div>
+                  ))}
+                </div>
+                <Link href="/login" className="w-full py-4 bg-zinc-900 border border-zinc-900 text-white rounded-full text-center text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-zinc-900 transition-all">
+                  {t.tier1Cta}
+                </Link>
+              </div>
+
+              {/* Tier 2 - Featured */}
+              <div className="p-12 border-2 border-mentor-blue rounded-[3rem] shadow-2xl scale-105 relative z-10 flex flex-col bg-white">
+                <div className="absolute top-0 right-12 -translate-y-1/2 bg-mentor-blue text-white px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg">Most Popular</div>
+                <h3 className="text-[11px] font-black tracking-[0.3em] text-mentor-blue uppercase mb-8">{t.tier2Name}</h3>
+                <div className="mb-10">
+                  <p className="text-5xl font-black tracking-tighter">{t.tier2Price}</p>
+                  <p className="text-[11px] font-bold text-zinc-400 mt-1">{t.tier2PriceYearly}</p>
+                </div>
+                <div className="space-y-4 mb-12 flex-1">
+                  {[t.tier2Feat1, t.tier2Feat2, t.tier2Feat3, t.tier2Feat4, t.tier2Feat5].map((f, i) => (
+                    <div key={i} className="flex items-center gap-3 text-sm font-bold text-zinc-900">
+                      <Check className="h-4 w-4 text-mentor-blue" /> {f}
+                    </div>
+                  ))}
+                </div>
+                <Link href="/login" className="w-full py-5 bg-mentor-blue text-white rounded-full text-center text-[10px] font-black uppercase tracking-widest hover:bg-zinc-900 transition-all shadow-xl shadow-mentor-blue/20">
+                  {t.tier2Cta}
+                </Link>
+              </div>
+
+              {/* Tier 3 */}
+              <div className="p-12 border border-zinc-100 rounded-[3rem] hover:shadow-2xl transition-all flex flex-col">
+                <h3 className="text-[11px] font-black tracking-[0.3em] text-zinc-400 uppercase mb-8">{t.tier3Name}</h3>
+                <div className="mb-10">
+                  <p className="text-5xl font-black tracking-tighter">{t.tier3Price}</p>
+                  <p className="text-[11px] font-bold text-zinc-400 mt-1">{t.tier3Meta}</p>
+                </div>
+                <div className="space-y-4 mb-12 flex-1">
+                  {[t.tier3Feat1, t.tier3Feat2, t.tier3Feat3, t.tier3Feat4, t.tier3Feat5].map((f, i) => (
+                    <div key={i} className="flex items-center gap-3 text-sm font-medium text-zinc-600">
+                      <Check className="h-4 w-4 text-zinc-400" /> {f}
+                    </div>
+                  ))}
+                </div>
+                <Link href="/login" className="w-full py-4 bg-white border border-zinc-200 text-zinc-900 rounded-full text-center text-[10px] font-black uppercase tracking-widest hover:border-zinc-900 transition-all">
+                  {t.tier3Cta}
+                </Link>
+              </div>
+            </div>
           </div>
+        </section>
+
+        {/* SECTION 11: FAQ */}
+        <section className="py-32 px-6 bg-zinc-50">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-[10px] font-black tracking-[0.4em] text-mentor-blue uppercase mb-20 text-center">{t.faqTitle}</h2>
+            <div className="grid grid-cols-1 gap-6">
+              {[
+                { q: t.faq1Q, a: t.faq1A },
+                { q: t.faq2Q, a: t.faq2A },
+                { q: t.faq3Q, a: t.faq3A },
+                { q: t.faq4Q, a: t.faq4A },
+                { q: t.faq5Q, a: t.faq5A },
+                { q: t.faq6Q, a: t.faq6A },
+                { q: t.faq7Q, a: t.faq7A },
+                { q: t.faq8Q, a: t.faq8A }
+              ].map((faq, i) => (
+                <div key={i} className="bg-white border border-zinc-200 p-8 rounded-[2rem] shadow-sm">
+                  <h3 className="text-base font-black tracking-tight mb-4">{faq.q}</h3>
+                  <p className="text-zinc-500 font-medium text-sm leading-relaxed">{faq.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 12: FINAL CTA */}
+        <section className="py-40 px-6 relative overflow-hidden bg-zinc-900">
+           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#0055A4_0%,transparent_70%)] opacity-30" />
+           <div className="max-w-4xl mx-auto text-center relative z-10">
+              <h2 className="text-4xl md:text-6xl font-black text-white leading-tight mb-8 tracking-tighter">
+                {t.finalTitle}
+              </h2>
+              <p className="text-zinc-400 text-lg md:text-xl font-medium mb-12 max-w-2xl mx-auto">
+                {t.finalSub}
+              </p>
+              <Link
+                href="/login"
+                className="inline-flex h-20 items-center px-12 bg-white text-zinc-900 text-[11px] font-black uppercase tracking-[0.4em] rounded-full hover:bg-mentor-blue hover:text-white transition-all shadow-2xl scale-110 mb-8"
+              >
+                {t.finalCta}
+              </Link>
+              <p className="text-zinc-500 text-[10px] uppercase font-black tracking-widest">{t.finalFoot}</p>
+           </div>
         </section>
 
       </main>
 
-      <footer className="py-20 px-6 border-t border-zinc-200 relative z-10 bg-white">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
-          <div className="flex flex-col items-center md:items-start gap-6">
-            <img src="/logo.png" alt="Mentor CRM" className="h-20 w-auto opacity-80" />
-            <p className="text-[10px] font-bold text-zinc-400 tracking-[0.3em] uppercase">{t.footer}</p>
+      {/* SECTION 13: FOOTER */}
+      <footer className="py-24 px-6 bg-white border-t border-zinc-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-16 mb-20">
+            <div className="flex flex-col items-center md:items-start gap-8">
+              <img src="/logo.png" alt="Mentor CRM" className="h-16 w-auto grayscale opacity-50 contrast-125" />
+              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest max-w-[200px] text-center md:text-left leading-relaxed">
+                {t.footerText}
+              </p>
+            </div>
+            
+            <div className="flex gap-12 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
+              <Link href="/terms" className="hover:text-mentor-blue transition-colors">{t.terms}</Link>
+              <Link href="/privacy" className="hover:text-mentor-blue transition-colors">{t.privacy}</Link>
+              <Link href="#" className="hover:text-mentor-blue transition-colors">{t.support}</Link>
+              <Link href="/login" className="hover:text-mentor-blue transition-colors">{t.login}</Link>
+            </div>
           </div>
-
-          <div className="flex gap-12 text-[13px] font-bold text-zinc-500 tracking-[0.2em] uppercase">
-            <Link href="/terms" className="hover:text-mentor-blue transition-colors">{t.terms}</Link>
-            <Link href="/privacy" className="hover:text-mentor-blue transition-colors">{t.privacy}</Link>
-            <Link href="#" className="hover:text-mentor-blue transition-colors">{t.support}</Link>
+          
+          <div className="pt-12 border-t border-zinc-50 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest">© 2026 Mentor CRM. All rights reserved.</p>
+            <div className="flex gap-6">
+               <div className="h-4 w-4 rounded-full bg-zinc-100" />
+               <div className="h-4 w-4 rounded-full bg-zinc-100" />
+               <div className="h-4 w-4 rounded-full bg-zinc-100" />
+            </div>
           </div>
         </div>
       </footer>
