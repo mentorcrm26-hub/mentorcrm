@@ -23,160 +23,199 @@ import { LocaleSelector } from './locale-selector';
 
 const translations = {
   en: {
-    badge: 'ELITE ARCHITECTURE FOR LEAD MANAGEMENT',
-    heroLine1: 'Master your operation of',
-    heroLine2: 'leads with precision.',
-    subHero: 'The ultimate platform for high-performance agencies and sales teams. Capture, distribute, and convert with predictive technology and multi-channel automation.',
-    cta: 'START YOUR OPERATION',
+    badge: 'CRM BUILT FOR LIFE PLANNERS',
+    heroLine1: 'Your Referrals Deserve a Better',
+    heroLine2: 'System Than a Spreadsheet.',
+    subHero: 'Mentor CRM helps Life Planners track, follow up, and close — without dropping the ball. Track every prospect across all your carriers and know exactly who to call today.',
+    cta: 'Start Tracking Your Prospects Free',
     login: 'LOGIN',
-    demo: 'FREE TRIAL',
+    demo: 'WATCH 2-MIN DEMO',
     navFeatures: 'Features',
-    navSolutions: 'Solutions',
-    navAutomation: 'Automation',
+    navSolutions: 'How It Works',
+    navAutomation: 'Niche',
     navSecurity: 'Security',
     feat1Title: 'Precision Pipeline',
-    feat1Desc: 'Visualize your sales flow with absolute clarity through dynamic columns and high-resolution smart tags.',
-    feat2Title: 'Frictionless Automation',
-    feat2Desc: 'The system works while you focus on closing. Automatic scheduling and reminders via WhatsApp.',
-    feat3Title: 'Data Intelligence',
-    feat3Desc: 'Metrics that matter. Conversion by channel, agent performance, and real-time revenue projection.',
-    captureTitle: 'FRICTIONLESS MULTI-CHANNEL ATTRACTION',
-    captureHeadline: <>Capture every opportunity, <br/>from any <span className="text-zinc-400">channel.</span></>,
-    captureDesc: 'Capture leads exactly where they are. Instantly integrate with WhatsApp, Meta Ads, Landing Pages, and custom APIs.',
-    newLeadLabel: 'New Lead Received',
-    assignLabel: 'Assign',
-    distTitle: 'SMART DISTRIBUTION',
-    distHeadline: <>Eliminate wait times. <br/>Assign leads with <span className="italic font-light">intelligence.</span></>,
-    distDesc: 'Eliminate wait times. Our routing logic delivers the right lead to the top-performing agent at the exact moment of interest.',
-    card1Title: 'Dynamic Queues',
-    card1Desc: 'Organize leads by region, product, or estimated value.',
-    card2Title: 'Round-Robin',
-    card2Desc: 'Fair and balanced distribution across your entire team.',
-    card3Title: 'Priority Route',
-    card3Desc: 'VIP leads delivered instantly to your top closers.',
-    statsTitle: 'METRICS THAT DRIVE GROWTH',
-    statsHeadline: <>Evidence-based <span className="text-blue-500">decisions.</span></>,
-    stat1: 'Processed Leads',
-    stat1Val: '+2.4M',
-    stat2: 'Conversion Rate',
-    stat2Val: '28%',
-    stat3: 'Response Time',
-    stat3Val: '< 2min',
-    securityTitle: 'ENTERPRISE-LEVEL SECURITY',
-    securityHeadline: <>Your data is your greatest <span className="italic font-light">asset.</span></>,
-    securityDesc: 'Your database is your greatest asset. We protect everything with end-to-end encryption and total data isolation. Redundant backups and compliance with global privacy standards.',
-    finalCtaHeadline: <>The era of intuitive management <br/><span className="text-mentor-blue">starts today.</span></>,
-    createAccount: 'START YOUR OPERATION',
-    footer: '© 2026 MENTOR CRM. PRECISION-ENGINEERED FOR GROWTH.',
+    feat1Desc: 'See your entire pipeline at a glance — from first contact to policy issued.',
+    feat2Title: 'Automated Sequences',
+    feat2Desc: 'Automated follow-up sequences that keep you top-of-mind without manual work.',
+    feat3Title: 'Follow-up Reminders',
+    feat3Desc: 'Set reminders so you never go more than X days without touching a warm prospect.',
+    captureTitle: 'RELATIONSHIP-FIRST CAPTURE',
+    captureHeadline: <>Capture referrals from anywhere, <br/>so no prospect gets <span className="text-zinc-400">lost.</span></>,
+    captureDesc: 'Integrate with your referral sources. Instantly record names, phone numbers, and products needed in less than 30 seconds.',
+    newLeadLabel: 'New Referral Received',
+    assignLabel: 'Track',
+    distTitle: 'BUILT FOR LIFE PLANNERS',
+    distHeadline: <>Finally, a CRM that understands <br/>how <span className="italic font-light">you actually work.</span></>,
+    distDesc: 'Designed for independent professionals, not call centers. Relationship tracking that follows your specific workflow.',
+    card1Title: 'Referral-Centric',
+    card1Desc: 'Built around tracking relationships and referrals, not cold lead volume.',
+    card2Title: 'Multi-Carrier Support',
+    card2Desc: 'Tag prospects by carrier (National Life, Pacific Life, etc.) and product type.',
+    card3Title: 'Consistent Follow-up',
+    card3Desc: 'Keep yourself in front of prospects at the right time to hit your monthly goals.',
+    statsTitle: 'NICHE RESULTS',
+    statsHeadline: <>Serving Life Planners across <span className="text-blue-500">the United States.</span></>,
+    stat1: 'Closed Policies',
+    stat1Val: '+45k',
+    stat2: 'First Month Increase',
+    stat2Val: '35%',
+    stat3: 'Admin Time Saved',
+    stat3Val: '10h/wk',
+    securityTitle: 'U.S. SECURE STORAGE & COMPLIANCE',
+    securityHeadline: <>Regulated-industry <span className="italic font-light">standards.</span></>,
+    securityDesc: 'Mentor CRM stores your prospect data securely in the United States, with end-to-end encryption. Compatible with FINRA/DOI standards and your carrier portals.',
+    finalCtaHeadline: <>Stop losing policies to <br/><span className="text-mentor-blue">your spreadsheet.</span></>,
+    createAccount: 'Start Tracking Your Prospects Free',
+    footer: '© 2026 MENTOR CRM. SERVING LIFE PLANNERS IN THE USA.',
     terms: 'Terms',
     privacy: 'Privacy',
-    support: 'Support',
-    badge1: 'End-to-end Encryption',
-    badge2: 'Isolated Environments'
+    support: 'English Support',
+    badge1: 'GDPR & CCPA Compliant',
+    badge2: 'FINRA Compatible',
+    howItWorksTitle: 'HOW IT WORKS',
+    howStep1: 'Add a Referral',
+    howStep1Desc: 'A referral comes in. Add name, phone, and product needed. 30 seconds.',
+    howStep2: 'Set your Sequence',
+    howStep2Desc: 'Mentor CRM reminds you on day 3, 7, 14 — automatically.',
+    howStep3: 'Track your Stage',
+    howStep3Desc: 'See who\'s ready to schedule, who needs one more call.',
+    howStep4: 'Close and Record',
+    howStep4Desc: 'Log the policy and carrier. Keep the relationship active for future referrals.',
+    socialTitle: 'TRUSTED BY LIFE PLANNERS',
+    socialQuote: '"I used to track my prospects on a spreadsheet. After switching to Mentor CRM, I closed 3 policies in my first month just by following up with people I had forgotten about."',
+    socialAuthor: '[Nome], Life Planner',
+    socialMeta: 'Representing National Life & Pacific Life'
   },
   pt: {
-    badge: 'ARQUITETURA DE ELITE EM GESTÃO DE LEADS',
-    heroLine1: 'Domine sua operação de',
-    heroLine2: 'leads com precisão.',
-    subHero: 'A plataforma definitiva para agências e times de vendas de alta performance. Capture, distribua e converta com tecnologia preditiva e automação multicanal.',
-    cta: 'INICIE SUA OPERAÇÃO',
+    badge: 'CRM CONSTRUÍDO PARA LIFE PLANNERS',
+    heroLine1: 'Suas Indicações Merecem um Sistema',
+    heroLine2: 'Melhor que uma Planilha.',
+    subHero: 'Mentor CRM ajuda Life Planners a rastrear, fazer follow-up e fechar — sem perder oportunidades. Acompanhe cada prospect entre todas as suas seguradoras.',
+    cta: 'Comece a Rastrear Prospects Grátis',
     login: 'ENTRAR',
-    demo: 'TESTE GRÁTIS',
+    demo: 'ASSISTIR DEMO 2-MIN',
     navFeatures: 'Recursos',
-    navSolutions: 'Soluções',
-    navAutomation: 'Automação',
+    navSolutions: 'Como Funciona',
+    navAutomation: 'Nicho',
     navSecurity: 'Segurança',
     feat1Title: 'Pipeline de Precisão',
-    feat1Desc: 'Visualize seu fluxo de vendas com clareza absoluta através de colunas dinâmicas e tags inteligentes de alta resolução.',
-    feat2Title: 'Automação sem Atrito',
-    feat2Desc: 'O sistema trabalha enquanto você foca no fechamento. Agendamentos e lembretes automáticos via WhatsApp.',
-    feat3Title: 'Inteligência de Dados',
-    feat3Desc: 'Métricas que importam. Conversão por canal, performance de agentes e projeção de receita em tempo real.',
-    captureTitle: 'ATRAÇÃO MULTICANAL SEM ATRITO',
-    captureHeadline: <>Capture cada oportunidade, <br/>de qualquer <span className="text-zinc-400">canal.</span></>,
-    captureDesc: 'Capture leads exatamente onde eles estão. Integre instantaneamente com WhatsApp, Meta Ads, Landing Pages e APIs customizadas.',
-    newLeadLabel: 'Novo Lead Recebido',
-    assignLabel: 'Atribuir',
-    distTitle: 'DISTRIBUIÇÃO INTELIGENTE',
-    distHeadline: <>Elimine o tempo de espera. <br/>Atribua leads com <span className="italic font-light">inteligência.</span></>,
-    distDesc: 'Elimine o tempo de espera. Nossa lógica de roteamento entrega o lead certo para o agente de melhor performance no exato momento do interesse.',
-    card1Title: 'Filas Dinâmicas',
-    card1Desc: 'Organize leads por região, produto ou valor estipulado.',
-    card2Title: 'Round-Robin',
-    card2Desc: 'Distribuição justa e balanceada entre todo o seu time.',
-    card3Title: 'Priority Route',
-    card3Desc: 'Leads VIP entregues instantaneamente para seus top closers.',
-    statsTitle: 'MÉTRICAS QUE IMPULSIONAM O CRESCIMENTO',
-    statsHeadline: <>Decisões baseadas em <span className="text-blue-500">evidências.</span></>,
-    stat1: 'Leads Processados',
-    stat1Val: '+2.4M',
-    stat2: 'Taxa de Conversão',
-    stat2Val: '28%',
-    stat3: 'Tempo de Resposta',
-    stat3Val: '< 2min',
-    securityTitle: 'SEGURANÇA DE NÍVEL EMPRESARIAL',
-    securityHeadline: <>Seus dados são seu maior <span className="italic font-light">patrimônio.</span></>,
-    securityDesc: 'Sua base de dados é seu maior ativo. Protegemos tudo com criptografia ponta a ponta e isolamento total de dados. Backups redundantes e conformidade com padrões globais.',
-    finalCtaHeadline: <>A era da gestão intuitiva <br/><span className="text-mentor-blue">começa hoje.</span></>,
-    createAccount: 'INICIE SUA OPERAÇÃO',
-    footer: '© 2026 MENTOR CRM. PRECISION-ENGINEERED FOR GROWTH.',
+    feat1Desc: 'Visualize todo o seu pipeline num relance — do primeiro contato à apólice emitida.',
+    feat2Title: 'Sequências Automáticas',
+    feat2Desc: 'Sequências de follow-up que mantêm você na mente do cliente sem esforço manual.',
+    feat3Title: 'Lembretes de Follow-up',
+    feat3Desc: 'Configure lembretes para nunca passar mais de X dias sem falar com um prospect quente.',
+    captureTitle: 'RELACIONAMENTO PRIMEIRO',
+    captureHeadline: <>Capture indicações de qualquer lugar, <br/>para nenhum prospect ser <span className="text-zinc-400">esquecido.</span></>,
+    captureDesc: 'Integre com suas fontes de indicação. Registre nomes, telefones e produtos em menos de 30 segundos.',
+    newLeadLabel: 'Nova Indicação Recebida',
+    assignLabel: 'Rastrear',
+    distTitle: 'FEITO PARA LIFE PLANNERS',
+    distHeadline: <>Finalmente, um CRM que entende <br/>como <span className="italic font-light">você realmente trabalha.</span></>,
+    distDesc: 'Desenvolvido para profissionais independentes, não call centers. Rastreio de relacionamento que segue seu fluxo real.',
+    card1Title: 'Foco em Indicações',
+    card1Desc: 'Construído para rastrear relacionamentos e indicações, não volume de leads frios.',
+    card2Title: 'Suporte Multi-Seguradora',
+    card2Desc: 'Marque prospects por seguradora (National Life, Pacific Life, etc) e tipo de produto.',
+    card3Title: 'Follow-up Consistente',
+    card3Desc: 'Mantenha-se presente para os prospects no momento certo para bater suas metas mensais.',
+    statsTitle: 'RESULTADOS NO NICHO',
+    statsHeadline: <>Atendendo Life Planners <span className="text-blue-500">nos Estados Unidos.</span></>,
+    stat1: 'Apólices Fechadas',
+    stat1Val: '+45k',
+    stat2: 'Aumento no 1º Mês',
+    stat2Val: '35%',
+    stat3: 'Tempo Admin Salvo',
+    stat3Val: '10h/sem',
+    securityTitle: 'ARMAZENAMENTO SEGURO NOS EUA',
+    securityHeadline: <>Padrões de <span className="italic font-light">indústria regulada.</span></>,
+    securityDesc: 'Mentor CRM armazena seus dados nos EUA com criptografia ponta a ponta. Compatível com padrões FINRA/DOI e portais de seguradoras.',
+    finalCtaHeadline: <>Pare de perder apólices para <br/><span className="text-mentor-blue">sua planilha.</span></>,
+    createAccount: 'Comece a Rastrear Prospects Grátis',
+    footer: '© 2026 MENTOR CRM. ATENDENDO LIFE PLANNERS NOS EUA.',
     terms: 'Termos',
     privacy: 'Privacidade',
-    support: 'Suporte',
-    badge1: 'Criptografia Ponta a Ponta',
-    badge2: 'Ambientes Isolados'
+    support: 'Suporte em Inglês',
+    badge1: 'Conformidade GDPR & CCPA',
+    badge2: 'Compatível com FINRA',
+    howItWorksTitle: 'COMO FUNCIONA',
+    howStep1: 'Adicione uma Indicação',
+    howStep1Desc: 'Uma indicação chega. Adicione nome, telefone e produto. 30 segundos.',
+    howStep2: 'Defina sua Sequência',
+    howStep2Desc: 'O Mentor CRM lembra você no dia 3, 7, 14 — automaticamente.',
+    howStep3: 'Acompanhe o Estágio',
+    howStep3Desc: 'Veja quem está pronto para agendar, quem precisa de mais uma chamada.',
+    howStep4: 'Feche e Registre',
+    howStep4Desc: 'Registre a apólice e seguradora. Mantenha o relacionamento ativo para indicações futuras.',
+    socialTitle: 'CONFIADO POR LIFE PLANNERS',
+    socialQuote: '"Eu usava uma planilha. Após mudar para o Mentor CRM, fechei 3 apólices no meu primeiro mês apenas fazendo follow-up com pessoas que eu tinha esquecido."',
+    socialAuthor: '[Nome], Life Planner',
+    socialMeta: 'Representando National Life & Pacific Life'
   },
   es: {
-    badge: 'ARQUITECTURA DE ÉLITE EN GESTIÓN DE LEADS',
-    heroLine1: 'Domine su operación de',
-    heroLine2: 'leads con precisión.',
-    subHero: 'La plataforma definitiva para agencias y equipos de ventas de alto rendimiento. Capture, distribuya y convierta com tecnología predictiva y automatización multicanal.',
-    cta: 'INICIE SU OPERACIÓN',
+    badge: 'CRM CONSTRUIDO PARA LIFE PLANNERS',
+    heroLine1: 'Tus Referencias Merecen un Sistema',
+    heroLine2: 'Mejor que una Hoja de Cálculo.',
+    subHero: 'Mentor CRM ayuda a los Life Planners a rastrear, seguir y cerrar — sin perder oportunidades. Rastrea cada prospecto en todas tus compañías.',
+    cta: 'Comienza a Rastrear Prospectos Gratis',
     login: 'ENTRAR',
-    demo: 'PRUEBA GRATIS',
+    demo: 'VER DEMO 2-MIN',
     navFeatures: 'Recursos',
-    navSolutions: 'Soluciones',
-    navAutomation: 'Automatización',
+    navSolutions: 'Cómo Funciona',
+    navAutomation: 'Nicho',
     navSecurity: 'Seguridad',
     feat1Title: 'Pipeline de Precisión',
-    feat1Desc: 'Visualice su flujo de ventas con claridad absoluta a través de columnas dinámicas y etiquetas inteligentes de alta resolución.',
-    feat2Title: 'Automação sem Atrito',
-    feat2Desc: 'El sistema trabaja mientras usted se enfoca en el cierre. Agendamientos y recordatorios automáticos vía WhatsApp.',
-    feat3Title: 'Inteligencia de Datos',
-    feat3Desc: 'Métricas que importan. Conversión por canal, rendimiento de agentes y proyección de ingresos en tiempo real.',
-    captureTitle: 'ATRACCIÓN MULTICANAL SIN FRICCIONES',
-    captureHeadline: <>Capture cada oportunidad, <br/>de cualquier <span className="text-zinc-400">canal.</span></>,
-    captureDesc: 'Capture leads exactamente donde están. Integre instantáneamente con WhatsApp, Meta Ads, Landing Pages y APIs personalizadas.',
-    newLeadLabel: 'Nuevo Lead Recibido',
-    assignLabel: 'Asignar',
-    distTitle: 'DISTRIBUCIÓN INTELIGENTE',
-    distHeadline: <>Elimine el tiempo de espera. <br/>Asigne leads con <span className="italic font-light">inteligencia.</span></>,
-    distDesc: 'Elimine el tiempo de espera. Nuestra lógica de enrutamiento entrega o lead correcto al agente de mejor rendimiento en el momento exacto del interés.',
-    card1Title: 'Filas Dinámicas',
-    card1Desc: 'Organice leads por región, producto o valor estimado.',
-    card2Title: 'Round-Robin',
-    card2Desc: 'Distribución justa y equilibrada entre todo su equipo.',
-    card3Title: 'Priority Route',
-    card3Desc: 'Leads VIP entregados instantáneamente a sus mejores agentes.',
-    statsTitle: 'MÉTRICAS QUE IMPULSAN EL CRECIMIENTO',
-    statsHeadline: <>Decisiones basadas en <span className="text-blue-500">evidencias.</span></>,
-    stat1: 'Leads Procesados',
-    stat1Val: '+2.4M',
-    stat2: 'Tasa de Conversión',
-    stat2Val: '28%',
-    stat3: 'Tiempo de Respuesta',
-    stat3Val: '< 2min',
-    securityTitle: 'SEGURIDAD DE NIVEL EMPRESARIAL',
-    securityHeadline: <>Sus datos son su mayor <span className="italic font-light">activo.</span></>,
-    securityDesc: 'Su base de datos es su mayor activo. Protegemos todo con cifrado de extremo a extremo y aislamiento total de datos. Copias de seguridad redundantes y cumplimiento de estándares globales.',
-    finalCtaHeadline: <>La era de la gestión intuitiva <br/><span className="text-mentor-blue">comienza hoy.</span></>,
-    createAccount: 'INICIE SU OPERACIÓN',
-    footer: '© 2026 MENTOR CRM. PRECISION-ENGINEERED FOR GROWTH.',
+    feat1Desc: 'Visualiza todo tu pipeline de un vistazo — desde el primer contacto hasta la póliza emitida.',
+    feat2Title: 'Secuencias Automáticas',
+    feat2Desc: 'Secuencias de seguimiento que te mantienen en la mente del cliente sin esfuerzo manual.',
+    feat3Title: 'Recordatorios de Seguimiento',
+    feat3Desc: 'Configura recordatorios para no pasar más de X días sin hablar con un prospecto caliente.',
+    captureTitle: 'RELACIONES PRIMERO',
+    captureHeadline: <>Captura referencias de cualquier lugar, <br/>para que ningún prospecto se <span className="text-zinc-400">pierda.</span></>,
+    captureDesc: 'Integra con tus fuentes de referencia. Registra nombres, teléfonos y productos en menos de 30 segundos.',
+    newLeadLabel: 'Nueva Referencia Recibida',
+    assignLabel: 'Rastrear',
+    distTitle: 'HECHO PARA LIFE PLANNERS',
+    distHeadline: <>Finalmente, un CRM que entiende <br/>cómo <span className="italic font-light">realmente trabajas.</span></>,
+    distDesc: 'Desarrollado para profesionales independientes, no call centers. Rastreo de relaciones que sigue tu flujo real.',
+    card1Title: 'Foco en Referencias',
+    card1Desc: 'Construido para rastrear relaciones y referencias, no volumen de leads fríos.',
+    card2Title: 'Soporte Multi-Compañía',
+    card2Desc: 'Marca prospectos por compañía (National Life, Pacific Life, etc) y tipo de producto.',
+    card3Title: 'Seguimiento Consistente',
+    card3Desc: 'Mantente presente en el momento adecuado para alcanzar tus metas mensuales.',
+    statsTitle: 'RESULTADOS EN EL NICHO',
+    statsHeadline: <>Sirviendo a Life Planners en <span className="text-blue-500">los Estados Unidos.</span></>,
+    stat1: 'Pólizas Cerradas',
+    stat1Val: '+45k',
+    stat2: 'Aumento en 1º Mes',
+    stat2Val: '35%',
+    stat3: 'Tiempo Admin Ahorrado',
+    stat3Val: '10h/sem',
+    securityTitle: 'ALMACENAMIENTO SEGURO EN EE.UU.',
+    securityHeadline: <>Estándares de la <span className="italic font-light">industria regulada.</span></>,
+    securityDesc: 'Mentor CRM almacena tus datos en EE.UU. con cifrado de extremo a extremo. Compatible con estándares FINRA/DOI y portales de compañías.',
+    finalCtaHeadline: <>Deja de perder pólizas por culpa de <br/><span className="text-mentor-blue">tu hoja de cálculo.</span></>,
+    createAccount: 'Comienza a Rastrear Prospectos Gratis',
+    footer: '© 2026 MENTOR CRM. SIRVIENDO A LIFE PLANNERS EN EE.UU.',
     terms: 'Términos',
     privacy: 'Privacidad',
-    support: 'Soporte',
-    badge1: 'Cifrado de Extremo a Extremo',
-    badge2: 'Ambientes Aislados'
+    support: 'Soporte en Inglés',
+    badge1: 'Conformidad GDPR & CCPA',
+    badge2: 'Compatible con FINRA',
+    howItWorksTitle: 'CÓMO FUNCIONA',
+    howStep1: 'Añade una Referencia',
+    howStep1Desc: 'Llega una referencia. Añade nombre, teléfono y producto. 30 segundos.',
+    howStep2: 'Define tu Secuencia',
+    howStep2Desc: 'Mentor CRM te recuerda en el día 3, 7, 14 — automáticamente.',
+    howStep3: 'Sigue el Estado',
+    howStep3Desc: 'Mira quién está listo para agendar, quién necesita una llamada más.',
+    howStep4: 'Cierra y Registra',
+    howStep4Desc: 'Registra la póliza y la compañía. Mantén la relación activa para futuras referencias.',
+    socialTitle: 'CONFIADO POR LIFE PLANNERS',
+    socialQuote: '"Usaba una hoja de cálculo. Después de cambiar a Mentor CRM, cerré 3 pólizas en mi primer mes solo haciendo seguimiento con personas que había olvidado."',
+    socialAuthor: '[Nome], Life Planner',
+    socialMeta: 'Representando a National Life & Pacific Life'
   }
 };
 
@@ -218,7 +257,7 @@ export function HomeClient() {
           {/* Center Menu */}
           <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
             {[t.navFeatures, t.navSolutions, t.navAutomation, t.navSecurity].map((link, i) => {
-              const ids = ['features', 'solutions', 'automation', 'security'];
+              const ids = ['features', 'solutions', 'niche', 'security'];
               return (
                 <Link
                   key={link}
@@ -298,8 +337,28 @@ export function HomeClient() {
                 <span>{t.cta}</span>
                 <ChevronRight className="h-4 w-4 transform group-hover:translate-x-2 transition-transform" />
               </Link>
+              <Link
+                href="#"
+                className="group relative inline-flex h-20 items-center gap-6 px-12 bg-white border border-zinc-200 text-[11px] font-black uppercase tracking-[0.4em] text-zinc-900 hover:border-mentor-blue transition-all duration-500 rounded-[2.5rem] shadow-sm"
+              >
+                <span>{t.demo}</span>
+                <div className="h-8 w-8 rounded-full bg-zinc-100 flex items-center justify-center group-hover:bg-mentor-blue transition-colors">
+                  <ChevronRight className="h-4 w-4 text-zinc-400 group-hover:text-white" />
+                </div>
+              </Link>
             </motion.div>
           </div>
+
+          {/* AS SEEN ON / TRUSTED BY LOGOS */}
+          <div className="absolute bottom-10 left-0 w-full overflow-hidden opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
+             <div className="flex items-center justify-center gap-12 md:gap-24 px-6 animate-pulse">
+                <span className="text-xl font-black tracking-tighter">National Life Group</span>
+                <span className="text-xl font-bold tracking-tight">PACIFIC LIFE</span>
+                <span className="text-xl font-serif italic">Transamerica</span>
+                <span className="text-xl font-black">Prudential</span>
+             </div>
+          </div>
+
 
           {/* Floating UI Elements Decoration */}
           <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -320,58 +379,10 @@ export function HomeClient() {
           </div>
         </section>
 
-        {/* SECTION: MULTI-CHANNEL INBOUND */}
-        <section id="features" className="py-40 px-6 bg-white relative">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
-            <div>
-              <h2 className="text-[10px] font-black tracking-[0.5em] text-mentor-blue uppercase mb-6">{t.captureTitle}</h2>
-              <h3 className="text-4xl md:text-5xl font-bold tracking-tight mb-8 leading-tight">
-                {t.captureHeadline}
-              </h3>
-              <p className="text-lg text-zinc-500 font-medium leading-relaxed mb-12">
-                {t.captureDesc}
-              </p>
 
-              <div className="grid grid-cols-2 gap-8">
-                {[
-                  { icon: <MessageSquare />, label: 'WhatsApp Direct' },
-                  { icon: <Globe />, label: 'Web Forms 2.0' },
-                  { icon: <Target />, label: 'Meta Ads Sync' },
-                  { icon: <Layers />, label: 'API Integrations' }
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-4 group">
-                    <div className="h-12 w-12 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center group-hover:bg-mentor-blue group-hover:text-white transition-all">
-                      {item.icon}
-                    </div>
-                    <span className="text-xs font-bold uppercase tracking-widest text-zinc-800">{item.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
 
-            <div className="relative group">
-              <div className="absolute inset-0 bg-blue-500/5 rounded-[4rem] blur-3xl group-hover:bg-blue-500/10 transition-colors"></div>
-              <div className="relative bg-zinc-50 border border-zinc-200 rounded-[3rem] p-4 shadow-2xl overflow-hidden aspect-video flex items-center justify-center">
-                <img src="/logo.png" alt="Visual" className="w-[40%] opacity-10 mix-blend-multiply" />
-                <div className="absolute bottom-8 left-8 right-8 h-32 bg-white/80 backdrop-blur-xl border border-white/60 rounded-3xl p-8 flex items-center justify-between">
-                  <div className="flex items-center gap-6">
-                    <div className="h-14 w-14 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                      <CheckCircle2 className="h-6 w-6 text-emerald-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-black uppercase tracking-widest leading-none mb-2">{t.newLeadLabel}</p>
-                      <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">WhatsApp Business API</p>
-                    </div>
-                  </div>
-                  <div className="h-10 px-6 bg-zinc-900 rounded-full flex items-center text-[9px] font-black text-white uppercase tracking-widest">{t.assignLabel}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION: DISTRIBUTION LOGIC */}
-        <section id="automation" className="py-40 px-6">
+        {/* SECTION: NICHE - BUILT FOR LIFE PLANNERS */}
+        <section id="niche" className="py-40 px-6">
           <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
             <h2 className="text-[10px] font-black tracking-[0.5em] text-mentor-blue uppercase mb-6">{t.distTitle}</h2>
             <h3 className="text-4xl md:text-5xl font-bold tracking-tight mb-10 max-w-3xl">
@@ -399,8 +410,77 @@ export function HomeClient() {
           </div>
         </section>
 
+        {/* SECTION: SOCIAL PROOF / TESTIMONIAL */}
+        <section className="py-40 px-6 bg-white overflow-hidden">
+          <div className="max-w-5xl mx-auto">
+             <div className="flex flex-col items-center text-center space-y-12">
+                <div className="h-1 bg-zinc-100 w-24 rounded-full" />
+                <h2 className="text-[10px] font-black tracking-[0.5em] text-zinc-400 uppercase">{t.socialTitle}</h2>
+                <p className="text-2xl md:text-3xl font-medium italic leading-relaxed text-zinc-800">
+                  {t.socialQuote}
+                </p>
+                <div className="flex flex-col items-center">
+                   <div className="h-16 w-16 rounded-full bg-zinc-200 mb-4 overflow-hidden">
+                      <img src="https://ui-avatars.com/api/?name=Life+Planner&background=0055A4&color=fff" alt="Life Planner" className="w-full h-full object-cover" />
+                   </div>
+                   <span className="text-sm font-black uppercase tracking-widest">{t.socialAuthor}</span>
+                   <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-1">{t.socialMeta}</span>
+                </div>
+             </div>
+          </div>
+        </section>
+
+        {/* SECTION: HOW IT WORKS */}
+        <section id="solutions" className="py-40 px-6 bg-zinc-50">
+           <div className="max-w-7xl mx-auto">
+              <div className="flex flex-col items-center text-center mb-20">
+                <h2 className="text-[10px] font-black tracking-[0.5em] text-mentor-blue uppercase mb-6">{t.howItWorksTitle}</h2>
+                <h3 className="text-4xl md:text-5xl font-bold tracking-tight">4 steps to a consistent pipeline</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                 {[
+                   { title: t.howStep1, desc: t.howStep1Desc, icon: "01" },
+                   { title: t.howStep2, desc: t.howStep2Desc, icon: "02" },
+                   { title: t.howStep3, desc: t.howStep3Desc, icon: "03" },
+                   { title: t.howStep4, desc: t.howStep4Desc, icon: "04" }
+                 ].map((step, i) => (
+                   <div key={i} className="relative group p-8 bg-white border border-zinc-100 rounded-[2rem] shadow-sm hover:shadow-lg transition-all">
+                      <span className="text-6xl font-black text-zinc-50 group-hover:text-mentor-blue/5 transition-colors absolute top-4 right-8 select-none">{step.icon}</span>
+                      <h4 className="text-lg font-bold mb-4 relative z-10">{step.title}</h4>
+                      <p className="text-sm text-zinc-500 leading-relaxed font-medium relative z-10">{step.desc}</p>
+                   </div>
+                 ))}
+              </div>
+           </div>
+        </section>
+
+        {/* SECTION: FEATURES AS BENEFITS */}
+        <section id="features" className="py-40 px-6 bg-white relative">
+          <div className="max-w-7xl mx-auto flex flex-col items-center text-center mb-20">
+            <h2 className="text-[10px] font-black tracking-[0.5em] text-mentor-blue uppercase mb-6">{t.navFeatures}</h2>
+            <h3 className="text-4xl md:text-5xl font-bold tracking-tight">Relationship tracking, automated.</h3>
+          </div>
+
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+             {[
+               { title: t.feat1Title, desc: t.feat1Desc, icon: <BarChart3 /> },
+               { title: t.feat2Title, desc: t.feat2Desc, icon: <Workflow /> },
+               { title: t.feat3Title, desc: t.feat3Desc, icon: <Zap /> }
+             ].map((feat, i) => (
+               <div key={i} className="flex flex-col items-center text-center group">
+                 <div className="h-16 w-16 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center justify-center mb-8 group-hover:bg-mentor-blue group-hover:text-white transition-all shadow-sm">
+                   {feat.icon}
+                 </div>
+                 <h4 className="text-xl font-bold mb-4 tracking-tight">{feat.title}</h4>
+                 <p className="text-zinc-500 font-medium leading-relaxed">{feat.desc}</p>
+               </div>
+             ))}
+          </div>
+        </section>
+
         {/* STATS: DATA COMMAND */}
-        <section id="solutions" className="py-40 px-6 bg-zinc-900 relative overflow-hidden">
+        <section id="stats" className="py-40 px-6 bg-zinc-900 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_20%_30%,#0055A4_0%,transparent_50%)]"></div>
 
           <div className="max-w-7xl mx-auto relative z-10">
