@@ -1,5 +1,6 @@
 import { WhatsAppIntegrationCard } from './whatsapp-integration-card'
 import { CalendarIntegrationsClient } from './calendar-integrations-client'
+import { ApiKeyManagement } from './api-key-management'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function IntegrationsPage() {
@@ -26,7 +27,11 @@ export default async function IntegrationsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* WhatsApp Automation */}
                 <WhatsAppIntegrationCard initialData={whatsappData} />
+                
+                {/* Outras integrações futuras podem ir aqui */}
             </div>
+
+            <ApiKeyManagement />
 
             <CalendarIntegrationsClient
                 initialApple={hasApple}
