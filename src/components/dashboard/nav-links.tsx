@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, TrendingUp, MessageSquare, Calendar as CalendarIcon, Gift, Variable, Zap, Settings, Archive, PhoneCall, PenLine } from 'lucide-react'
+import { LayoutDashboard, Users, TrendingUp, MessageSquare, Calendar as CalendarIcon, Gift, Variable, Zap, Settings, Archive, PhoneCall, PenLine, Tag } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
@@ -59,6 +59,7 @@ export function NavLinks({ role, tenantId }: NavLinksProps) {
         { href: '/dashboard/birthdays', label: 'Birthdays', icon: Gift },
         { href: '/dashboard/vault', label: 'Mentor Vault', icon: Archive },
         { href: '/dashboard/draw', label: 'Draw', icon: PenLine },
+        { href: '/dashboard/tags', label: 'Tags & Flags', icon: Tag },
     ]
 
     const adminLinks = [

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, Settings, Menu, X, LogOut, Gift, MessageSquare, Calendar as CalendarIcon, Archive, TrendingUp, PenLine } from 'lucide-react'
+import { LayoutDashboard, Users, Settings, Menu, X, LogOut, Gift, MessageSquare, Calendar as CalendarIcon, Archive, TrendingUp, PenLine, Tag } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 export function MobileNav({ role, tenantName, tenantId }: { role: string | null, tenantName: string | null, tenantId: string | null }) {
@@ -84,6 +84,7 @@ export function MobileNav({ role, tenantName, tenantId }: { role: string | null,
                         { href: '/dashboard/birthdays', label: 'Birthdays', icon: Gift },
                         { href: '/dashboard/vault', label: 'Mentor Vault', icon: Archive },
                         { href: '/dashboard/draw', label: 'Draw', icon: PenLine },
+                        { href: '/dashboard/tags', label: 'Tags & Flags', icon: Tag },
                     ].map((link) => {
                         const active = pathname === link.href || (link.href !== '/dashboard' && pathname?.startsWith(link.href))
                         return (

@@ -27,12 +27,6 @@ export function SettingsNav() {
             exact: false
         },
         {
-            name: 'Tags & Flags',
-            href: '/dashboard/settings/tags',
-            icon: Tag,
-            exact: false
-        },
-        {
             name: 'IA Knowledge Base',
             href: '/dashboard/settings/ai-knowledge',
             icon: Building2, // Podemos mudar o ícone depois se necessário

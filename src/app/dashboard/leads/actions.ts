@@ -256,6 +256,42 @@ export async function updateLeadStatus(leadId: string, newStatus: string) {
         return { success: false, error: error.message }
     }
 
+    // --- NEW: Automatic Tagging for Won/Lost ---
+    if (newStatus === 'Won' || newStatus === 'Lost') {
+        const tagName = newStatus === 'Won' ? 'Closed' : 'Lost'
+        const { data: lead } = await supabase.from('leads').select('tenant_id').eq('id', leadId).single()
+        
+        if (lead) {
+            const { data: tag } = await supabase
+                .from('tags')
+                .select('id')
+                .eq('tenant_id', lead.tenant_id)
+                .eq('name', tagName)
+                .single()
+            
+            if (tag) {
+                await supabase.from('lead_tags').upsert({ lead_id: leadId, tag_id: tag.id })
+            }
+        }
+    } else {
+        // REMOVE NATIVE TAGS ON REACTIVATION (Moving out of Won/Lost)
+        const { data: leadInfo } = await supabase.from('leads').select('tenant_id').eq('id', leadId).single()
+        if (leadInfo) {
+            const { data: nativeTags } = await supabase
+                .from('tags')
+                .select('id')
+                .eq('tenant_id', leadInfo.tenant_id)
+                .in('name', ['Closed', 'Lost'])
+                .eq('is_native', true)
+            
+            if (nativeTags && nativeTags.length > 0) {
+                const tagIds = nativeTags.map(t => t.id)
+                await supabase.from('lead_tags').delete().eq('lead_id', leadId).in('tag_id', tagIds)
+            }
+        }
+    }
+    // ------------------------------------------
+
     let syncError = null
     try {
         if (newStatus === 'Scheduled' || newStatus === 'New Lead' || newStatus === 'Attempting Contact' || newStatus === 'In Conversation') {

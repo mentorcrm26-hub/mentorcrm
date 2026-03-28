@@ -32,18 +32,23 @@ export async function createTag(name: string, colorHex: string) {
 
     if (error) return { success: false, error: error.message }
     
-    revalidatePath('/dashboard/settings/tags')
+    revalidatePath('/dashboard/tags')
     revalidatePath('/dashboard/leads')
     return { success: true }
 }
 
 export async function deleteTag(tagId: string) {
     const supabase = await createClient()
+
+    // NEW: Check if tag is native before deletion
+    const { data: tag } = await supabase.from('tags').select('is_native').eq('id', tagId).single()
+    if (tag?.is_native) return { success: false, error: 'Cannot delete native tags.' }
+
     const { error } = await supabase.from('tags').delete().eq('id', tagId)
 
     if (error) return { success: false, error: error.message }
 
-    revalidatePath('/dashboard/settings/tags')
+    revalidatePath('/dashboard/tags')
     revalidatePath('/dashboard/leads')
     return { success: true }
 }

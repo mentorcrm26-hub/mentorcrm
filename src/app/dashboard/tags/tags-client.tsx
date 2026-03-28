@@ -136,14 +136,16 @@ export function TagsClient({ initialTags }: { initialTags: any[] }) {
                                 {tag.name}
                             </div>
 
-                            <button
-                                onClick={() => handleDelete(tag.id)}
-                                disabled={deletingId === tag.id}
-                                className="absolute top-2 right-2 p-1.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-400 hover:text-red-500 hover:border-red-200 dark:hover:border-red-900/50 shadow-sm opacity-0 group-hover:opacity-100 transition-all focus:opacity-100 z-20 cursor-pointer"
-                                title="Delete Tag"
-                            >
-                                {deletingId === tag.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
-                            </button>
+                            {!tag.is_native && (
+                                <button
+                                    onClick={() => handleDelete(tag.id)}
+                                    disabled={deletingId === tag.id}
+                                    className="absolute top-2 right-2 p-1.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-400 hover:text-red-500 hover:border-red-200 dark:hover:border-red-900/50 shadow-sm opacity-0 group-hover:opacity-100 transition-all focus:opacity-100 z-20 cursor-pointer"
+                                    title="Delete Tag"
+                                >
+                                    {deletingId === tag.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
+                                </button>
+                            )}
                         </div>
                     ))
                 )}
