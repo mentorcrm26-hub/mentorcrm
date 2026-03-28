@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import { createClient } from '@supabase/supabase-js'
 
 export function createAdminClient() {

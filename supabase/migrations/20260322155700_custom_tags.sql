@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- Criação das Tabelas de Tags
 
 -- 1. Tabela Principal de Tags

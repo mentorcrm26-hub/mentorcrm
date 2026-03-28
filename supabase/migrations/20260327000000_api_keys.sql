@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- MIGRATION: 20260327000000_api_keys.sql
 -- Descrição: Infraestrutura de chaves de API para clientes do CRM.
 

@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { Archive, Search, RefreshCcw, User, Mail, Phone, Calendar as CalendarIcon, Filter } from 'lucide-react'

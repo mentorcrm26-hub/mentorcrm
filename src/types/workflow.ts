@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 export type WorkflowStepType = 'message' | 'document' | 'forward' | 'task' | 'gate' | 'start';
 
 export interface WorkflowStep {

@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import { createOpenAI } from '@ai-sdk/openai';
 
 // Configuração centralizada do provedor de IA

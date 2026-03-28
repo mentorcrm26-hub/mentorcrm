@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- ENSURE UNREAD COUNT INTEGRITY
 -- Set default value to 0 and fix existing NULLs
 UPDATE public.conversations SET unread_count = 0 WHERE unread_count IS NULL;

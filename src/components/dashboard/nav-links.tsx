@@ -1,5 +1,13 @@
 'use client'
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Users, TrendingUp, MessageSquare, Calendar as CalendarIcon, Gift, Variable, Zap, Settings, Archive, PhoneCall, PenLine, Tag } from 'lucide-react'

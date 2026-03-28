@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- ==========================================
 -- Mentor CRM - Auto Garbage Collection Func
 -- Função para buscar trials expirados (> 5 dias)

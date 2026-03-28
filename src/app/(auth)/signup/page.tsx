@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import React from 'react';
 import Link from 'next/link';
 import { AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';

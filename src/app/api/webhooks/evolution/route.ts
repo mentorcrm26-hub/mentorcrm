@@ -1,4 +1,11 @@
 /**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+/**
  * 🔒 CORE SYSTEM LOCK - DO NOT MODIFY 🔒
  * 
  * Este arquivo foi VALIDADO EM PRODUÇÃO no dia 20/03/2026.

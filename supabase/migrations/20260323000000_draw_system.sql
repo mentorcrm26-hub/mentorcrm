@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- MIGRATION: DRAW SYSTEM
 -- Feature: Whiteboard/Canvas drawings linked to leads
 

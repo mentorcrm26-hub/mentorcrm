@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- Add profile fields to users table
 ALTER TABLE public.users ADD COLUMN IF NOT EXISTS google_meet_link TEXT;
 ALTER TABLE public.users ADD COLUMN IF NOT EXISTS other_meet_link TEXT;

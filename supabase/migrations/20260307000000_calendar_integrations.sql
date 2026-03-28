@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- Create the system_integrations table to store Master credentials
 CREATE TABLE IF NOT EXISTS public.system_integrations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

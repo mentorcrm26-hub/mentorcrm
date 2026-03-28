@@ -1,5 +1,13 @@
 'use client'
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import { useState, useEffect } from 'react'
 import { Key, Plus, Trash2, Copy, Check, ShieldCheck, AlertCircle, X, Loader2, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'

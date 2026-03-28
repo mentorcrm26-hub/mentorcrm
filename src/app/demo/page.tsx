@@ -1,5 +1,13 @@
 'use client'
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import { OverviewCharts } from '@/components/dashboard/overview-charts'
 import { useDemo } from '@/components/demo/demo-provider'
 import { PipelineMiniCards } from '@/components/dashboard/pipeline-mini-cards'

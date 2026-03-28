@@ -1,5 +1,13 @@
 'use client'
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Building2, CreditCard, Blocks, Tag, Users } from 'lucide-react'

@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import { notFound } from 'next/navigation'
 import { getDrawingById } from '../actions'
 import { DrawCanvasEditor } from '@/components/draw/draw-canvas-editor'

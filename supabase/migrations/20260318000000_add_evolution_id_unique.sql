@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 
 -- ADD UNIQUE CONSTRAINT TO evolution_message_id TO SUPPORT UPSERT
 DO $$ 

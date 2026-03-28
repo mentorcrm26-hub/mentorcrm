@@ -1,5 +1,13 @@
 'use client'
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, ShieldCheck, Lock, Eye, Database, Globe, UserCheck } from 'lucide-react'

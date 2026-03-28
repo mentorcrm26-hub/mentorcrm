@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- Migração para sistema de notas estruturado
 create table if not exists public.lead_notes (
     id uuid primary key default uuid_generate_v4(),

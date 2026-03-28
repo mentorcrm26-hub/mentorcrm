@@ -1,5 +1,13 @@
 'use client'
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import { useState, useMemo } from 'react'
 import { format, addMonths, subMonths, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, isToday, parseISO, isAfter, isBefore, startOfDay } from 'date-fns'
 import { ChevronLeft, ChevronRight, Clock, User, Gift, Info, Plus, Cloud } from 'lucide-react'

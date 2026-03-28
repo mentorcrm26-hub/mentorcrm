@@ -1,5 +1,13 @@
 'use client';
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import React, { useState } from 'react';
 import { signup } from '../actions';
 import { ArrowRight } from 'lucide-react';

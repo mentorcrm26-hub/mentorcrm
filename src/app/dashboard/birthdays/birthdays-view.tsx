@@ -1,5 +1,13 @@
 'use client'
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import { useState } from 'react'
 import { Gift, CalendarDays, ArrowRight, MessageSquareText, Mail } from 'lucide-react'
 import { Lead } from '@/types/leads'

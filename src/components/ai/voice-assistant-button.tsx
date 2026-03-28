@@ -1,5 +1,13 @@
 'use client';
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import React, { useState, useEffect } from 'react';
 import { Phone, PhoneOff, Mic, MicOff, Loader2, Bot } from 'lucide-react';
 import { vapiService } from '@/lib/vapi/client';

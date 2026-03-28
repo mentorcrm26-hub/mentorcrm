@@ -1,5 +1,13 @@
 'use client'
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MoreHorizontal, Pencil, Copy, Trash2, Users, PenLine } from 'lucide-react'

@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- Create appointment settings table
 CREATE TABLE IF NOT EXISTS public.appointment_settings (
     tenant_id UUID PRIMARY KEY REFERENCES public.tenants(id) ON DELETE CASCADE,

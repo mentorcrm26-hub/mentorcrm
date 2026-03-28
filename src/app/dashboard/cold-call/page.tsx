@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import { startOfWeek, format } from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'
 import { getColdCallData } from './actions'

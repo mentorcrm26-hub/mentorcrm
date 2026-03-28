@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import { getAdminSettings, triggerTrialCleanup } from './actions'
 import { EvolutionSettingsForm } from './evolution-form'
 import { Settings, ShieldCheck, Zap } from 'lucide-react'

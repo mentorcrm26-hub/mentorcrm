@@ -1,5 +1,13 @@
 'use client'
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import { useState, useEffect } from 'react'
 import { format, startOfWeek, addDays, subDays, isSameDay, getISOWeek, getYear } from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'

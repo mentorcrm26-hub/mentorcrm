@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- Multi-Agent RBAC (Role-Based Access Control) & Chat Transfer mechanism
 
 -- 1. Add "role" to users table

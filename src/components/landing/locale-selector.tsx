@@ -1,5 +1,13 @@
 'use client';
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import React, { useState, useEffect } from 'react';
 import { Globe, ChevronDown } from 'lucide-react';
 

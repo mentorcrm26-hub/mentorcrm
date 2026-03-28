@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- AI EMPLOYEE SCHEMA
 -- Adds support for Vector Search (RAG) and AI Configurations
 

@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- CHAT SYSTEM STABILIZATION
 -- 1. Ensure the conversations table has a unique constraint for multi-tenant lead management
 DO $$ 

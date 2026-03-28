@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import { openai } from '@ai-sdk/openai';
 import { streamText, tool } from 'ai';
 import { createClient } from '@/lib/supabase/server';

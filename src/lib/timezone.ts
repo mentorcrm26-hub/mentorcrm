@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import { formatInTimeZone, toDate } from 'date-fns-tz'
 
 const FLORIDA_TZ = 'America/New_York'

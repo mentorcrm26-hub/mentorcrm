@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import { WhatsAppIntegrationCard } from './whatsapp-integration-card'
 import { CalendarIntegrationsClient } from './calendar-integrations-client'
 import { ApiKeyManagement } from './api-key-management'

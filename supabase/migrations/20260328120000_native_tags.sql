@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- MIGRATION: 20260328120000_native_tags.sql
 -- Descrição: Adiciona o conceito de tags nativas (protegidas) e semeia as tags "Closed" e "Lost".
 

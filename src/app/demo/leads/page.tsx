@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import { DemoKanbanBoard } from '@/components/demo/demo-kanban'
 import { Plus, UploadCloud } from 'lucide-react'
 import { SimulateLeadButton } from '@/components/demo/simulate-lead-button'

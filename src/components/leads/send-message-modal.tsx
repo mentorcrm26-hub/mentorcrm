@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import { useState, useEffect } from 'react'
 import { X, Send, MessageSquareText, Mail, Loader2, Sparkles } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'

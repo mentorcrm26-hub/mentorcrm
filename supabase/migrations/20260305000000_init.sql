@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- SUPABASE SCHEMA INIT
 -- Tables & RLS Policies for Mentor CRM (Multi-tenant)
 

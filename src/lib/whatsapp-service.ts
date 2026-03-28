@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import { createAdminClient } from '@/lib/supabase/server';
 import { sendEvolutionMessage } from './integrations/evolution-api';
 

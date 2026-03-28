@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- 6. AUTH TRIGGER FOR MENTOR CRM
 -- Automatiza a criação do Tenant e do Perfil de Usuário assim que o cadastro é feito.
 

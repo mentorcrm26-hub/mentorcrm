@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- MIGRATION: CRM-AUTOMATIONS-1 (MEETING REMINDERS & MIRRORING)
 -- AUTHOR: Antigravity
 

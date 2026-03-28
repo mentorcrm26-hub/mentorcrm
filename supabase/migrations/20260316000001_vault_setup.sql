@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- Add archiving columns to leads table
 ALTER TABLE leads 
 ADD COLUMN IF NOT EXISTS is_archived BOOLEAN DEFAULT FALSE,

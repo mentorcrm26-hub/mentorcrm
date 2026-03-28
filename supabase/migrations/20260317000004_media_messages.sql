@@ -1,3 +1,8 @@
+-- ************ By Inova Digital Marketing ***************
+-- ******************* inovamkt.io ************************
+-- ******************* Paulo Daian ************************
+-- *************** contact@inovamkt.io ******************
+
 -- ADD MEDIA COLUMNS TO MESSAGES
 ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS media_url TEXT;
 ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS media_type TEXT; -- 'image', 'video', 'document', 'audio'

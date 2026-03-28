@@ -1,5 +1,13 @@
 'use client'
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import { useState } from 'react'
 import { X, Send, MessageSquareText, Mail, Loader2, Megaphone, AlertCircle, ShieldAlert, Clock, Plus } from 'lucide-react'
 import { Lead } from '@/types/leads'

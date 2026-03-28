@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import 'server-only';
 import { createClient } from '@/lib/supabase/server';
 import { sendEmail } from '@/lib/mail';

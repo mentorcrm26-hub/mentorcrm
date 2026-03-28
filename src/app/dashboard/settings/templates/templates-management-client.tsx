@@ -1,5 +1,13 @@
 'use client';
 
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
+
 import { useState, useRef } from 'react';
 import { Mail, MessageSquare, Plus, Trash2, Edit2, Variable, Save, X, Info, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';

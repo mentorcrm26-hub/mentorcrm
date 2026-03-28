@@ -1,3 +1,10 @@
+/**
+ * ************ By Inova Digital Marketing ***************
+ * ******************* inovamkt.io ************************
+ * ******************* Paulo Daian ************************
+ * *************** contact@inovamkt.io ******************
+ */
+
 import Link from 'next/link'
 import { LayoutDashboard, Users, LogIn } from 'lucide-react'
 import { DemoProvider } from '@/components/demo/demo-provider'
