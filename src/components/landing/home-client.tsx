@@ -33,7 +33,9 @@ import {
   Check,
   ChevronDown,
   Shield,
-  Play
+  Play,
+  Facebook,
+  Instagram
 } from 'lucide-react';
 import { LocaleSelector } from './locale-selector';
 
@@ -46,7 +48,7 @@ const translations = {
     badge: 'Built for Life Planners and Insurance Professionals',
     heroHeadline: 'Stop Losing Policies to a Spreadsheet',
     heroSub: 'Mentor CRM gives Life Planners a referral-tracking system that follows up automatically — so the only reason a prospect doesn\'t close is because they said no, not because you forgot them.',
-    heroCtaPrimary: 'Start Free — See Your Pipeline in 10 Minutes',
+    heroCtaPrimary: 'EXPLORE THE SANDBOX',
     heroCtaSecondary: 'Watch the 2-Minute Walkthrough →',
     heroSocial: '★★★★★ 4.9/5 from 150 Life Planners | 45,000+ policies tracked | No credit card required',
     
@@ -117,33 +119,34 @@ const translations = {
     obj4A: 'Start free. No card. If you use it for 30 days and don\'t close anything extra — email us and we\'ll show you what to adjust.',
 
     // Pricing
-    priceTitle: 'Start Free. Scale When You\'re Ready.',
-    priceSub: 'No credit card required. No sales call. No forced annual contract.',
-    tier1Name: 'STARTER',
-    tier1Price: '$0/mo',
-    tier1Feat1: 'Up to 50 Prospects',
-    tier1Feat2: 'Manual Follow-up',
-    tier1Feat3: '1 Carrier Tag',
-    tier1Feat4: 'Basic Analytics',
-    tier1Cta: 'Start Free — No Card Needed',
-    tier2Name: 'PROFESSIONAL',
-    tier2Price: '$39/mo',
-    tier2PriceYearly: 'or $390/year',
-    tier2Feat1: 'Unlimited Prospects',
-    tier2Feat2: 'Automated Sequences (3/7/14/30)',
-    tier2Feat3: 'Multi-carrier Tags',
-    tier2Feat4: 'Full Analytics',
-    tier2Feat5: 'Priority Email Support',
-    tier2Cta: 'Start Professional Free for 14 Days',
-    tier3Name: 'TEAM',
-    tier3Price: '$89/mo',
-    tier3Meta: '(3 users included)',
-    tier3Feat1: 'Unlimited Prospects',
-    tier3Feat2: 'Full Automation',
-    tier3Feat3: 'Team Analytics View',
-    tier3Feat4: 'Onboarding Call',
-    tier3Feat5: '$25/mo per add. user',
-    tier3Cta: 'Talk to Us About Team',
+    priceTitle: 'PRICING & PLANS',
+    priceSub: 'Start with a sandbox test-drive. No credit card required.',
+    tier1Name: 'SANDBOX (DEMO)',
+    tier1Price: '$0',
+    tier1Feat1: 'Live Dashboard (Mocked)',
+    tier1Feat2: 'Menu Simulation',
+    tier1Feat3: 'Read-only Features',
+    tier1Feat4: 'Visual Exploration',
+    tier1Cta: 'EXPLORE THE SANDBOX',
+    tier2Name: 'AGENT (SOLO)',
+    tier2Price: '$49/mo',
+    tier2PriceYearly: 'or $490/year',
+    tier2Feat1: '1 WhatsApp Instance',
+    tier2Feat2: 'Unlimited Leads',
+    tier2Feat3: 'SMS & Email Automation',
+    tier2Feat4: 'Message Scheduling',
+    tier2Feat5: 'Advanced Analytics',
+    tier2Cta: 'START 14-DAY REAL TRIAL',
+    tier3Name: 'TEAM (AGENCY)',
+    tier3Price: '$99/mo',
+    tier3Meta: '(3 agents included)',
+    tier3Feat1: '3 WhatsApp Instances',
+    tier3Feat2: 'Shared Team Automations',
+    tier3Feat3: 'Leaderboard & Stats',
+    tier3Feat4: 'Priority Onboarding',
+    tier3Feat5: 'Lead Distribution',
+    tier3Cta: 'TALK TO SALES / TEAM',
+    mostPopular: 'Most Popular',
 
     // FAQ
     faqTitle: 'Frequently Asked Questions',
@@ -151,8 +154,8 @@ const translations = {
     faq1A: 'It\'s built specifically for the referral-based workflow of Life Planners. No cold lead features, no call center queues, no unnecessary complexity.',
     faq2Q: 'I already use Salesforce/HubSpot. Why change?',
     faq2A: 'Generic CRMs need a dedicated admin to work well. Mentor CRM works on Day 1 because it\'s pre-built for your specific business model.',
-    faq3Q: 'What happens when I hit the 50 prospect limit?',
-    faq3A: 'You can upgrade instantly. Your data is never deleted, and you can archive old prospects to free up space.',
+    faq3Q: 'How does the Sandbox mode work?',
+    faq3A: 'It allows you to explore the full power of Mentor CRM with pre-loaded mock data. You can see the dashboard, menus, and automations in action without needing to connect your real contacts until you are ready.',
     faq4Q: 'Can I import my current spreadsheet?',
     faq4A: 'Yes. We have a simple CSV import tool and a 1-page guide inside the app to help you migrate in minutes.',
     faq5Q: 'What does "FINRA Compatible" mean in practice?',
@@ -162,7 +165,7 @@ const translations = {
     faq7Q: 'Is my data secure?',
     faq7A: 'Yes. U.S.-based servers, end-to-end encryption, and GDPR/CCPA compliance. You can export or delete your data at any time.',
     faq8Q: 'What if I have more than 3 people on my team?',
-    faq8A: 'Our Team plan starts with 3 seats. You can add more for $25/mo each. For large agencies, contact us for custom pricing.',
+    faq8A: 'Our Team plan includes 3 seats. You can add more as needed. For large agencies, contact us for custom enterprise pricing.',
 
     // Final CTA
     finalTitle: 'The Referral You Got This Week Will Not Wait Forever',
@@ -185,7 +188,7 @@ const translations = {
     badge: 'Feito para Life Planners e Profissionais de Seguros',
     heroHeadline: 'Pare de Perder Apólices para uma Planilha',
     heroSub: 'O Mentor CRM oferece aos Life Planners um sistema de rastreamento de indicações que faz follow-up automaticamente — para que a única razão de um prospect não fechar seja porque ele disse não, não porque você o esqueceu.',
-    heroCtaPrimary: 'Comece Grátis — Veja seu Pipeline em 10 Minutos',
+    heroCtaPrimary: 'EXPLORAR O MODO SANDBOX',
     heroCtaSecondary: 'Assista à Demonstração de 2 Minutos →',
     heroSocial: '★★★★★ 4.9/5 de 150 Life Planners | 45.000+ apólices rastreadas | Sem cartão de crédito',
     
@@ -249,41 +252,42 @@ const translations = {
     obj4Q: '"E se eu não gostar?"',
     obj4A: 'Comece grátis. Sem cartão. Se usar por 30 dias e não fechar nada extra — mande um email e mostraremos o que ajustar.',
 
-    priceTitle: 'Comece Grátis. Creça Quando Estiver Pronto.',
-    priceSub: 'Sem cartão de crédito. Sem chamada de vendas. Sem contrato anual forçado.',
-    tier1Name: 'STARTER',
-    tier1Price: '$0/mês',
-    tier1Feat1: 'Até 50 Prospects',
-    tier1Feat2: 'Follow-up Manual',
-    tier1Feat3: '1 Tag de Seguradora',
-    tier1Feat4: 'Analytics Básico',
-    tier1Cta: 'Comece Grátis — Sem Cartão',
-    tier2Name: 'PROFESSIONAL',
-    tier2Price: '$39/mês',
-    tier2PriceYearly: 'ou $390/ano',
-    tier2Feat1: 'Prospectos Ilimitados',
-    tier2Feat2: 'Sequências Automáticas (3/7/14/30)',
-    tier2Feat3: 'Tags Multi-seguradora',
-    tier2Feat4: 'Analytics Completo',
-    tier2Feat5: 'Suporte Prioritário por Email',
-    tier2Cta: 'Teste Professional Grátis por 14 Dias',
-    tier3Name: 'TEAM',
-    tier3Price: '$89/mês',
-    tier3Meta: '(3 usuários inclusos)',
-    tier3Feat1: 'Prospectos Ilimitados',
-    tier3Feat2: 'Automação Completa',
-    tier3Feat3: 'Visão de Analytics do Time',
-    tier3Feat4: 'Chamada de Integração',
-    tier3Feat5: '$25/mês por usuário adicional',
-    tier3Cta: 'Fale Conosco Sobre o Plano Team',
+    priceTitle: 'PLANOS & PREÇOS',
+    priceSub: 'Comece com um test-drive em modo sandbox. Sem cartão.',
+    tier1Name: 'SANDBOX (DEMO)',
+    tier1Price: '$0',
+    tier1Feat1: 'Dashboard Vivo (Simulado)',
+    tier1Feat2: 'Simulação de Menus',
+    tier1Feat3: 'Visualização de Recursos',
+    tier1Feat4: 'Exploração Visual',
+    tier1Cta: 'EXPLORAR SANDBOX',
+    tier2Name: 'AGENT (SOLO)',
+    tier2Price: '$49/mês',
+    tier2PriceYearly: 'ou $490/ano',
+    tier2Feat1: '1 Instância de WhatsApp',
+    tier2Feat2: 'Leads Ilimitados',
+    tier2Feat3: 'Automação SMS/Email',
+    tier2Feat4: 'Agendamento de Mensagens',
+    tier2Feat5: 'Analytics Avançado',
+    tier2Cta: 'INICIAR TESTE REAL (14 DIAS)',
+    tier3Name: 'TEAM (AGÊNCIA)',
+    tier3Price: '$99/mês',
+    tier3Meta: '(3 agentes inclusos)',
+    tier3Feat1: '3 Instâncias de WhatsApp',
+    tier3Feat2: 'Automações de Time',
+    tier3Feat3: 'Ranking e Estatísticas',
+    tier3Feat4: 'Onboarding Prioritário',
+    tier3Feat5: 'Distribuição de Leads',
+    tier3Cta: 'FALAR COM TIME / VENDAS',
+    mostPopular: 'MAIS POPULAR',
 
     faqTitle: 'Perguntas Frequentes',
     faq1Q: 'É realmente feito para Life Planners ou é um CRM genérico?',
     faq1A: 'É feito especificamente para o fluxo baseado em indicações dos Life Planners. Sem recursos de cold leads, sem filas de call center, sem complexidade desnecessária.',
     faq2Q: 'Já uso Salesforce/HubSpot. Por que mudar?',
     faq2A: 'CRMs genéricos precisam de um admin dedicado para funcionar bem. O Mentor CRM funciona no Dia 1 porque é pré-construído para o seu modelo de negócio.',
-    faq3Q: 'O que acontece quando atingo o limite de 50 prospects?',
-    faq3A: 'Você pode fazer o upgrade instantaneamente. Seus dados nunca são deletados, e você pode arquivar prospects antigos para liberar espaço.',
+    faq3Q: 'Como funciona o modo Sandbox?',
+    faq3A: 'Ele permite que você explore todo o poder do Mentor CRM com dados fictícios pré-carregados. Você vê o dashboard, menus e automações em ação sem precisar conectar seus contatos reais até estar pronto.',
     faq4Q: 'Posso importar minha planilha atual?',
     faq4A: 'Sim. Temos uma ferramenta simples de importação CSV e um guia de 1 página dentro do app para ajudar na migração em minutos.',
     faq5Q: 'O que "Compatível com FINRA" significa na prática?',
@@ -293,7 +297,7 @@ const translations = {
     faq7Q: 'Meus dados estão seguros?',
     faq7A: 'Sim. Servidores nos EUA, criptografia ponta a ponta e conformidade com GDPR/CCPA. Você pode exportar ou deletar seus dados a qualquer momento.',
     faq8Q: 'E se eu tiver mais de 3 pessoas no time?',
-    faq8A: 'Nosso plano Team começa com 3 licenças. Você pode adicionar mais por $25/mês cada. Para grandes agências, entre em contato para preços personalizados.',
+    faq8A: 'Nosso plano Team inclui 3 licenças. Você pode adicionar mais conforme necessário. Para grandes agências, entre em contato para preços personalizados.',
 
     finalTitle: 'A Indicação Que Você Recebeu Esta Semana Não Esperará Para Sempre',
     finalSub: 'Cada dia que um prospect quente fica na sua planilha sem follow-up é um dia mais perto de ele comprar de outra pessoa. Comece grátis. Sem cartão.',
@@ -314,7 +318,7 @@ const translations = {
     badge: 'Hecho para Life Planners y Profesionales de Seguros',
     heroHeadline: 'Deja de Perder Pólizas por una Hoja de Cálculo',
     heroSub: 'Mentor CRM les da a los Life Planners un sistema de seguimiento de referencias que hace seguimiento automáticamente — para que la única razón por la que un prospecto no cierre sea porque dijo que no, no porque lo olvidaste.',
-    heroCtaPrimary: 'Comienza Gratis — Mira tu Pipeline en 10 Minutos',
+    heroCtaPrimary: 'EXPLORAR MODO SANDBOX',
     heroCtaSecondary: 'Mira la Demostración de 2 Minutos →',
     heroSocial: '★★★★★ 4.9/5 de 150 Life Planners | 45,000+ pólizas rastreadas | Sin tarjeta de crédito',
     
@@ -378,41 +382,42 @@ const translations = {
     obj4Q: '"¿Y si no me gusta?"',
     obj4A: 'Comienza gratis. Sin tarjeta. Si lo usas por 30 días y no cierras nada extra — envíanos un email y te mostraremos qué ajustar.',
 
-    priceTitle: 'Comienza Gratis. Escala Cuando Estés Listo.',
-    priceSub: 'Sin tarjeta de crédito. Sin llamada de ventas. Sin contrato anual forzado.',
-    tier1Name: 'STARTER',
-    tier1Price: '$0/mes',
-    tier1Feat1: 'Hasta 50 Prospectos',
-    tier1Feat2: 'Seguimiento Manual',
-    tier1Feat3: '1 Etiqueta de Compañía',
-    tier1Feat4: 'Analytics Básico',
-    tier1Cta: 'Comienza Gratis — Sin Tarjeta',
-    tier2Name: 'PROFESSIONAL',
-    tier2Price: '$39/mes',
-    tier2PriceYearly: 'o $390/año',
-    tier2Feat1: 'Prospectos Ilimitados',
-    tier2Feat2: 'Secuencias Automáticas (3/7/14/30)',
-    tier2Feat3: 'Etiquetas Multi-compañía',
-    tier2Feat4: 'Analytics Completo',
-    tier2Feat5: 'Soporte Prioritario por Email',
-    tier2Cta: 'Prueba Professional Gratis por 14 Días',
-    tier3Name: 'TEAM',
-    tier3Price: '$89/mes',
-    tier3Meta: '(3 usuarios incluidos)',
-    tier3Feat1: 'Prospectos Ilimitados',
-    tier3Feat2: 'Automatización Completa',
-    tier3Feat3: 'Vista de Analytics del Equipo',
-    tier3Feat4: 'Llamada de Integración',
-    tier3Feat5: '$25/mes por usuario adicional',
-    tier3Cta: 'Háblanos del Plan Team',
+    priceTitle: 'PLANES & PRECIOS',
+    priceSub: 'Comienza con un test-drive en modo sandbox. Sin tarjeta.',
+    tier1Name: 'SANDBOX (DEMO)',
+    tier1Price: '$0',
+    tier1Feat1: 'Dashboard Vivo (Simulado)',
+    tier1Feat2: 'Simulación de Menúes',
+    tier1Feat3: 'Visualización de Recursos',
+    tier1Feat4: 'Exploración Visual',
+    tier1Cta: 'EXPLORAR SANDBOX',
+    tier2Name: 'AGENT (SOLO)',
+    tier2Price: '$49/mes',
+    tier2PriceYearly: 'o $490/año',
+    tier2Feat1: '1 Instancia de WhatsApp',
+    tier2Feat2: 'Leads Ilimitados',
+    tier2Feat3: 'Automatización SMS/Email',
+    tier2Feat4: 'Programación de Mensajes',
+    tier2Feat5: 'Analytics Avanzado',
+    tier2Cta: 'INICIAR PRUEBA REAL (14 DIAS)',
+    tier3Name: 'TEAM (AGENCIA)',
+    tier3Price: '$99/mes',
+    tier3Meta: '(3 agentes incluidos)',
+    tier3Feat1: '3 Instancias de WhatsApp',
+    tier3Feat2: 'Automatizaciones de Equipo',
+    tier3Feat3: 'Ranking y Estadísticas',
+    tier3Feat4: 'Onboarding Prioritario',
+    tier3Feat5: 'Distribución de Leads',
+    tier3Cta: 'HABLAR CON VENTAS / EQUIPO',
+    mostPopular: 'MÁS POPULAR',
 
     faqTitle: 'Preguntas Frecuentes',
     faq1Q: '¿Realmente está hecho para Life Planners o es un CRM genérico?',
     faq1A: 'Está construido específicamente para el flujo basado en referencias de los Life Planners. Sin funciones de leads fríos, sin colas de call center, sin complejidad innecesaria.',
     faq2Q: 'Ya uso Salesforce/HubSpot. ¿Por qué cambiar?',
-    faq2A: 'Los CRMs genéricos necesitan un admin dedicado para funcionar bien. Mentor CRM funciona el Día 1 porque está pre-construido para tu modelo de negocio.',
-    faq3Q: '¿Qué pasa cuando alcanzo el límite de 50 prospectos?',
-    faq3A: 'Puedes hacer el upgrade al instante. Tus datos nunca se borran, y puedes archivar prospectos antiguos para liberar espacio.',
+    faq2A: 'Los CRMs genéricos necesitan un admin dedicado para funcionar bien. Mentor CRM funciona el Día 1 porque está pre-construído para tu modelo de negocio.',
+    faq3Q: '¿Cómo funciona el modo Sandbox?',
+    faq3A: 'Te permite explorar todo el poder de Mentor CRM con datos ficticios precargados. Puedes ver el dashboard, los menús y las automatizaciones en acción sin necesidad de conectar tus contactos reales hasta que estés listo.',
     faq4Q: '¿Puedo importar mi hoja de cálculo actual?',
     faq4A: 'Sí. Tenemos una herramienta simple de importación CSV e una guía de 1 página dentro de la app para ayudar en la migración en minutos.',
     faq5Q: '¿Qué significa "Compatible con FINRA" en la práctica?',
@@ -422,7 +427,7 @@ const translations = {
     faq7Q: '¿Están mis datos seguros?',
     faq7A: 'Sí. Servidores en EE.UU., cifrado de extremo a extremo y cumplimiento de GDPR/CCPA. Puedes exportar o borrar tus datos en cualquier momento.',
     faq8Q: '¿Qué si tengo más de 3 personas en el equipo?',
-    faq8A: 'Nuestro plan Team comienza con 3 licencias. Puedes añadir más por $25/mo cada una. Para grandes agencias, contáctanos para precios personalizados.',
+    faq8A: 'Nuestro plan Team incluye 3 licencias. Puedes añadir más según sea necesario. Para agencias grandes, contáctanos para precios personalizados.',
 
     finalTitle: 'La Referencia Que Recibiste Esta Semana No Esperará Para Siempre',
     finalSub: 'Cada día que un prospecto tibio se queda en tu hoja de cálculo sin seguimiento es un día más cerca de que compre a otra persona. Comienza gratis. Sin tarjeta.',
@@ -524,7 +529,7 @@ export function HomeClient() {
 
           {/* Action */}
           <div className="flex items-center gap-3">
-            <Link href="/login" className="hidden sm:block text-sm font-medium text-white/50 hover:text-white transition-colors px-4">
+            <Link href="/login" className="hidden md:block text-sm font-medium text-white/50 hover:text-white transition-colors px-4">
               {t.login}
             </Link>
             <Link
@@ -559,9 +564,9 @@ export function HomeClient() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-display font-display font-extrabold text-white mb-8 animate-fade-up [animation-delay:100ms]">
+            <h1 className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-extrabold text-white mb-8 animate-fade-up [animation-delay:100ms] leading-[1.1]">
               {t.heroHeadline.split('Spreadsheet')[0]}
-              <span className="bg-gradient-to-r from-brand-300 to-brand-500 bg-clip-text text-transparent italic shrink-0">Spreadsheet</span>
+              <span className="bg-gradient-to-r from-brand-300 to-brand-500 bg-clip-text text-transparent italic shrink-0 block sm:inline">Spreadsheet</span>
             </h1>
 
             {/* Subheadline */}
@@ -655,14 +660,14 @@ export function HomeClient() {
         </section>
 
         {/* ─── SECTION 4: HOW IT WORKS ─── */}
-        <section id="how-it-works" className="py-32 px-6 relative">
+        <section id="how-it-works" className="py-20 md:py-32 px-6 relative">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-24">
               <h2 className="text-sm font-display font-black tracking-[0.4em] text-brand-300 uppercase mb-6 animate-fade-up">{t.howTitle}</h2>
               <div className="h-1 bg-gradient-to-r from-transparent via-brand-500 to-transparent w-24 mx-auto rounded-full animate-fade-up [animation-delay:100ms]" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
                 { title: t.howStep1, desc: t.howStep1Desc },
                 { title: t.howStep2, desc: t.howStep2Desc },
@@ -694,7 +699,7 @@ export function HomeClient() {
               <div className="h-1 bg-gradient-to-r from-transparent via-brand-500 to-transparent w-24 mx-auto rounded-full animate-fade-up [animation-delay:100ms]" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {[
                 { title: t.feat1Title, desc: t.feat1Desc, icon: <Users /> },
                 { title: t.feat2Title, desc: t.feat2Desc, icon: <Target /> },
@@ -804,16 +809,16 @@ export function HomeClient() {
         </section>
 
         {/* ─── SECTION 7: PRICING ─── */}
-        <section id="pricing" className="py-32 px-6 relative">
+        <section id="pricing" className="py-24 md:py-32 px-6 relative">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-20">
               <h2 className="text-sm font-display font-black tracking-[0.4em] text-brand-300 uppercase mb-4 animate-fade-up">{t.priceTitle}</h2>
               <p className="text-white/40 font-display text-lg animate-fade-up [animation-delay:100ms]">{t.priceSub}</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch md:items-end">
               {/* Tier 1 */}
-              <div className="glass-strong p-10 flex flex-col animate-fade-up [animation-delay:200ms] hover:bg-white/5 transition-colors">
+              <div className="glass-strong p-8 md:p-10 flex flex-col animate-fade-up [animation-delay:200ms] hover:bg-white/5 transition-colors">
                 <h3 className="text-xs font-display font-black tracking-[0.3em] text-white/40 uppercase mb-8">{t.tier1Name}</h3>
                 <div className="mb-10">
                   <p className="text-5xl font-display font-extrabold text-white tracking-tighter">{t.tier1Price}</p>
@@ -825,15 +830,15 @@ export function HomeClient() {
                     </div>
                   ))}
                 </div>
-                <Link href="/login" className="w-full py-4 glass rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:bg-white/10 transition-all">
+                <Link href="/login" className="w-full py-4 bg-brand-500 hover:bg-brand-400 text-white rounded-full text-center text-xs font-display font-black uppercase tracking-widest shadow-[0_4px_15px_rgba(0,112,204,0.4)] transition-all active:scale-95">
                   {t.tier1Cta}
                 </Link>
               </div>
 
               {/* Tier 2 - Featured */}
-              <div className="glass-strong p-12 border-2 border-brand-500 shadow-[0_30px_100px_rgba(0,112,204,0.3)] scale-105 relative z-10 flex flex-col animate-fade-up [animation-delay:300ms]">
-                <div className="absolute top-0 right-12 -translate-y-1/2 bg-brand-500 text-white px-4 py-1.5 rounded-full text-[10px] font-display font-black uppercase tracking-widest shadow-lg animate-pulse">
-                  Most Popular
+              <div className="glass-strong p-10 md:p-12 border-2 border-brand-500 shadow-[0_30px_100px_rgba(0,112,204,0.3)] md:scale-105 relative z-10 flex flex-col animate-fade-up [animation-delay:300ms]">
+                <div className="absolute top-0 right-8 md:right-12 -translate-y-1/2 bg-brand-500 text-white px-4 py-1.5 rounded-full text-[10px] font-display font-black uppercase tracking-widest shadow-lg animate-pulse">
+                  {t.mostPopular}
                 </div>
                 <h3 className="text-xs font-display font-black tracking-[0.3em] text-brand-300 uppercase mb-8">{t.tier2Name}</h3>
                 <div className="mb-10">
@@ -847,7 +852,7 @@ export function HomeClient() {
                     </div>
                   ))}
                 </div>
-                <Link href="/login" className="w-full py-5 bg-gradient-to-r from-brand-500 to-brand-700 text-white rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:shadow-[0_10px_30px_rgba(0,112,204,0.5)] transition-all shadow-xl">
+                <Link href="/login" className="w-full py-5 bg-gradient-to-r from-brand-500 to-brand-700 text-white rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:shadow-[0_10px_30px_rgba(0,112,204,0.5)] active:scale-95 transition-all shadow-xl">
                   {t.tier2Cta}
                 </Link>
               </div>
@@ -866,7 +871,7 @@ export function HomeClient() {
                     </div>
                   ))}
                 </div>
-                <Link href="/login" className="w-full py-4 glass rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:bg-white/10 transition-all">
+                <Link href="/login" className="w-full py-4 glass border border-white/10 rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:bg-white/10 active:scale-95 transition-all">
                   {t.tier3Cta}
                 </Link>
               </div>
@@ -948,19 +953,21 @@ export function HomeClient() {
             <div className="flex flex-wrap justify-center gap-12 text-[10px] font-display font-black text-white/40 uppercase tracking-widest">
               <Link href="/terms" className="hover:text-brand-300 transition-colors">{t.terms}</Link>
               <Link href="/privacy" className="hover:text-brand-300 transition-colors">{t.privacy}</Link>
-              <Link href="#" className="hover:text-brand-300 transition-colors">{t.support}</Link>
               <Link href="/login" className="hover:text-brand-300 transition-colors">{t.login}</Link>
             </div>
           </div>
           
           <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-[10px] font-display font-bold text-white/20 uppercase tracking-widest italic">
-              © 2026 Mentor CRM. All rights reserved.
+              © 2026 Mentor CRM. All rights reserved - By Inova Digital Marketing - <a href="https://inovamkt.io" target="_blank" rel="noopener noreferrer" className="hover:text-brand-300 transition-colors">inovamkt.io</a>
             </p>
-            <div className="flex gap-4">
-               <div className="h-3 w-3 rounded-full bg-brand-500/20" />
-               <div className="h-3 w-3 rounded-full bg-brand-500/20" />
-               <div className="h-3 w-3 rounded-full bg-brand-500/20" />
+            <div className="flex gap-6">
+               <a href="#" className="text-white/20 hover:text-[#1877F2] transition-colors duration-300">
+                 <Facebook className="h-5 w-5 fill-current" />
+               </a>
+               <a href="#" className="text-white/20 hover:text-[#E4405F] transition-colors duration-300">
+                 <Instagram className="h-5 w-5" />
+               </a>
             </div>
           </div>
         </div>

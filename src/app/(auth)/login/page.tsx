@@ -67,7 +67,7 @@ export default async function LoginPage({
     const t = translations[lang];
 
     return (
-        <div className="glass-strong p-12 rounded-[3.5rem] shadow-[0_32px_100px_rgba(0,12,36,0.5)] relative overflow-hidden group border-white/10">
+        <div className="glass-strong p-6 sm:p-12 rounded-3xl sm:rounded-[3.5rem] shadow-[0_32px_100px_rgba(0,12,36,0.5)] relative overflow-hidden group border-white/10 w-full max-w-md mx-auto">
             <div className="mb-12 text-center flex flex-col items-center">
                 <Link href="/" className="flex items-center gap-2 group mb-12">
                     <div className="h-10 w-10 bg-brand-500 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">

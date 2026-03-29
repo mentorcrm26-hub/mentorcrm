@@ -10,7 +10,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, ShieldCheck, Lock, Eye, Database, Globe, UserCheck } from 'lucide-react'
+import { ArrowLeft, ShieldCheck, Lock, Eye, Database, Globe, UserCheck, Facebook, Instagram } from 'lucide-react'
 import { LocaleSelector } from '@/components/landing/locale-selector'
 
 const translations = {
@@ -30,7 +30,11 @@ const translations = {
         section5Content: 'Manteremos seus dados pessoais apenas pelo tempo necessário para cumprir as finalidades para as quais os coletamos. Você pode solicitar a exclusão total dos seus dados e dos leads da sua conta a qualquer momento através do suporte.',
         section6Title: '6. SEUS DIREITOS (LGPD/GDPR)',
         section6Content: 'Você tem o direito de acessar, corrigir, portar ou excluir seus dados. Além disso, pode retirar o consentimento para comunicações de marketing a qualquer momento. Operamos em conformidade com as principais diretrizes globais de proteção de dados.',
-        footer: 'Dúvidas sobre privacidade? Entre em contato com dpo@mentorcrm.site'
+        footer: 'Dúvidas sobre privacidade? Entre em contato com dpo@mentorcrm.site',
+        footerText: '© 2026 MENTOR CRM. ATENDENDO LIFE PLANNERS NOS EUA.',
+        terms: 'Termos',
+        privacy: 'Privacidade',
+        login: 'Entrar'
     },
     en: {
         back: 'BACK',
@@ -48,7 +52,11 @@ const translations = {
         section5Content: 'We will keep your personal data only as long as necessary to fulfill the purposes for which we collected it. You can request the full deletion of your data and account leads at any time through support.',
         section6Title: '6. YOUR RIGHTS (GDPR)',
         section6Content: 'You have the right to access, correct, port, or delete your data. Additionally, you can withdraw consent for marketing communications at any time. We operate in compliance with major global data protection guidelines.',
-        footer: 'Privacy questions? Contact dpo@mentorcrm.site'
+        footer: 'Privacy questions? Contact dpo@mentorcrm.site',
+        footerText: '© 2026 MENTOR CRM. SERVING LIFE PLANNERS IN THE USA.',
+        terms: 'Terms',
+        privacy: 'Privacy',
+        login: 'Login'
     },
     es: {
         back: 'VOLVER',
@@ -66,7 +74,11 @@ const translations = {
         section5Content: 'Mantendremos sus datos solo por el tiempo necesario. Puede solicitar la eliminación de sus datos en cualquier momento.',
         section6Title: '6. SUS DERECHOS',
         section6Content: 'Tiene derecho a acceder, corregir o eliminar sus datos. Operamos de acuerdo con las directrices globales de protección de datos.',
-        footer: '¿Dudas sobre privacidad? Contacte con dpo@mentorcrm.site'
+        footer: '¿Dudas sobre privacidad? Contacte con dpo@mentorcrm.site',
+        footerText: '© 2026 MENTOR CRM. SIRVIENDO A LIFE PLANNERS EN EE.UU.',
+        terms: 'Términos',
+        privacy: 'Privacidad',
+        login: 'Login'
     }
 }
 
@@ -162,7 +174,7 @@ export default function PrivacyPage() {
                             { icon: <Database className="h-6 w-6 text-amber-400" />, title: (t as any).section5Title, content: (t as any).section5Content },
                             { icon: <UserCheck className="h-6 w-6 text-emerald-400" />, title: (t as any).section6Title, content: (t as any).section6Content }
                         ].map((section, idx) => (
-                            <section key={idx} className="glass-strong p-12 rounded-[3.5rem] animate-fade-up border-white/5" style={{ animationDelay: `${idx * 100}ms` }}>
+                            <section key={idx} className="glass-strong p-6 sm:p-12 rounded-3xl sm:rounded-[3.5rem] animate-fade-up border-white/5" style={{ animationDelay: `${idx * 100}ms` }}>
                                 <h2 className="text-2xl font-display font-black mb-8 tracking-tight text-white flex items-center gap-4">
                                     <div className="p-3 bg-white/5 rounded-2xl border border-white/5">
                                         {section.icon}
@@ -173,14 +185,48 @@ export default function PrivacyPage() {
                             </section>
                         ))}
                     </div>
-
-                    <footer className="mt-32 pt-16 border-t border-white/5 text-center animate-fade-up" style={{ animationDelay: '400ms' }}>
-                        <p className="text-xs text-white/30 font-display font-bold uppercase tracking-widest leading-relaxed">
-                            {t.footer}
-                        </p>
-                    </footer>
                 </div>
             </main>
+
+            <footer className="py-24 px-6 relative border-t border-white/5 bg-brand-900/50 backdrop-blur-3xl">
+                <div className="max-w-7xl mx-auto">
+                <div className="flex flex-col md:flex-row justify-between items-center gap-16 mb-20">
+                    <div className="flex flex-col items-center md:items-start gap-8">
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <div className="h-10 w-10 bg-brand-500 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <span className="text-white font-display font-black text-xl">M</span>
+                        </div>
+                        <span className="font-display font-bold text-xl tracking-tight text-white">
+                        MENTOR<span className="text-brand-300">CRM</span>
+                        </span>
+                    </Link>
+                    <p className="text-[10px] font-display font-black text-white/30 uppercase tracking-[0.2em] max-w-[250px] text-center md:text-left leading-relaxed">
+                        {(t as any).footerText}
+                    </p>
+                    </div>
+                    
+                    <div className="flex flex-wrap justify-center gap-12 text-[10px] font-display font-black text-white/40 uppercase tracking-widest">
+                    <Link href="/terms" className="hover:text-brand-300 transition-colors">{(t as any).terms}</Link>
+                    <Link href="/privacy" className="hover:text-brand-300 transition-colors">{(t as any).privacy}</Link>
+                    <Link href="/login" className="hover:text-brand-300 transition-colors">{(t as any).login}</Link>
+                    </div>
+                </div>
+                
+                <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-center">
+                    <p className="text-[10px] font-display font-bold text-white/20 uppercase tracking-widest italic">
+                    © 2026 Mentor CRM. All rights reserved - By Inova Digital Marketing - <a href="https://inovamkt.io" target="_blank" rel="noopener noreferrer" className="hover:text-brand-300 transition-colors">inovamkt.io</a>
+                    </p>
+                    <div className="flex gap-6">
+                        <a href="#" className="text-white/20 hover:text-[#1877F2] transition-colors duration-300">
+                            <Facebook className="h-5 w-5 fill-current" />
+                        </a>
+                        <a href="#" className="text-white/20 hover:text-[#E4405F] transition-colors duration-300">
+                            <Instagram className="h-5 w-5" />
+                        </a>
+                    </div>
+                </div>
+                </div>
+            </footer>
         </div>
     )
 }

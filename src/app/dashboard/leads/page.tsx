@@ -59,7 +59,7 @@ export default async function LeadsPage() {
 
     return (
         <div className="flex flex-col gap-6 h-full">
-            <header className="flex items-center justify-between pb-6 border-b border-zinc-200 dark:border-white/10 shrink-0">
+            <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-zinc-200 dark:border-white/10 shrink-0">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Lead Management</h1>
                     <p className="text-zinc-500 dark:text-zinc-400 mt-1">Drag and drop your leads in the sales funnel.</p>

@@ -10,7 +10,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Scale, ShieldCheck, FileText, Ban, CreditCard, Gavel, Globe } from 'lucide-react'
+import { ArrowLeft, Scale, ShieldCheck, FileText, Ban, CreditCard, Gavel, Globe, Facebook, Instagram } from 'lucide-react'
 import { LocaleSelector } from '@/components/landing/locale-selector'
 
 const translations = {
@@ -30,7 +30,11 @@ const translations = {
         section5Content: 'Você não pode usar o Mentor CRM para: enviar SPAM, assediar indivíduos, coletar dados sem consentimento ou violar as diretrizes oficiais da Meta/WhatsApp. Qualquer violação resultará em suspensão imediata sem aviso previdencial.',
         section6Title: '6. LEI APLICÁVEL',
         section6Content: 'Estes termos e condições são regidos e interpretados de acordo com as leis vigentes e você se submete irrevogavelmente à jurisdição exclusiva dos tribunais naquele estado ou localidade.',
-        footer: 'Dúvidas sobre os termos? Entre em contato com compliance@mentorcrm.site'
+        footer: 'Dúvidas sobre os termos? Entre em contato com compliance@mentorcrm.site',
+        footerText: '© 2026 MENTOR CRM. ATENDENDO LIFE PLANNERS NOS EUA.',
+        terms: 'Termos',
+        privacy: 'Privacidade',
+        login: 'Entrar'
     },
     en: {
         back: 'BACK',
@@ -48,7 +52,11 @@ const translations = {
         section5Content: 'You may not use Mentor CRM to: send SPAM, harass individuals, collect data without consent, or violate official Meta/WhatsApp guidelines. Any violation will result in immediate suspension without notice.',
         section6Title: '6. GOVERNING LAW',
         section6Content: 'These terms and conditions are governed by and construed in accordance with current laws and you irrevocably submit to the exclusive jurisdiction of the courts in that state or location.',
-        footer: 'Questions about terms? Contact compliance@mentorcrm.site'
+        footer: 'Questions about terms? Contact compliance@mentorcrm.site',
+        footerText: '© 2026 MENTOR CRM. SERVING LIFE PLANNERS IN THE USA.',
+        terms: 'Terms',
+        privacy: 'Privacy',
+        login: 'Login'
     },
     es: {
         back: 'VOLVER',
@@ -66,7 +74,11 @@ const translations = {
         section5Content: 'No puede usar Mentor CRM para: enviar SPAM, acosar individuos, recopilar datos sin consentimiento o violar las pautas de Meta/WhatsApp. Cualquier violación resultará en suspensión inmediata.',
         section6Title: '6. LEY APLICABLE',
         section6Content: 'Estos términos y condiciones se rigen e interpretan de acuerdo con las leyes vigentes y usted se somete irrevocablemente a la jurisdicción exclusiva de los tribunales.',
-        footer: '¿Dudas sobre los términos? Contacte con compliance@mentorcrm.site'
+        footer: '¿Dudas sobre los términos? Contacte con compliance@mentorcrm.site',
+        footerText: '© 2026 MENTOR CRM. SIRVIENDO A LIFE PLANNERS EN EE.UU.',
+        terms: 'Términos',
+        privacy: 'Privacidad',
+        login: 'Login'
     }
 }
 
@@ -162,7 +174,7 @@ export default function TermsPage() {
                             { icon: <Ban className="h-6 w-6 text-red-400" />, title: (t as any).section5Title, content: (t as any).section5Content },
                             { icon: <Gavel className="h-6 w-6 text-amber-400" />, title: (t as any).section6Title, content: (t as any).section6Content }
                         ].map((section, idx) => (
-                            <section key={idx} className="glass-strong p-12 rounded-[3.5rem] animate-fade-up border-white/5" style={{ animationDelay: `${idx * 100}ms` }}>
+                            <section key={idx} className="glass-strong p-6 sm:p-12 rounded-3xl sm:rounded-[3.5rem] animate-fade-up border-white/5" style={{ animationDelay: `${idx * 100}ms` }}>
                                 <h2 className="text-2xl font-display font-black mb-8 tracking-tight text-white flex items-center gap-4">
                                     <div className="p-3 bg-white/5 rounded-2xl border border-white/5">
                                         {section.icon}
@@ -173,14 +185,48 @@ export default function TermsPage() {
                             </section>
                         ))}
                     </div>
-
-                    <footer className="mt-32 pt-16 border-t border-white/5 text-center animate-fade-up" style={{ animationDelay: '400ms' }}>
-                        <p className="text-xs text-white/30 font-display font-bold uppercase tracking-widest leading-relaxed">
-                            {t.footer}
-                        </p>
-                    </footer>
                 </div>
             </main>
+
+            <footer className="py-24 px-6 relative border-t border-white/5 bg-brand-900/50 backdrop-blur-3xl">
+                <div className="max-w-7xl mx-auto">
+                <div className="flex flex-col md:flex-row justify-between items-center gap-16 mb-20">
+                    <div className="flex flex-col items-center md:items-start gap-8">
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <div className="h-10 w-10 bg-brand-500 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <span className="text-white font-display font-black text-xl">M</span>
+                        </div>
+                        <span className="font-display font-bold text-xl tracking-tight text-white">
+                        MENTOR<span className="text-brand-300">CRM</span>
+                        </span>
+                    </Link>
+                    <p className="text-[10px] font-display font-black text-white/30 uppercase tracking-[0.2em] max-w-[250px] text-center md:text-left leading-relaxed">
+                        {(t as any).footerText}
+                    </p>
+                    </div>
+                    
+                    <div className="flex flex-wrap justify-center gap-12 text-[10px] font-display font-black text-white/40 uppercase tracking-widest">
+                    <Link href="/terms" className="hover:text-brand-300 transition-colors">{(t as any).terms}</Link>
+                    <Link href="/privacy" className="hover:text-brand-300 transition-colors">{(t as any).privacy}</Link>
+                    <Link href="/login" className="hover:text-brand-300 transition-colors">{(t as any).login}</Link>
+                    </div>
+                </div>
+                
+                <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-center">
+                    <p className="text-[10px] font-display font-bold text-white/20 uppercase tracking-widest italic">
+                    © 2026 Mentor CRM. All rights reserved - By Inova Digital Marketing - <a href="https://inovamkt.io" target="_blank" rel="noopener noreferrer" className="hover:text-brand-300 transition-colors">inovamkt.io</a>
+                    </p>
+                    <div className="flex gap-6">
+                        <a href="#" className="text-white/20 hover:text-[#1877F2] transition-colors duration-300">
+                            <Facebook className="h-5 w-5 fill-current" />
+                        </a>
+                        <a href="#" className="text-white/20 hover:text-[#E4405F] transition-colors duration-300">
+                            <Instagram className="h-5 w-5" />
+                        </a>
+                    </div>
+                </div>
+                </div>
+            </footer>
         </div>
     )
 }
