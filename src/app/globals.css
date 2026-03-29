@@ -47,6 +47,8 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
+  --breakpoint-xs: 475px;
+
   --color-brand-900: #001A3D;
   --color-brand-800: #002B63;
   --color-brand-700: #003D8C;

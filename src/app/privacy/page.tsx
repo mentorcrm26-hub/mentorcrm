@@ -11,6 +11,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, ShieldCheck, Lock, Eye, Database, Globe, UserCheck } from 'lucide-react'
+import { LocaleSelector } from '@/components/landing/locale-selector'
 
 const translations = {
     pt: {
@@ -131,6 +132,13 @@ export default function PrivacyPage() {
                         <span className={`font-display font-bold tracking-tight text-white hidden md:inline transition-all ${scrolled ? 'text-lg' : 'text-xl'}`}>
                             MENTOR<span className="text-brand-300">CRM</span>
                         </span>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                        <Link href="/login" className="hidden xs:block text-[10px] font-display font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors">
+                            Login
+                        </Link>
+                        <LocaleSelector />
                     </div>
                 </div>
             </nav>

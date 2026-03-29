@@ -108,7 +108,7 @@ export default function SignupForm({ t }: SignupFormProps) {
             <div className="pt-4">
                 <button
                     type="submit"
-                    className="group relative flex w-full h-16 items-center justify-center bg-brand-500 hover:bg-brand-600 px-8 text-xs font-display font-black uppercase tracking-[0.4em] text-white transition-all rounded-2xl shadow-[0_10px_30px_rgba(0,112,204,0.4)] active:scale-95"
+                    className="group relative flex w-full h-16 items-center justify-center bg-brand-500 hover:bg-brand-600 px-8 text-xs font-display font-black uppercase tracking-[0.4em] text-white transition-all rounded-2xl shadow-[0_10px_30px_rgba(0,112,204,0.4)] active:scale-95 cursor-pointer"
                 >
                     {t.submit}
                 </button>
