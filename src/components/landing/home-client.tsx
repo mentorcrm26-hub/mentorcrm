@@ -38,6 +38,7 @@ import {
   Instagram
 } from 'lucide-react';
 import { LocaleSelector } from './locale-selector';
+import { PublicMobileNav } from './public-mobile-nav';
 
 const translations = {
   en: {
@@ -488,7 +489,7 @@ export function HomeClient() {
       </div>
 
       {/* ─── NAVIGATION ─── */}
-      <nav className={`fixed left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-[900px] transition-all duration-500 ease-out ${scrolled ? 'top-4' : 'top-6'}`}>
+      <nav className={`fixed inset-x-0 mx-auto z-50 w-[95%] max-w-[900px] transition-all duration-500 ease-out ${scrolled ? 'top-4' : 'top-6'}`}>
         <div className={`
           px-6 py-3 rounded-full flex items-center justify-between gap-6 shadow-2xl transition-all duration-500
           ${scrolled 
@@ -544,6 +545,8 @@ export function HomeClient() {
             <div className="hidden xs:block">
               <LocaleSelector />
             </div>
+            
+            <PublicMobileNav t={t} lang={lang} />
           </div>
         </div>
       </nav>
