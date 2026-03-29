@@ -1,25 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-export const dynamic = 'force-dynamic'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-
-// Use service role to update user metadata — bypasses RLS
-const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
-// Price key → plan name
-const PRICE_TO_PLAN: Record<string, string> = {
-    [process.env.STRIPE_PRICE_AGENT_MONTHLY!]: 'agent',
-    [process.env.STRIPE_PRICE_AGENT_ANNUAL!]:  'agent',
-    [process.env.STRIPE_PRICE_TEAM_MONTHLY!]:  'team',
-}
+export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+
+    const supabaseAdmin = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
+    const PRICE_TO_PLAN: Record<string, string> = {
+        [process.env.STRIPE_PRICE_AGENT_MONTHLY!]: 'agent',
+        [process.env.STRIPE_PRICE_AGENT_ANNUAL!]:  'agent',
+        [process.env.STRIPE_PRICE_TEAM_MONTHLY!]:  'team',
+    }
+
     const body = await req.text()
     const sig  = req.headers.get('stripe-signature')!
 
@@ -37,7 +35,6 @@ export async function POST(req: NextRequest) {
             const userId  = session.metadata?.user_id
             if (!userId) break
 
-            // Fetch subscription to get the price
             const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
             const priceId = subscription.items.data[0]?.price.id
             const plan    = PRICE_TO_PLAN[priceId] ?? 'agent'
@@ -48,6 +45,7 @@ export async function POST(req: NextRequest) {
                     trial: false,
                     trial_ends_at: null,
                     onboarding_status: 'active',
+                    subscription_status: 'active',
                     stripe_subscription_id: subscription.id,
                     stripe_customer_id: session.customer as string,
                 }
@@ -57,7 +55,6 @@ export async function POST(req: NextRequest) {
 
         case 'customer.subscription.updated': {
             const subscription = event.data.object as Stripe.Subscription
-            // Find user by stripe_customer_id stored in metadata
             const { data: users } = await supabaseAdmin.auth.admin.listUsers()
             const user = users.users.find(
                 (u) => u.user_metadata?.stripe_customer_id === subscription.customer
@@ -83,7 +80,6 @@ export async function POST(req: NextRequest) {
             )
             if (!user) break
 
-            // Downgrade to sandbox on cancellation
             await supabaseAdmin.auth.admin.updateUserById(user.id, {
                 user_metadata: {
                     ...user.user_metadata,
@@ -97,7 +93,7 @@ export async function POST(req: NextRequest) {
         }
 
         case 'invoice.payment_failed': {
-            const invoice    = event.data.object as Stripe.Invoice
+            const invoice = event.data.object as Stripe.Invoice
             const { data: users } = await supabaseAdmin.auth.admin.listUsers()
             const user = users.users.find(
                 (u) => u.user_metadata?.stripe_customer_id === invoice.customer

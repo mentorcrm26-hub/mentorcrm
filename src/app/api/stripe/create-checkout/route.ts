@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@/lib/supabase/server'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+function getStripe() {
+    return new Stripe(process.env.STRIPE_SECRET_KEY!)
+}
 
-const PRICE_MAP: Record<string, string> = {
-    agent_monthly: process.env.STRIPE_PRICE_AGENT_MONTHLY!,
-    agent_annual:  process.env.STRIPE_PRICE_AGENT_ANNUAL!,
-    team_monthly:  process.env.STRIPE_PRICE_TEAM_MONTHLY!,
+function getPriceMap(): Record<string, string> {
+    return {
+        agent_monthly: process.env.STRIPE_PRICE_AGENT_MONTHLY!,
+        agent_annual:  process.env.STRIPE_PRICE_AGENT_ANNUAL!,
+        team_monthly:  process.env.STRIPE_PRICE_TEAM_MONTHLY!,
+    }
 }
 
 export async function POST(req: NextRequest) {
@@ -19,12 +23,13 @@ export async function POST(req: NextRequest) {
     }
 
     const { priceKey } = await req.json()
-    const priceId = PRICE_MAP[priceKey]
+    const priceId = getPriceMap()[priceKey]
 
     if (!priceId) {
         return NextResponse.json({ error: 'Invalid price' }, { status: 400 })
     }
 
+    const stripe = getStripe()
     const session = await stripe.checkout.sessions.create({
         mode: 'subscription',
         payment_method_types: ['card'],
