@@ -14,6 +14,13 @@ import { LayoutDashboard, Users, TrendingUp, MessageSquare, Calendar as Calendar
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
+const WhatsAppIcon = (props: any) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
+        <path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
+    </svg>
+)
+
 interface NavLinksProps {
     role: string | null
     tenantId: string | null
@@ -61,7 +68,7 @@ export function NavLinks({ role, tenantId }: NavLinksProps) {
         { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
         { href: '/dashboard/leads', label: 'Leads (CRM)', icon: Users },
         { href: '/dashboard/cold-call', label: 'Cold Call', icon: PhoneCall },
-        { href: '/dashboard/chat', label: 'Live Chat', icon: MessageSquare },
+        { href: '/dashboard/chat', label: 'Live Chat', icon: WhatsAppIcon },
         // { href: '/dashboard/workflow', label: 'WorkFlow', icon: Workflow }, 
         { href: '/dashboard/calendar', label: 'Calendar', icon: CalendarIcon },
         { href: '/dashboard/birthdays', label: 'Birthdays', icon: Gift },

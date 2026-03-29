@@ -388,7 +388,7 @@ export function LeadDetailsModal({
                                                 <button
                                                     key={tag.id}
                                                     type="button"
-                                                    disabled={userRole !== 'admin'}
+                                                    disabled={(userRole !== 'admin') || (tag as any).is_native}
                                                     onClick={() => handleToggleTag(tag)}
                                                     className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-bold transition-all shadow-sm cursor-pointer ${isActive ? 'opacity-100 scale-100 ring-2 ring-offset-1 focus:outline-none dark:ring-offset-zinc-950' : 'opacity-40 hover:opacity-100 scale-95'} disabled:cursor-not-allowed`}
                                                     style={{ 
@@ -404,7 +404,7 @@ export function LeadDetailsModal({
                                             )
                                         })}
                                     </div>
-                                    <p className="text-xs text-zinc-500 mt-1">Click a tag to apply or remove it from this lead.</p>
+                                    <p className="text-xs text-zinc-500 mt-1">Native tags (Closed/Lost) are automatic; users handle others manually.</p>
                                 </div>
                             )}
 
@@ -706,3 +706,6 @@ export function LeadDetailsModal({
         </>
     )
 }
+
+
+

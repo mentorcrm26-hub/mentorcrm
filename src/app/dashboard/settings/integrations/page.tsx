@@ -6,6 +6,7 @@
  */
 
 import { WhatsAppIntegrationCard } from './whatsapp-integration-card'
+import { TwilioIntegrationCard } from './twilio-integration-card'
 import { CalendarIntegrationsClient } from './calendar-integrations-client'
 import { ApiKeyManagement } from './api-key-management'
 import { createClient } from '@/lib/supabase/server'
@@ -21,6 +22,7 @@ export default async function IntegrationsPage() {
     const hasApple = integrations?.some(i => i.provider === 'apple') || false
     const hasGoogle = integrations?.some(i => i.provider === 'google') || false
     const whatsappData = integrations?.find(i => i.provider === 'whatsapp')
+    const twilioData = integrations?.find(i => i.provider === 'twilio')
 
     return (
         <div className="space-y-6">
@@ -35,15 +37,16 @@ export default async function IntegrationsPage() {
                 {/* WhatsApp Automation */}
                 <WhatsAppIntegrationCard initialData={whatsappData} />
                 
-                {/* Outras integrações futuras podem ir aqui */}
+                {/* Twilio SMS */}
+                <TwilioIntegrationCard initialData={twilioData} />
             </div>
-
-            <ApiKeyManagement />
 
             <CalendarIntegrationsClient
                 initialApple={hasApple}
                 initialGoogle={hasGoogle}
             />
+
+            <ApiKeyManagement />
         </div>
     )
 }

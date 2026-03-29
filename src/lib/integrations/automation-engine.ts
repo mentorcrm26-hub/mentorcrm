@@ -9,6 +9,7 @@ import 'server-only';
 import { createClient } from '@/lib/supabase/server';
 import { sendEmail } from '@/lib/mail';
 import { sendWhatsAppMessage } from '@/lib/whatsapp-service';
+import { sendTwilioSMS } from '@/lib/twilio-service';
 import { parseTemplate } from './message-parser';
 
 export async function triggerAutomation(event: 'new_lead' | 'status_change' | 'meeting_scheduled' | 'lead_birthday', lead: any, supabaseInstance?: any) {
@@ -56,6 +57,12 @@ export async function triggerAutomation(event: 'new_lead' | 'status_change' | 'm
           message: parsedContent,
           tenantId: lead.tenant_id,
         });
+      } else if (automation.template.type === 'sms' && lead.phone) {
+        await sendTwilioSMS({
+          phone: lead.phone,
+          message: parsedContent,
+          tenantId: lead.tenant_id,
+        });
       }
     }
   }
@@ -64,7 +71,7 @@ export async function triggerAutomation(event: 'new_lead' | 'status_change' | 'm
 export async function manualSendMessage(messageOrTemplateId: string, lead: any) {
   const supabase = await createClient();
 
-  let type = lead.type; // 'email' or 'whatsapp' passed from UI
+  let type = lead.type; // 'email', 'whatsapp', or 'sms' passed from UI
   let content = lead.content; // raw content if manual
   let subject = lead.subject;
 
@@ -108,6 +115,12 @@ export async function manualSendMessage(messageOrTemplateId: string, lead: any) 
     });
   } else if (type === 'whatsapp' && lead.phone) {
     return await sendWhatsAppMessage({
+      phone: lead.phone,
+      message: content,
+      tenantId: lead.tenant_id,
+    });
+  } else if (type === 'sms' && lead.phone) {
+    return await sendTwilioSMS({
       phone: lead.phone,
       message: content,
       tenantId: lead.tenant_id,

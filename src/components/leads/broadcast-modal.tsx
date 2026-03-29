@@ -169,15 +169,15 @@ export function BroadcastModal({
                                 </div>
                             </div>
 
-                            {/* WhatsApp Anti-Ban Config */}
-                            {channel === 'whatsapp' && (
+                            {/* Delivery Delay Config */}
+                            {(channel === 'whatsapp' || channel === 'sms') && (
                                 <div className="space-y-3 animate-in fade-in zoom-in-95 duration-200">
                                     <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/50 rounded-xl p-4 flex gap-3">
                                         <ShieldAlert className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0" />
                                         <div>
-                                            <h4 className="text-sm font-semibold text-amber-900 dark:text-amber-300">WhatsApp Anti-Ban Protection</h4>
+                                            <h4 className="text-sm font-semibold text-amber-900 dark:text-amber-300">Anti-Ban Protection</h4>
                                             <p className="text-xs text-amber-700 dark:text-amber-400/80 mt-1 leading-relaxed">
-                                                Sending too many messages too quickly may cause Meta to block your number. We strongly recommend keeping a secure delay between messages.
+                                                Sending too many messages too quickly may cause Meta or Carrier networks to block your number. We strongly recommend keeping a secure delay between messages.
                                             </p>
                                         </div>
                                     </div>
