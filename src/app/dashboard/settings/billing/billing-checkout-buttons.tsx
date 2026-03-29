@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface Props {
     monthlyKey: string
@@ -20,10 +21,19 @@ export function BillingCheckoutButtons({ monthlyKey, annualKey }: Props) {
                 body: JSON.stringify({ priceKey }),
             })
             const data = await res.json()
+            if (!res.ok) {
+                toast.error(data.error || 'Failed to start checkout. Try again.')
+                setLoading(null)
+                return
+            }
             if (data.url) {
                 window.location.href = data.url
+            } else {
+                toast.error('Unexpected error. Please try again.')
+                setLoading(null)
             }
         } catch {
+            toast.error('Connection error. Please try again.')
             setLoading(null)
         }
     }
