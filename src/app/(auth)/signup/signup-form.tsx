@@ -10,13 +10,13 @@
 
 import React, { useState } from 'react';
 import { signup } from '../actions';
-import { ArrowRight } from 'lucide-react';
 
 interface SignupFormProps {
     t: Record<string, string>;
+    plan: string;
 }
 
-export default function SignupForm({ t }: SignupFormProps) {
+export default function SignupForm({ t, plan }: SignupFormProps) {
     const [phone, setPhone] = useState('');
 
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,6 +41,7 @@ export default function SignupForm({ t }: SignupFormProps) {
 
     return (
         <form className="flex flex-col gap-6" action={signup}>
+            <input type="hidden" name="plan" value={plan} />
             {/* Name */}
             <div className="flex flex-col gap-3">
                 <label className="text-[10px] font-display font-black tracking-[0.2em] text-white/30 uppercase" htmlFor="full_name">{t.fullName}</label>

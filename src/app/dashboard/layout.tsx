@@ -12,6 +12,7 @@ import { LayoutDashboard, Users, Settings, Gift, Calendar as CalendarIcon, Varia
 import { differenceInDays } from 'date-fns'
 import { MobileNav } from '@/components/dashboard/mobile-nav'
 import { NavLinks } from '@/components/dashboard/nav-links'
+import { PlanBanner } from '@/components/dashboard/plan-banner'
 
 export default async function DashboardLayout({
     children,
@@ -83,7 +84,11 @@ export default async function DashboardLayout({
                     <MobileNav role={userProfile?.role || null} tenantName={tenant?.name || null} tenantId={userProfile?.tenant_id || null} />
                 </header>
 
-                {/* Top banner space specifically for system-wide alerts, like missing payment methods (will be implemented later) */}
+                <PlanBanner
+                    plan={user.user_metadata?.plan ?? null}
+                    trialEndsAt={user.user_metadata?.trial_ends_at ?? null}
+                    onboardingStatus={user.user_metadata?.onboarding_status ?? null}
+                />
 
                 <div className="flex-1 overflow-auto p-4 md:p-8 relative z-0">
                     {children}

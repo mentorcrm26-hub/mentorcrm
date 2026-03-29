@@ -11,6 +11,10 @@ import { AutomationsManagementClient } from './automations-management-client';
 export default async function AutomationsPage() {
     const supabase = await createClient();
 
+    const { data: { user } } = await supabase.auth.getUser()
+    const plan = user?.user_metadata?.plan as string | undefined
+    const whatsappLocked = plan != null && plan !== 'team'
+
     const { data: automations } = await supabase
         .from('automations')
         .select('*, template:message_templates(name, type)')
@@ -20,6 +24,11 @@ export default async function AutomationsPage() {
         .from('message_templates')
         .select('id, name, type')
         .order('name');
+
+    // Filter out WhatsApp templates from the selector when locked
+    const availableTemplates = whatsappLocked
+        ? (templates || []).filter((t) => t.type !== 'whatsapp')
+        : (templates || []);
 
     return (
         <div className="space-y-6">
@@ -32,9 +41,10 @@ export default async function AutomationsPage() {
                 </p>
             </div>
 
-            <AutomationsManagementClient 
-                initialAutomations={automations || []} 
-                templates={templates || []}
+            <AutomationsManagementClient
+                initialAutomations={automations || []}
+                templates={availableTemplates}
+                whatsappLocked={whatsappLocked}
             />
         </div>
     );

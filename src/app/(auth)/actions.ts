@@ -54,7 +54,15 @@ export async function signup(formData: FormData) {
     const cleanPhone = rawPhone.replace(/\D/g, '');
     const formattedPhone = cleanPhone.startsWith('1') ? cleanPhone : `1${cleanPhone}`;
 
-    // type-casting here for convenience
+    const validPlans = ['sandbox', 'agent', 'team'] as const;
+    type Plan = typeof validPlans[number];
+    const rawPlan = formData.get('plan') as string;
+    const plan: Plan = validPlans.includes(rawPlan as Plan) ? (rawPlan as Plan) : 'agent';
+
+    const trialEndsAt = plan === 'agent'
+        ? new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString()
+        : null;
+
     const data = {
         email: formData.get('email') as string,
         password: formData.get('password') as string,
@@ -62,6 +70,9 @@ export async function signup(formData: FormData) {
             data: {
                 full_name: formData.get('full_name') as string,
                 phone: formattedPhone,
+                plan,
+                trial_ends_at: trialEndsAt,
+                onboarding_status: plan === 'team' ? 'pending' : 'active',
             }
         }
     }
@@ -73,5 +84,9 @@ export async function signup(formData: FormData) {
     }
 
     revalidatePath('/', 'layout')
+
+    if (plan === 'sandbox') {
+        redirect('/demo')
+    }
     redirect('/dashboard')
 }

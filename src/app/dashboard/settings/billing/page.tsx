@@ -6,10 +6,19 @@
  */
 
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-import { CheckCircle2, AlertCircle } from 'lucide-react'
+import { CheckCircle2, AlertCircle, Zap, Users } from 'lucide-react'
+import { BillingCheckoutButtons } from './billing-checkout-buttons'
 
 export default async function BillingPage() {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    const plan               = user?.user_metadata?.plan as string | undefined
+    const subscriptionStatus = user?.user_metadata?.subscription_status as string | undefined
+    const trialEndsAt        = user?.user_metadata?.trial_ends_at as string | undefined
+    const isActive           = subscriptionStatus === 'active' || subscriptionStatus === 'trialing'
+    const isPastDue          = subscriptionStatus === 'past_due'
+
     return (
         <div className="space-y-6">
             <div>
@@ -19,39 +28,108 @@ export default async function BillingPage() {
                 </p>
             </div>
 
-            {/* Simulated Free Trial Banner if inactive */}
-            <div className="rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-900/10 p-5 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-                <div className="flex gap-3">
+            {/* Status Banner */}
+            {isActive && (
+                <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/50 dark:bg-emerald-900/10 p-5 flex gap-3 items-start">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    <div>
+                        <h4 className="font-semibold text-emerald-900 dark:text-emerald-300">
+                            Active Subscription — {plan === 'team' ? 'Team Agency ($99/mo)' : 'Agent Solo ($49/mo)'}
+                        </h4>
+                        <p className="text-sm text-emerald-700 dark:text-emerald-400 mt-1">
+                            Your workspace is fully active. All features are unlocked.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {isPastDue && (
+                <div className="rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50/50 dark:bg-red-900/10 p-5 flex gap-3 items-start">
+                    <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
+                    <div>
+                        <h4 className="font-semibold text-red-900 dark:text-red-300">Payment Failed</h4>
+                        <p className="text-sm text-red-700 dark:text-red-400 mt-1">
+                            Your last payment could not be processed. Please update your payment method below.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {!isActive && !isPastDue && (
+                <div className="rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-900/10 p-5 flex gap-3 items-start">
                     <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
                     <div>
                         <h4 className="font-semibold text-amber-900 dark:text-amber-300">Account Pending Activation</h4>
                         <p className="text-sm text-amber-800 dark:text-amber-400 mt-1">
-                            Your workspace is currently operating without a registered payment method. Add your credit card to activate the full CRM.
+                            Your workspace is currently operating without a registered payment method. Choose a plan below to activate full access.
                         </p>
                     </div>
                 </div>
-            </div>
+            )}
 
-            <div className="bg-white dark:bg-zinc-950/50 border border-zinc-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
-                <div className="p-6 md:p-8 flex items-center justify-center flex-col text-center min-h-[300px]">
-                    <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center mb-6">
-                        <svg className="w-8 h-8 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="2" y="5" width="20" height="14" rx="2" />
-                            <line x1="2" y1="10" x2="22" y2="10" />
-                        </svg>
+            {/* Plan Cards */}
+            {!isActive && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Agent Solo */}
+                    <div className="bg-white dark:bg-zinc-950/50 border-2 border-brand-500 rounded-xl overflow-hidden shadow-md">
+                        <div className="p-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                    <Zap className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-zinc-900 dark:text-white">Agent Solo</h4>
+                                    <p className="text-xs text-zinc-500">For individual agents</p>
+                                </div>
+                            </div>
+                            <p className="text-3xl font-extrabold text-zinc-900 dark:text-white mb-1">$49<span className="text-base font-normal text-zinc-500">/mo</span></p>
+                            <p className="text-xs text-zinc-400 mb-5">or $490/year (save $98)</p>
+                            <ul className="space-y-2 mb-6 text-sm text-zinc-600 dark:text-zinc-400">
+                                {['Unlimited Leads', 'Email & SMS Automation', 'Advanced Analytics', 'Automations'].map(f => (
+                                    <li key={f} className="flex items-center gap-2">
+                                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> {f}
+                                    </li>
+                                ))}
+                            </ul>
+                            <BillingCheckoutButtons
+                                monthlyKey="agent_monthly"
+                                annualKey="agent_annual"
+                            />
+                        </div>
                     </div>
-                    <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Subscribe to Full Access</h3>
-                    <p className="text-zinc-500 dark:text-zinc-400 max-w-md mb-8">
-                        Enter your payment details securely via Stripe to activate all features, integrations, and automated lead capture.
-                    </p>
-                    <button className="inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md hover:shadow-lg h-10 px-6 py-2 shrink-0">
-                        Add Payment Method
-                    </button>
-                    <p className="text-xs text-zinc-400 mt-4 flex items-center gap-1">
-                        Secured by <span className="font-bold text-zinc-500">stripe</span>
-                    </p>
+
+                    {/* Team Agency */}
+                    <div className="bg-white dark:bg-zinc-950/50 border border-zinc-200 dark:border-white/10 rounded-xl overflow-hidden shadow-sm">
+                        <div className="p-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                    <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-zinc-900 dark:text-white">Team Agency</h4>
+                                    <p className="text-xs text-zinc-500">3 agents included</p>
+                                </div>
+                            </div>
+                            <p className="text-3xl font-extrabold text-zinc-900 dark:text-white mb-1">$99<span className="text-base font-normal text-zinc-500">/mo</span></p>
+                            <p className="text-xs text-zinc-400 mb-5">&nbsp;</p>
+                            <ul className="space-y-2 mb-6 text-sm text-zinc-600 dark:text-zinc-400">
+                                {['3 WhatsApp Connections', 'Automations', 'Ranking & Stats', 'Lead Distribution', 'Email & SMS Automation'].map(f => (
+                                    <li key={f} className="flex items-center gap-2">
+                                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> {f}
+                                    </li>
+                                ))}
+                            </ul>
+                            <BillingCheckoutButtons
+                                monthlyKey="team_monthly"
+                            />
+                        </div>
+                    </div>
                 </div>
-            </div>
+            )}
+
+            <p className="text-xs text-zinc-400 text-center flex items-center justify-center gap-1">
+                Secured by <span className="font-bold text-zinc-500">Stripe</span> — 256-bit encryption
+            </p>
         </div>
     )
 }

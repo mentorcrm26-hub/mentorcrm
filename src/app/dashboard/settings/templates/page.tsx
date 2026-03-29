@@ -11,6 +11,10 @@ import { TemplatesManagementClient } from './templates-management-client';
 export default async function TemplatesPage() {
     const supabase = await createClient();
 
+    const { data: { user } } = await supabase.auth.getUser()
+    const plan = user?.user_metadata?.plan as string | undefined
+    const whatsappLocked = plan != null && plan !== 'team'
+
     const { data: templates } = await supabase
         .from('message_templates')
         .select('*')
@@ -27,7 +31,7 @@ export default async function TemplatesPage() {
                 </p>
             </div>
 
-            <TemplatesManagementClient initialTemplates={templates || []} />
+            <TemplatesManagementClient initialTemplates={templates || []} whatsappLocked={whatsappLocked} />
         </div>
     );
 }

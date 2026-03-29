@@ -1380,3 +1380,6 @@
 [2026-03-29T01:33:38.354Z] [External Fetch] Triggering Google sync for google...
 [2026-03-29T01:33:38.383Z] [External Fetch] Total external events retrieved: 100
 [2026-03-29T01:33:38.499Z] [External Fetch] Total external events retrieved: 100
+[2026-03-29T14:59:46.350Z] [External Fetch] No integrations found in DB for this tenant.
+[2026-03-29T14:59:46.394Z] [External Fetch] No integrations found in DB for this tenant.
+[2026-03-29T15:00:32.309Z] [External Fetch] No integrations found in DB for this tenant.

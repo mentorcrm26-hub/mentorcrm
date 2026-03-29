@@ -132,20 +132,21 @@ const translations = {
     tier2Name: 'AGENT (SOLO)',
     tier2Price: '$49/mo',
     tier2PriceYearly: 'or $490/year',
-    tier2Feat1: '1 WhatsApp Instance',
-    tier2Feat2: 'Unlimited Leads',
-    tier2Feat3: 'SMS & Email Automation',
-    tier2Feat4: 'Message Scheduling',
-    tier2Feat5: 'Advanced Analytics',
-    tier2Cta: 'START 14-DAY REAL TRIAL',
+    tier2Feat1: 'Unlimited Leads',
+    tier2Feat2: 'Email & SMS Automation',
+    tier2Feat3: '(SMS automation without support)',
+    tier2Feat4: 'Advanced Analytics',
+    tier2Feat5: 'Automations',
+    tier2Cta: 'START 3-DAY REAL TRIAL',
     tier3Name: 'TEAM (AGENCY)',
     tier3Price: '$99/mo',
     tier3Meta: '(3 agents included)',
-    tier3Feat1: '3 WhatsApp Instances',
-    tier3Feat2: 'Shared Team Automations',
-    tier3Feat3: 'Leaderboard & Stats',
+    tier3Feat1: '3 WhatsApp Connections',
+    tier3Feat2: 'Automations',
+    tier3Feat3: 'Ranking & Stats',
     tier3Feat4: 'Priority Onboarding',
     tier3Feat5: 'Lead Distribution',
+    tier3Feat6: 'Email & SMS Automation (with support)',
     tier3Cta: 'TALK TO SALES / TEAM',
     mostPopular: 'Most Popular',
 
@@ -265,20 +266,21 @@ const translations = {
     tier2Name: 'AGENT (SOLO)',
     tier2Price: '$49/mês',
     tier2PriceYearly: 'ou $490/ano',
-    tier2Feat1: '1 Instância de WhatsApp',
-    tier2Feat2: 'Leads Ilimitados',
-    tier2Feat3: 'Automação SMS/Email',
-    tier2Feat4: 'Agendamento de Mensagens',
-    tier2Feat5: 'Analytics Avançado',
-    tier2Cta: 'INICIAR TESTE REAL (14 DIAS)',
+    tier2Feat1: 'Leads ilimitados',
+    tier2Feat2: 'Automação email/sms',
+    tier2Feat3: '(automação sms sem suporte)',
+    tier2Feat4: 'Analíticos avançados',
+    tier2Feat5: 'Automações',
+    tier2Cta: 'INICIAR TESTE REAL (3 DIAS)',
     tier3Name: 'TEAM (AGÊNCIA)',
     tier3Price: '$99/mês',
     tier3Meta: '(3 agentes inclusos)',
-    tier3Feat1: '3 Instâncias de WhatsApp',
-    tier3Feat2: 'Automações de Time',
-    tier3Feat3: 'Ranking e Estatísticas',
+    tier3Feat1: '3 Conexões de WhatsApp',
+    tier3Feat2: 'Automações',
+    tier3Feat3: 'Ranking e estatísticas',
     tier3Feat4: 'Onboarding Prioritário',
     tier3Feat5: 'Distribuição de Leads',
+    tier3Feat6: 'Automação email e sms (com suporte)',
     tier3Cta: 'FALAR COM TIME / VENDAS',
     mostPopular: 'MAIS POPULAR',
 
@@ -395,20 +397,21 @@ const translations = {
     tier2Name: 'AGENT (SOLO)',
     tier2Price: '$49/mes',
     tier2PriceYearly: 'o $490/año',
-    tier2Feat1: '1 Instancia de WhatsApp',
-    tier2Feat2: 'Leads Ilimitados',
-    tier2Feat3: 'Automatización SMS/Email',
-    tier2Feat4: 'Programación de Mensajes',
-    tier2Feat5: 'Analytics Avanzado',
-    tier2Cta: 'INICIAR PRUEBA REAL (14 DIAS)',
+    tier2Feat1: 'Leads ilimitados',
+    tier2Feat2: 'Automatización de email/sms',
+    tier2Feat3: '(automatización sms sin soporte)',
+    tier2Feat4: 'Analíticos avanzados',
+    tier2Feat5: 'Automatizaciones',
+    tier2Cta: 'INICIAR PRUEBA REAL (3 DÍAS)',
     tier3Name: 'TEAM (AGENCIA)',
     tier3Price: '$99/mes',
     tier3Meta: '(3 agentes incluidos)',
-    tier3Feat1: '3 Instancias de WhatsApp',
-    tier3Feat2: 'Automatizaciones de Equipo',
-    tier3Feat3: 'Ranking y Estadísticas',
-    tier3Feat4: 'Onboarding Prioritario',
-    tier3Feat5: 'Distribución de Leads',
+    tier3Feat1: '3 Conexiones de WhatsApp',
+    tier3Feat2: 'Automatizaciones',
+    tier3Feat3: 'Ranking y estadísticas',
+    tier3Feat4: 'Onboarding prioritario',
+    tier3Feat5: 'Distribución de leads',
+    tier3Feat6: 'Automatización de email y sms (con soporte)',
     tier3Cta: 'HABLAR CON VENTAS / EQUIPO',
     mostPopular: 'MÁS POPULAR',
 
@@ -833,7 +836,7 @@ export function HomeClient() {
                     </div>
                   ))}
                 </div>
-                <Link href="/login" className="w-full py-4 bg-brand-500 hover:bg-brand-400 text-white rounded-full text-center text-xs font-display font-black uppercase tracking-widest shadow-[0_4px_15px_rgba(0,112,204,0.4)] transition-all active:scale-95">
+                <Link href="/signup?plan=sandbox" className="w-full py-4 bg-brand-500 hover:bg-brand-400 text-white rounded-full text-center text-xs font-display font-black uppercase tracking-widest shadow-[0_4px_15px_rgba(0,112,204,0.4)] transition-all active:scale-95">
                   {t.tier1Cta}
                 </Link>
               </div>
@@ -855,7 +858,7 @@ export function HomeClient() {
                     </div>
                   ))}
                 </div>
-                <Link href="/login" className="w-full py-5 bg-gradient-to-r from-brand-500 to-brand-700 text-white rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:shadow-[0_10px_30px_rgba(0,112,204,0.5)] active:scale-95 transition-all shadow-xl">
+                <Link href="/signup?plan=agent" className="w-full py-5 bg-gradient-to-r from-brand-500 to-brand-700 text-white rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:shadow-[0_10px_30px_rgba(0,112,204,0.5)] active:scale-95 transition-all shadow-xl">
                   {t.tier2Cta}
                 </Link>
               </div>
@@ -868,13 +871,13 @@ export function HomeClient() {
                   <p className="text-xs font-bold text-white/40 mt-1">{t.tier3Meta}</p>
                 </div>
                 <div className="space-y-4 mb-12 flex-1">
-                  {[t.tier3Feat1, t.tier3Feat2, t.tier3Feat3, t.tier3Feat4, t.tier3Feat5].map((f, i) => (
+                  {[t.tier3Feat1, t.tier3Feat2, t.tier3Feat3, t.tier3Feat4, t.tier3Feat5, t.tier3Feat6].map((f, i) => (
                     <div key={i} className="flex items-center gap-3 text-sm font-medium text-white/60">
                       <Check className="h-4 w-4 text-white/40" /> {f}
                     </div>
                   ))}
                 </div>
-                <Link href="/login" className="w-full py-4 glass border border-white/10 rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:bg-white/10 active:scale-95 transition-all">
+                <Link href="/signup?plan=team" className="w-full py-4 glass border border-white/10 rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:bg-white/10 active:scale-95 transition-all">
                   {t.tier3Cta}
                 </Link>
               </div>

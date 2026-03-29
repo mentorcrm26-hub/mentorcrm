@@ -9,14 +9,17 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { MessageCircle, CheckCircle2, Trash2, X, Plus, QrCode, RefreshCw, Smartphone } from 'lucide-react'
+import { MessageCircle, CheckCircle2, Trash2, X, Plus, QrCode, RefreshCw, Smartphone, Lock } from 'lucide-react'
+import Link from 'next/link'
 import { toast } from 'sonner'
 import { createWhatsAppInstance, getWhatsAppQRCode, checkWhatsAppStatus, disconnectWhatsApp } from './whatsapp-actions'
 
-export function WhatsAppIntegrationCard({ 
-    initialData 
-}: { 
-    initialData?: any 
+export function WhatsAppIntegrationCard({
+    initialData,
+    locked = false,
+}: {
+    initialData?: any
+    locked?: boolean
 }) {
     const [integration, setIntegration] = useState(initialData)
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -93,6 +96,42 @@ export function WhatsAppIntegrationCard({
         } else {
             toast.error(res.error || 'Failed to disconnect')
         }
+    }
+
+    if (locked) {
+        return (
+            <div className="bg-white dark:bg-zinc-950/50 border border-zinc-200 dark:border-white/10 rounded-xl p-5 shadow-sm flex flex-col h-full relative overflow-hidden opacity-70">
+                {/* Lock overlay */}
+                <div className="absolute inset-0 bg-zinc-50/80 dark:bg-zinc-950/80 backdrop-blur-[2px] flex flex-col items-center justify-center gap-3 z-10">
+                    <div className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
+                        <Lock className="w-5 h-5 text-zinc-500 dark:text-zinc-400" />
+                    </div>
+                    <div className="text-center">
+                        <p className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Team plan required</p>
+                        <p className="text-xs text-zinc-500 mt-0.5">WhatsApp is available on the $99/mo plan</p>
+                    </div>
+                    <Link
+                        href="/signup?plan=team"
+                        className="text-xs font-bold uppercase tracking-widest text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-white px-4 py-2 rounded-lg transition-colors"
+                    >
+                        Upgrade to Team
+                    </Link>
+                </div>
+                {/* Card background (blurred behind overlay) */}
+                <div className="flex justify-between items-start mb-4">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                        <MessageCircle className="w-5 h-5" />
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
+                        Locked
+                    </span>
+                </div>
+                <div>
+                    <h4 className="font-semibold text-zinc-900 dark:text-white mb-1">WhatsApp Automation</h4>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">Connect your own WhatsApp number to send automated messages.</p>
+                </div>
+            </div>
+        )
     }
 
     return (

@@ -14,6 +14,11 @@ import { createClient } from '@/lib/supabase/server'
 export default async function IntegrationsPage() {
     const supabase = await createClient()
 
+    const { data: { user } } = await supabase.auth.getUser()
+    const plan = user?.user_metadata?.plan as string | undefined
+    // WhatsApp is only available on Team plan. Agent/Sandbox are locked.
+    const whatsappLocked = plan != null && plan !== 'team'
+
     // Retrieve active integrations status
     const { data: integrations } = await supabase
         .from('integrations')
@@ -35,7 +40,7 @@ export default async function IntegrationsPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* WhatsApp Automation */}
-                <WhatsAppIntegrationCard initialData={whatsappData} />
+                <WhatsAppIntegrationCard initialData={whatsappData} locked={whatsappLocked} />
                 
                 {/* Twilio SMS */}
                 <TwilioIntegrationCard initialData={twilioData} />

@@ -8,7 +8,7 @@
  */
 
 import { useState, useRef } from 'react';
-import { Mail, MessageSquare, Plus, Trash2, Edit2, Variable, Save, X, Info, RefreshCw, LayoutTemplate } from 'lucide-react';
+import { Mail, MessageSquare, Plus, Trash2, Edit2, Variable, Save, X, Info, RefreshCw, LayoutTemplate, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import { saveTemplate, deleteTemplate } from './actions';
 
@@ -27,7 +27,7 @@ interface Template {
     type: 'email' | 'whatsapp';
 }
 
-export function TemplatesManagementClient({ initialTemplates }: { initialTemplates: Template[] }) {
+export function TemplatesManagementClient({ initialTemplates, whatsappLocked = false }: { initialTemplates: Template[], whatsappLocked?: boolean }) {
     const [templates, setTemplates] = useState<Template[]>(initialTemplates);
     const [isEditing, setIsEditing] = useState(false);
     const [currentTemplate, setCurrentTemplate] = useState<Partial<Template>>({
@@ -126,11 +126,14 @@ export function TemplatesManagementClient({ initialTemplates }: { initialTemplat
             {/* Grid Layout (Replaces old vertical list) */}
             {templates.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {templates.map((t) => (
+                    {templates.map((t) => {
+                        const isWhatsAppLocked = whatsappLocked && t.type === 'whatsapp';
+                        return (
                         <div
                             key={t.id}
-                            className="group relative flex flex-col bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-sm hover:-translate-y-1 transition-transform cursor-pointer"
+                            className={`group relative flex flex-col bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-sm transition-transform ${isWhatsAppLocked ? 'opacity-50 cursor-not-allowed' : 'hover:-translate-y-1 cursor-pointer'}`}
                             onClick={() => {
+                                if (isWhatsAppLocked) return;
                                 setCurrentTemplate(t);
                                 setIsEditing(true);
                             }}
@@ -167,7 +170,8 @@ export function TemplatesManagementClient({ initialTemplates }: { initialTemplat
                                 <Edit2 className="w-3.5 h-3.5 text-zinc-900 dark:text-zinc-100" />
                             </div>
                         </div>
-                    ))}
+                        );
+                    })}
                 </div>
             ) : (
                 <div className="flex flex-col items-center justify-center py-20 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-sm bg-zinc-50 dark:bg-zinc-900/20">
@@ -224,10 +228,12 @@ export function TemplatesManagementClient({ initialTemplates }: { initialTemplat
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={() => setCurrentTemplate({...currentTemplate, type: 'whatsapp'})}
-                                            className={`flex items-center justify-center gap-2 py-3 rounded-sm text-xs font-bold border transition-all ${currentTemplate.type === 'whatsapp' ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 shadow-sm' : 'border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-900'}`}
+                                            disabled={whatsappLocked}
+                                            onClick={() => !whatsappLocked && setCurrentTemplate({...currentTemplate, type: 'whatsapp'})}
+                                            title={whatsappLocked ? 'WhatsApp requires Team plan ($99/mo)' : undefined}
+                                            className={`flex items-center justify-center gap-2 py-3 rounded-sm text-xs font-bold border transition-all ${whatsappLocked ? 'border-zinc-200 dark:border-zinc-800 text-zinc-400 dark:text-zinc-600 opacity-50 cursor-not-allowed' : currentTemplate.type === 'whatsapp' ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 shadow-sm' : 'border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-900'}`}
                                         >
-                                            <WhatsAppIcon className="w-4 h-4" /> WHATSAPP
+                                            {whatsappLocked ? <Lock className="w-4 h-4" /> : <WhatsAppIcon className="w-4 h-4" />} WHATSAPP
                                         </button>
                                     </div>
                                 </div>

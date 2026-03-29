@@ -26,18 +26,21 @@ interface Automation {
     };
 }
 
-export function AutomationsManagementClient({ 
-    initialAutomations, 
-    templates
-}: { 
-    initialAutomations: Automation[], 
-    templates: any[]
+export function AutomationsManagementClient({
+    initialAutomations,
+    templates,
+    whatsappLocked = false,
+}: {
+    initialAutomations: Automation[],
+    templates: any[],
+    whatsappLocked?: boolean,
 }) {
     const [automations, setAutomations] = useState<Automation[]>(initialAutomations);
     const [isEditing, setIsEditing] = useState(false);
     const [current, setCurrent] = useState<Partial<Automation>>({
         name: '',
         trigger_event: 'new_lead',
+        template_id: '',
         is_active: true,
         trigger_condition: { status: 'Agendado' }
     });
@@ -59,7 +62,13 @@ export function AutomationsManagementClient({
             if (data) {
                 setSettings({
                     ...data,
-                    professional_phone: data.professional_phone || data.profile_phone || ''
+                    reminder_0m_template_id: data.reminder_0m_template_id || '',
+                    reminder_1h_template_id: data.reminder_1h_template_id || '',
+                    reminder_30m_template_id: data.reminder_30m_template_id || '',
+                    professional_phone: data.professional_phone || data.profile_phone || '',
+                    professional_email: data.professional_email || '',
+                    notify_professional_30m: data.notify_professional_30m ?? true,
+                    notify_professional_0m: data.notify_professional_0m ?? true,
                 });
             }
         };
@@ -107,10 +116,25 @@ export function AutomationsManagementClient({
 
     return (
         <div className="space-y-6">
+            {whatsappLocked && (
+                <div className="flex items-start gap-3 p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/40 rounded-xl">
+                    <AlertCircle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                    <p className="text-xs text-amber-700 dark:text-amber-400 font-medium leading-relaxed">
+                        <span className="font-bold">WhatsApp automations require the Team plan.</span> You can only create email-based automations. Existing WhatsApp automations are paused.
+                    </p>
+                </div>
+            )}
+
             <div className="flex justify-end">
                 <button
                     onClick={() => {
-                        setCurrent({ name: '', trigger_event: 'new_lead', is_active: true, trigger_condition: { status: 'Agendado' } });
+                        setCurrent({ 
+                            name: '', 
+                            trigger_event: 'new_lead', 
+                            template_id: '',
+                            is_active: true, 
+                            trigger_condition: { status: 'Agendado' } 
+                        });
                         setIsEditing(true);
                     }}
                     className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all active:scale-95 shadow-lg shadow-indigo-500/20 cursor-pointer"
@@ -120,8 +144,10 @@ export function AutomationsManagementClient({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {automations.map((a) => (
-                    <div key={a.id} className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:border-indigo-500/30 transition-all group">
+                {automations.map((a) => {
+                    const isWhatsAppLocked = whatsappLocked && a.template?.type === 'whatsapp';
+                    return (
+                    <div key={a.id} className={`bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-white/10 rounded-2xl p-6 shadow-sm transition-all group ${isWhatsAppLocked ? 'opacity-50' : 'hover:border-indigo-500/30'}`}>
                         <div className="flex justify-between items-start mb-4">
                             <div className={`p-2 rounded-xl ${a.is_active ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400' : 'bg-zinc-100 text-zinc-400 dark:bg-zinc-900'}`}>
                                 <Zap className="w-5 h-5 transition-all" />
@@ -227,7 +253,8 @@ export function AutomationsManagementClient({
                             </div>
                         </div>
                     </div>
-                ))}
+                    );
+                })}
             </div>
 
             {/* Editing Modal */}
