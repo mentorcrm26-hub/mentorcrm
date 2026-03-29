@@ -348,54 +348,56 @@ export function DrawToolbar({ fabricRef, onUndo, onRedo, canUndo, canRedo }: Dra
 
             <div className="my-1 border-t border-zinc-100 dark:border-zinc-800" />
 
-            {/* Stroke color picker optimized */}
-            <div className="flex flex-col gap-1 items-center pb-1">
-                <span className="text-[8px] font-bold text-zinc-400 uppercase">Color</span>
-                <button
-                    onClick={() => colorInputRef.current?.click()}
-                    title="Change stroke color"
-                    className="w-10 h-10 rounded-xl border-2 border-zinc-200 dark:border-zinc-800 transition-all hover:scale-110 shadow-sm relative overflow-hidden group"
-                    style={{ backgroundColor: strokeColor === 'transparent' ? 'transparent' : strokeColor }}
-                >
-                    <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    {/* Small rainbow indicator at corner */}
-                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-gradient-to-br from-red-500 via-green-500 to-blue-500 rounded-tl-sm" />
-                </button>
-                <input
-                    ref={colorInputRef}
-                    type="color"
-                    className="sr-only"
-                    value={strokeColor === 'transparent' ? '#000000' : strokeColor}
-                    onChange={e => updateBrushColor(e.target.value)}
-                />
+            {/* Stroke color palette */}
+            <div className="flex flex-col gap-1.5 items-center py-2 px-1 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                <span className="text-[8px] font-bold text-zinc-400 uppercase">Colors</span>
+                <div className="grid grid-cols-2 gap-1.5">
+                    {COLORS.map(c => (
+                        <button
+                            key={c}
+                            onClick={() => updateBrushColor(c)}
+                            className={`w-4 h-4 rounded-full border border-black/10 transition-all ${strokeColor === c ? 'scale-125 ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-zinc-950 shadow-sm' : 'hover:scale-110'}`}
+                            style={{ backgroundColor: c }}
+                            title={c}
+                        />
+                    ))}
+                    {/* Custom Color Trigger */}
+                    <div className="relative w-4 h-4">
+                        <input
+                            type="color"
+                            value={strokeColor === 'transparent' ? '#000000' : strokeColor}
+                            onChange={e => updateBrushColor(e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-1 border-0 p-0 cursor-pointer rounded-full overflow-hidden bg-transparent"
+                            style={{ width: '100%', height: '100%' }}
+                        />
+                        <div className="absolute inset-0 pointer-events-none rounded-full border border-black/10 bg-gradient-to-br from-red-500 via-green-500 to-blue-500 opacity-50 shrink-0" />
+                    </div>
+                </div>
             </div>
 
             <div className="my-1 border-t border-zinc-100 dark:border-zinc-800" />
 
-            {/* Fill color */}
-            <div className="flex flex-col gap-0.5">
-                <span className="text-[8px] font-bold text-zinc-400 text-center uppercase">Fill</span>
-                <button
-                    onClick={() => fillInputRef.current?.click()}
-                    title="Fill color"
-                    className="w-full aspect-square rounded-lg border-2 border-zinc-200 dark:border-zinc-700 hover:border-indigo-400 transition-colors"
-                    style={{ backgroundColor: fillColor === 'transparent' ? 'transparent' : fillColor, outline: '1px solid #e5e7eb' }}
-                >
-                    {fillColor === 'transparent' && <span className="text-[8px] font-bold text-zinc-300">∅</span>}
-                </button>
-                <input
-                    ref={fillInputRef}
-                    type="color"
-                    className="sr-only"
-                    onChange={e => setFillColor(e.target.value)}
-                />
-                <button
-                    onClick={() => setFillColor('transparent')}
-                    className="text-[8px] text-zinc-400 hover:text-zinc-600 text-center"
-                    title="No fill"
-                >
-                    None
-                </button>
+            {/* Fill color palette */}
+            <div className="flex flex-col gap-1.5 items-center py-2 px-1 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                <span className="text-[8px] font-bold text-zinc-400 uppercase text-center">Fill</span>
+                <div className="grid grid-cols-2 gap-1.5">
+                    <button
+                        onClick={() => setFillColor('transparent')}
+                        className={`w-4 h-4 rounded-full border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-[10px] font-bold ${fillColor === 'transparent' ? 'ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-zinc-950 scale-110' : 'text-zinc-300'}`}
+                        title="None"
+                    >
+                        ∅
+                    </button>
+                    {COLORS.slice(0, 3).concat(['#3b82f6', '#22c55e']).map(c => (
+                        <button
+                            key={c}
+                            onClick={() => setFillColor(c)}
+                            className={`w-4 h-4 rounded-full border border-black/10 transition-all ${fillColor === c ? 'scale-125 ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-zinc-950 shadow-sm' : 'hover:scale-110'}`}
+                            style={{ backgroundColor: c }}
+                            title={c}
+                        />
+                    ))}
+                </div>
             </div>
 
             <div className="my-1 border-t border-zinc-100 dark:border-zinc-800" />
