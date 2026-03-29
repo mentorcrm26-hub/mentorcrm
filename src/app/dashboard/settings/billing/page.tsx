@@ -8,6 +8,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { CheckCircle2, AlertCircle, Zap, Users, Clock } from 'lucide-react'
 import { BillingCheckoutButtons } from './billing-checkout-buttons'
+import { SyncSubscriptionButton } from './sync-subscription-button'
 
 export default async function BillingPage({
     searchParams,
@@ -80,14 +81,17 @@ export default async function BillingPage({
             )}
 
             {!isActive && !isPastDue && (
-                <div className="rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-900/10 p-5 flex gap-3 items-start">
-                    <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
-                    <div>
-                        <h4 className="font-semibold text-amber-900 dark:text-amber-300">Account Pending Activation</h4>
-                        <p className="text-sm text-amber-800 dark:text-amber-400 mt-1">
-                            Your workspace is currently operating without a registered payment method. Choose a plan below to activate full access.
-                        </p>
+                <div className="rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-900/10 p-5 flex flex-col sm:flex-row gap-4 justify-between items-start">
+                    <div className="flex gap-3">
+                        <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
+                        <div>
+                            <h4 className="font-semibold text-amber-900 dark:text-amber-300">Account Pending Activation</h4>
+                            <p className="text-sm text-amber-800 dark:text-amber-400 mt-1">
+                                Your workspace is currently operating without a registered payment method. Choose a plan below to activate full access.
+                            </p>
+                        </div>
                     </div>
+                    <SyncSubscriptionButton />
                 </div>
             )}
 
