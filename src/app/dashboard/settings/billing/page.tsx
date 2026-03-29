@@ -6,18 +6,23 @@
  */
 
 import { createClient } from '@/lib/supabase/server'
-import { CheckCircle2, AlertCircle, Zap, Users } from 'lucide-react'
+import { CheckCircle2, AlertCircle, Zap, Users, Clock } from 'lucide-react'
 import { BillingCheckoutButtons } from './billing-checkout-buttons'
 
-export default async function BillingPage() {
+export default async function BillingPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ success?: string; canceled?: string }>
+}) {
+    const p = await searchParams
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     const plan               = user?.user_metadata?.plan as string | undefined
     const subscriptionStatus = user?.user_metadata?.subscription_status as string | undefined
-    const trialEndsAt        = user?.user_metadata?.trial_ends_at as string | undefined
     const isActive           = subscriptionStatus === 'active' || subscriptionStatus === 'trialing'
     const isPastDue          = subscriptionStatus === 'past_due'
+    const paymentJustCompleted = p?.success === 'true' && !isActive
 
     return (
         <div className="space-y-6">
@@ -29,6 +34,25 @@ export default async function BillingPage() {
             </div>
 
             {/* Status Banner */}
+            {paymentJustCompleted && (
+                <div className="rounded-xl border border-blue-200 dark:border-blue-900/50 bg-blue-50/50 dark:bg-blue-900/10 p-5 flex gap-3 items-start">
+                    <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5 animate-spin" />
+                    <div>
+                        <h4 className="font-semibold text-blue-900 dark:text-blue-300">Payment received — activating your account</h4>
+                        <p className="text-sm text-blue-700 dark:text-blue-400 mt-1">
+                            Your payment was confirmed. Your account will be fully activated in a few seconds. <a href="/dashboard/settings/billing" className="underline font-bold">Refresh this page</a> to see your updated plan.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {p?.canceled === 'true' && (
+                <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 p-5 flex gap-3 items-start">
+                    <AlertCircle className="w-5 h-5 text-zinc-500 shrink-0 mt-0.5" />
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400">Checkout was canceled. No charge was made. Choose a plan below whenever you&apos;re ready.</p>
+                </div>
+            )}
+
             {isActive && (
                 <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/50 dark:bg-emerald-900/10 p-5 flex gap-3 items-start">
                     <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
