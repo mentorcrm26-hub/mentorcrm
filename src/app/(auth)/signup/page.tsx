@@ -112,7 +112,18 @@ export default async function SignupPage({
                 </div>
             )}
 
-            <SignupForm t={{ ...t, submit: submitLabel }} plan={plan} />
+            <SignupForm
+                fullName={t.fullName}
+                namePlaceholder={t.namePlaceholder}
+                emailLabel={t.emailLabel}
+                emailPlaceholder={t.emailPlaceholder}
+                phoneLabel={t.phoneLabel}
+                passwordLabel={t.passwordLabel}
+                passwordPlaceholder={t.passwordPlaceholder}
+                terms={t.terms}
+                submit={submitLabel}
+                plan={plan}
+            />
 
             <div className="mt-10 pt-10 border-t border-white/5 text-center">
                 <p className="text-[10px] font-display font-black uppercase tracking-widest text-white/20 mb-6">{t.alreadyHaveAccount}</p>
