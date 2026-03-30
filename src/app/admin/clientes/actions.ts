@@ -84,6 +84,28 @@ export async function toggleTenantStatus(tenantId: string, currentStatus: string
     return { success: true }
 }
 
+export async function toggleTenantVipStatus(tenantId: string, currentVipStatus: boolean) {
+    const supabaseAdmin = await createAdminClient()
+    const supabaseUser = await createClient()
+    
+    const { data: isAdmin } = await supabaseUser.rpc('is_super_admin')
+    if (!isAdmin) return { success: false, error: 'Acesso Restrito' }
+
+    const { error } = await supabaseAdmin
+        .from('tenants')
+        .update({ is_vip: !currentVipStatus })
+        .eq('id', tenantId)
+
+    if (error) {
+        console.error('Erro ao atualizar tenant VIP status:', error)
+        return { success: false, error: 'Falha ao alterar status VIP no banco de dados' }
+    }
+
+    revalidatePath('/admin/clientes')
+    revalidatePath(`/admin/clientes/${tenantId}`)
+    return { success: true }
+}
+
 /**
  * ATENÇÃO: UTILIZE COM CAUTELA.
  * Esta função agora executa a LIMPEZA NUCLEAR tanto do banco de dados (Public)

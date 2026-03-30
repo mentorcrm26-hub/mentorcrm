@@ -11,6 +11,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getAppUrl } from '@/lib/utils'
 
 export async function login(formData: FormData) {
     const supabase = await createClient()
@@ -40,6 +41,8 @@ export async function login(formData: FormData) {
 
         if (profile?.role === 'super_admin') {
             dest = '/settings'
+        } else if (user.user_metadata?.plan === 'sandbox') {
+            dest = '/demo'
         }
     }
 
@@ -73,7 +76,8 @@ export async function signup(formData: FormData) {
                 plan,
                 trial_ends_at: trialEndsAt,
                 onboarding_status: plan === 'team' ? 'pending' : 'active',
-            }
+            },
+            emailRedirectTo: `${getAppUrl()}/auth/confirm?next=/login`,
         }
     }
 

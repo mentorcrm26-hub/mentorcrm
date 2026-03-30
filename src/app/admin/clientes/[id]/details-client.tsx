@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, Building2, Calendar, Mail, ShieldCheck, ShieldBan, Users, CreditCard, Activity, ExternalLink, User, AlertCircle, Loader2, Link2 } from 'lucide-react'
+import { ArrowLeft, Building2, Calendar, Mail, ShieldCheck, ShieldBan, Users, CreditCard, Activity, ExternalLink, User, AlertCircle, Loader2, Link2, Gift } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { toggleTenantStatus } from '../actions'
+import { toggleTenantStatus, toggleTenantVipStatus } from '../actions'
 import { toast } from 'sonner'
 
 const formatDate = (isoString: string) => {
@@ -17,8 +17,11 @@ export function TenantDetailsClient({ data }: { data: any }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [showVipModal, setShowVipModal] = useState(false)
+  const [vipLoading, setVipLoading] = useState(false)
   
   const isSuspended = data.status === 'suspended'
+  const isVip = data.is_vip === true
   const agentsCount = data.users?.length || 0
 
   const handleToggleStatus = async () => {
@@ -32,6 +35,20 @@ export function TenantDetailsClient({ data }: { data: any }) {
       router.refresh()
     } else {
       toast.error(res.error || 'Erro ao alterar status')
+    }
+  }
+
+  const handleToggleVip = async () => {
+    setShowVipModal(false)
+    setVipLoading(true)
+    const res = await toggleTenantVipStatus(data.id, isVip)
+    setVipLoading(false)
+    
+    if (res.success) {
+      toast.success(isVip ? 'Status VIP Revogado.' : 'Acesso VIP Vitalício Concedido!')
+      router.refresh()
+    } else {
+      toast.error(res.error || 'Erro ao alterar status VIP')
     }
   }
 
@@ -228,7 +245,14 @@ export function TenantDetailsClient({ data }: { data: any }) {
                 <div className="absolute top-0 right-0 p-8 opacity-10">
                     <CreditCard className="w-24 h-24 -rotate-12" />
                 </div>
-                <h4 className="font-black uppercase tracking-widest text-[10px] mb-2 opacity-80">Faturamento Stripe</h4>
+                <div className="flex items-center justify-between mb-2 opacity-80">
+                    <h4 className="font-black uppercase tracking-widest text-[10px]">Faturamento Stripe</h4>
+                    {isVip && (
+                        <span className="bg-amber-400 text-amber-950 px-2 py-0.5 rounded uppercase font-black text-[9px] shadow-sm">
+                            Cortesia VIP
+                        </span>
+                    )}
+                </div>
                 <p className="font-medium text-xs mb-4 opacity-90">Este cliente está vinculado ao Customer ID:</p>
                 <div className="text-lg font-black mb-6 flex items-center gap-1">
                     {data.stripe_customer_id || 'Não vinculado'} 
@@ -247,10 +271,32 @@ export function TenantDetailsClient({ data }: { data: any }) {
                 </div>
                 <button 
                     onClick={handleStripeDashboard}
-                    className="w-full bg-white text-rose-600 py-3 rounded-xl font-black uppercase tracking-widest text-xs transition-all active:scale-95 shadow-lg cursor-pointer"
+                    className="w-full bg-white text-rose-600 py-3 rounded-xl font-black uppercase tracking-widest text-xs transition-all active:scale-95 shadow-lg cursor-pointer mb-3"
                 >
                     Ver no Dashboard Stripe
                 </button>
+                <div className="pt-4 border-t border-white/20 mt-2">
+                    <button 
+                         onClick={() => setShowVipModal(true)}
+                         disabled={vipLoading}
+                         className={`w-full py-3 px-4 rounded-xl font-black flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 border ${
+                             isVip 
+                             ? 'bg-transparent border-white/40 text-white hover:bg-white/10' 
+                             : 'bg-amber-400 border-amber-400 text-amber-950 hover:bg-amber-300 shadow-md shadow-amber-400/20'
+                         }`}
+                    >
+                         {vipLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : (isVip ? (
+                             <><ShieldBan className="w-4 h-4" /> Revogar Acesso VIP</>
+                         ) : (
+                             <><ShieldCheck className="w-4 h-4" /> Conceder Acesso VIP</>
+                         ))}
+                    </button>
+                    {!isVip && (
+                        <p className="text-[9px] text-white/60 text-center font-medium mt-3 leading-relaxed">
+                            O Acesso VIP libera limite total sem cobranças, ignorando o Stripe.
+                        </p>
+                    )}
+                </div>
              </div>
         </div>
       </div>
@@ -288,6 +334,48 @@ export function TenantDetailsClient({ data }: { data: any }) {
                       </button>
                       <button 
                           onClick={() => setShowConfirmModal(false)} 
+                          className="w-full py-4 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-2xl transition-colors cursor-pointer uppercase tracking-widest text-xs font-black"
+                      >
+                          Cancelar
+                      </button>
+                  </div>
+              </div>
+          </div>
+      )}
+
+      {/* VIP Confirmation Modal */}
+      {showVipModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+              <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-white/10 p-8 rounded-[2rem] shadow-2xl max-w-sm w-full animate-in zoom-in-95 duration-200">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${
+                      !isVip ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400' : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400'
+                  }`}>
+                      <Gift className="w-7 h-7" />
+                  </div>
+                  
+                  <h3 className="text-2xl font-black text-zinc-900 dark:text-white mb-3 tracking-tight">
+                      {!isVip ? 'Conceder Acesso VIP?' : 'Revogar Acesso VIP?' }
+                  </h3>
+                  
+                  <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium mb-8 leading-relaxed">
+                      {!isVip 
+                          ? `Dar acesso VIP ao ${data.name} significa que a agência deles poderá usar o CRM gratuitamente sem sofrer restrições de pagamento.`
+                          : `Revogar significa que eles entrarão no sistema de cobrança padrão e o acesso pode ser bloqueado se não pagarem.`}
+                  </p>
+                  
+                  <div className="flex flex-col gap-3 font-bold">
+                      <button 
+                          onClick={handleToggleVip} 
+                          className={`w-full py-4 text-white rounded-2xl transition-all shadow-lg active:scale-95 cursor-pointer uppercase tracking-widest text-xs font-black ${
+                              !isVip 
+                                  ? 'bg-amber-500 hover:bg-amber-400 shadow-amber-500/20' 
+                                  : 'bg-zinc-800 hover:bg-zinc-700 shadow-zinc-800/20'
+                          }`}
+                      >
+                          {!isVip ? 'Confirmar Acesso VIP' : 'Confirmar Revogação'}
+                      </button>
+                      <button 
+                          onClick={() => setShowVipModal(false)} 
                           className="w-full py-4 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-2xl transition-colors cursor-pointer uppercase tracking-widest text-xs font-black"
                       >
                           Cancelar

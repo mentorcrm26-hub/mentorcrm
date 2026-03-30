@@ -34,6 +34,7 @@ export async function getTenantDetails(tenantId: string) {
             status,
             created_at,
             stripe_customer_id,
+            is_vip,
             users (
                 id,
                 email,

@@ -29,6 +29,10 @@ export default async function DashboardLayout({
         redirect('/login')
     }
 
+    if (user.user_metadata?.plan === 'sandbox') {
+        redirect('/demo')
+    }
+
     const { data: isSuperAdmin } = await supabase.rpc('is_super_admin')
 
     // Fetch the user details to get tenant
@@ -40,13 +44,15 @@ export default async function DashboardLayout({
             tenants (
                 name, 
                 status, 
-                created_at
+                created_at,
+                is_vip
             )
         `)
         .eq('id', user.id)
         .single()
 
     const tenant = (userProfile?.tenants as any)
+    const isVip = tenant?.is_vip === true
 
     // Note: Trial logic was removed as part of the pivot to Admin-led onboarding.
     // Clients receive credentials after their initial payment.
@@ -76,6 +82,7 @@ export default async function DashboardLayout({
                     <div className="flex flex-col mb-4">
                         <span className="text-sm font-medium truncate">{tenant?.name || 'Your Workspace'}</span>
                         <span className="text-xs text-zinc-500">{userProfile?.role === 'admin' ? 'Account Owner' : 'Agent'}</span>
+                        {isVip && <span className="text-[10px] font-black uppercase text-amber-500 mt-1">Status VIP Ativo</span>}
                     </div>
 
                     <form action="/auth/signout" method="post">
@@ -97,11 +104,13 @@ export default async function DashboardLayout({
                     <MobileNav role={userProfile?.role || null} tenantName={tenant?.name || null} tenantId={userProfile?.tenant_id || null} isSuperAdmin={isSuperAdmin} />
                 </header>
 
-                <PlanBanner
-                    plan={user.user_metadata?.plan ?? null}
-                    trialEndsAt={user.user_metadata?.trial_ends_at ?? null}
-                    onboardingStatus={user.user_metadata?.onboarding_status ?? null}
-                />
+                {!isVip && (
+                    <PlanBanner
+                        plan={user.user_metadata?.plan ?? null}
+                        trialEndsAt={user.user_metadata?.trial_ends_at ?? null}
+                        onboardingStatus={user.user_metadata?.onboarding_status ?? null}
+                    />
+                )}
 
                 <div className="flex-1 overflow-auto p-4 md:p-8 relative z-0">
                     {children}
