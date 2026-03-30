@@ -43,6 +43,7 @@ export async function getTenantDetails(tenantId: string) {
                 id,
                 email,
                 full_name,
+                phone,
                 role,
                 created_at
             )

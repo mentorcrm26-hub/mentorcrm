@@ -10,7 +10,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Building2, CreditCard, Blocks, Tag, Users } from 'lucide-react'
+import { Building2, CreditCard, Blocks, Users } from 'lucide-react'
 
 export function SettingsNav() {
     const pathname = usePathname()
@@ -32,12 +32,6 @@ export function SettingsNav() {
             name: 'My Team (Agents)',
             href: '/dashboard/settings/team',
             icon: Users,
-            exact: false
-        },
-        {
-            name: 'IA Knowledge Base',
-            href: '/dashboard/settings/ai-knowledge',
-            icon: Building2, // Podemos mudar o ícone depois se necessário
             exact: false
         },
         {

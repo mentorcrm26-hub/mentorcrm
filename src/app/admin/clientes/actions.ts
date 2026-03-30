@@ -37,6 +37,8 @@ export async function getTenantsList() {
             name,
             status,
             created_at,
+            plan,
+            is_vip,
             users (
                 id,
                 email,

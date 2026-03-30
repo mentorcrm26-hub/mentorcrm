@@ -33,15 +33,20 @@ export async function login(formData: FormData) {
     let dest = '/dashboard'
 
     if (user) {
-        const { data: profile } = await supabase
+        // Fetch actual tenant status from DB instead of relying on Auth Metadata
+        const { data: dbProfile } = await supabase
             .from('users')
-            .select('role')
+            .select('role, tenants(plan, is_vip)')
             .eq('id', user.id)
             .single()
 
-        if (profile?.role === 'super_admin') {
+        const tenant = (dbProfile?.tenants as any)
+        const isVip = tenant?.is_vip === true
+        const plan = tenant?.plan || user.user_metadata?.plan || 'sandbox'
+
+        if (dbProfile?.role === 'super_admin') {
             dest = '/settings'
-        } else if (user.user_metadata?.plan === 'sandbox') {
+        } else if (!isVip && plan === 'sandbox') {
             dest = '/demo'
         }
     }

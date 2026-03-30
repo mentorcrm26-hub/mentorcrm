@@ -29,10 +29,6 @@ export default async function DashboardLayout({
         redirect('/login')
     }
 
-    if (user.user_metadata?.plan === 'sandbox') {
-        redirect('/demo')
-    }
-
     const { data: isSuperAdmin } = await supabase.rpc('is_super_admin')
 
     // Fetch the user details to get tenant
@@ -53,6 +49,12 @@ export default async function DashboardLayout({
 
     const tenant = (userProfile?.tenants as any)
     const isVip = tenant?.is_vip === true
+    const currentPlan = tenant?.plan || user.user_metadata?.plan || 'sandbox'
+
+    // Only redirect to demo if NOT VIP and plan is sandbox
+    if (!isVip && currentPlan === 'sandbox') {
+        redirect('/demo')
+    }
 
     // Note: Trial logic was removed as part of the pivot to Admin-led onboarding.
     // Clients receive credentials after their initial payment.

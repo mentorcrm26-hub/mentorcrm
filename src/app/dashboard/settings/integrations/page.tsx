@@ -9,15 +9,35 @@ import { WhatsAppIntegrationCard } from './whatsapp-integration-card'
 import { TwilioIntegrationCard } from './twilio-integration-card'
 import { CalendarIntegrationsClient } from './calendar-integrations-client'
 import { ApiKeyManagement } from './api-key-management'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 export default async function IntegrationsPage() {
     const supabase = await createClient()
+    const adminSupabase = await createAdminClient()
 
     const { data: { user } } = await supabase.auth.getUser()
-    const plan = user?.user_metadata?.plan as string | undefined
-    // WhatsApp is only available on Team plan. Agent/Sandbox are locked.
-    const whatsappLocked = plan != null && plan !== 'team'
+
+    // Retrieve tenant info using admin client
+    const { data: userProfile } = await adminSupabase
+        .from('users')
+        .select(`
+            role, 
+            tenant_id,
+            tenants (
+                plan, 
+                is_vip
+            )
+        `)
+        .eq('id', user?.id)
+        .single()
+
+    const tenantData = (userProfile?.tenants as any)
+    const tenant = Array.isArray(tenantData) ? tenantData[0] : tenantData
+    const isVip = tenant?.is_vip === true
+    const plan = tenant?.plan || user?.user_metadata?.plan || 'sandbox'
+
+    // WhatsApp is only available on Team plan. Agent/Sandbox are locked, unless the user is VIP.
+    const whatsappLocked = !isVip && plan !== 'team'
 
     // Retrieve active integrations status
     const { data: integrations } = await supabase

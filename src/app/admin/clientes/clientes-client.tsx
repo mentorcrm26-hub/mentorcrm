@@ -106,15 +106,16 @@ export function ClientesClient({ initialData }: { initialData: any[] }) {
               <tr>
                 <th scope="col" className="px-6 py-4">Workspace / Dono</th>
                 <th scope="col" className="px-6 py-4">Status</th>
+                <th scope="col" className="px-6 py-4 text-center">Plano</th>
                 <th scope="col" className="px-6 py-4">Usuários</th>
                 <th scope="col" className="px-6 py-4">Criação</th>
-                <th scope="col" className="px-6 py-4 text-right">Ações</th>
+                <th scope="col" className="px-6 py-4 text-right border-l border-zinc-100 dark:border-white/5">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-200 dark:divide-white/5">
               {filteredTenants.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center">
+                  <td colSpan={6} className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center justify-center p-6 bg-zinc-50 dark:bg-zinc-900/20 rounded-xl border border-dashed border-zinc-200 dark:border-white/10 mx-auto max-w-sm">
                         <Search className="w-8 h-8 text-zinc-400 mb-3" />
                         <p className="text-zinc-500 font-medium">Nenhum workspace ou cliente encontrado.</p>
@@ -165,19 +166,33 @@ export function ClientesClient({ initialData }: { initialData: any[] }) {
                           {isSuspended ? 'Suspenso' : 'Ativo'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap text-center">
+                        <span className={`inline-flex px-2.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest border ${
+                          tenant.is_vip 
+                            ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20' 
+                            : 'bg-zinc-50 text-zinc-600 border-zinc-200 dark:bg-white/5 dark:text-zinc-400 dark:border-white/10'
+                        }`}>
+                          {tenant.is_vip ? '★ VIP' : (
+                            tenant.plan === 'agent' ? 'Solo' : 
+                            tenant.plan === 'agent_annual' ? 'Solo Anual' : 
+                            tenant.plan === 'team' ? 'Team' : 
+                            tenant.plan === 'sandbox' ? 'Sandbox' : 
+                            tenant.plan || 'Sandbox'
+                          )}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap font-bold">
                         <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-300">
-                          <Users className="w-4 h-4 text-zinc-400" />
-                          <span className="font-medium">{tenant.users?.length || 0}</span>
+                          <div className="p-1 px-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-[10px] flex items-center gap-1.5">
+                             <Users className="w-3 h-3 text-zinc-400" />
+                             {tenant.users?.length || 0}
+                          </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2 text-zinc-500">
-                          <Calendar className="w-4 h-4 opacity-70" />
-                          <span>{tenant.created_at ? formatDate(tenant.created_at) : 'N/A'}</span>
-                        </div>
+                      <td className="px-6 py-4 whitespace-nowrap text-[11px] font-medium text-zinc-500">
+                         {tenant.created_at ? formatDate(tenant.created_at) : 'N/A'}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <td className="px-6 py-4 whitespace-nowrap text-right border-l border-zinc-100 dark:border-white/5">
                         <div className="flex items-center justify-end gap-2">
                            <button 
                             onClick={() => handleToggleStatusRequest(tenant.id, tenant.status, tenant.name)}
