@@ -21,7 +21,7 @@ export function SimulateLeadButton() {
             title="Create a fake lead instantly"
         >
             <Sparkles className="w-4 h-4 mr-2 text-indigo-200 group-hover:text-white transition-colors" />
-            Simular Novo Diagnóstico
+            Simulate New Lead
         </button>
     )
 }

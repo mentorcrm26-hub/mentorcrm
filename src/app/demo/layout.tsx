@@ -20,6 +20,10 @@ export default function DemoLayout({ children }: { children: React.ReactNode }) 
                     </div>
 
                     <div className="flex-1 py-6 px-4 space-y-2 relative">
+                        <Link href="/" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
+                            <Home className="w-5 h-5" />
+                            Home
+                        </Link>
                         <Link href="/demo" className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
                             <LayoutDashboard className="w-5 h-5" />
                             Overview
@@ -30,11 +34,17 @@ export default function DemoLayout({ children }: { children: React.ReactNode }) 
                         </Link>
                     </div>
 
-                    <div className="p-4 border-t border-zinc-200 dark:border-white/10">
+                    <div className="p-4 border-t border-zinc-200 dark:border-white/10 space-y-3">
                         <Link href="/signup" className="flex items-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors justify-center transition-all bg-[length:200%_auto] hover:bg-right hover:shadow-[0_0_20px_rgba(37,99,235,0.4)]">
                             <LogIn className="w-4 h-4" />
                             Create Account
                         </Link>
+                        <form action="/auth/signout" method="post">
+                            <button type="submit" className="flex items-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors justify-center transition-all">
+                                <LogOut className="w-4 h-4" />
+                                Logout
+                            </button>
+                        </form>
                     </div>
                 </aside>
 
@@ -43,9 +53,17 @@ export default function DemoLayout({ children }: { children: React.ReactNode }) 
                     {/* Header Mobile */}
                     <header className="h-16 md:hidden flex items-center justify-between px-4 border-b border-zinc-200 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-md z-20">
                         <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-500">Mentor CRM</span>
-                        <Link href="/signup" className="px-3 py-1.5 rounded text-xs font-semibold text-white bg-blue-600 flex items-center gap-2">
-                            Create Account
-                        </Link>
+                        <div className="flex items-center gap-2">
+                             <Link href="/" className="px-3 py-1.5 rounded text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-2">
+                                <Home className="w-3 h-3" />
+                                Home
+                             </Link>
+                            <form action="/auth/signout" method="post">
+                                <button type="submit" className="px-3 py-1.5 rounded text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-900 flex items-center gap-2" title="Logout">
+                                    <LogOut className="w-3 h-3" />
+                                </button>
+                            </form>
+                        </div>
                     </header>
 
                     <div className="mx-4 md:mx-6 mt-4 md:mt-6 rounded-2xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 backdrop-blur-xl border border-blue-500/20 dark:border-blue-400/10 p-4 flex flex-col sm:flex-row items-center justify-between z-10 shrink-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">

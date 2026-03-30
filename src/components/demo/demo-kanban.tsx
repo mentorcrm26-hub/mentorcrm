@@ -104,13 +104,13 @@ export function DemoKanbanBoard() {
                                                                 {/* Life Planner Specific Badges */}
                                                                 <div className="flex flex-wrap gap-1 mt-2">
                                                                     {lead.status === 'New Lead' && (
-                                                                        <span className="text-[9px] font-bold uppercase tracking-tighter bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 px-1.5 py-0.5 rounded border border-blue-200/50">Diagnóstico Pendente</span>
+                                                                        <span className="text-[9px] font-bold uppercase tracking-tighter bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 px-1.5 py-0.5 rounded border border-blue-200/50">New Lead</span>
                                                                     )}
                                                                     {lead.status === 'Scheduled' && (
-                                                                        <span className="text-[9px] font-bold uppercase tracking-tighter bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 px-1.5 py-0.5 rounded border border-purple-200/50">Estratégia Pronta</span>
+                                                                        <span className="text-[9px] font-bold uppercase tracking-tighter bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 px-1.5 py-0.5 rounded border border-purple-200/50">Strategy Drafted</span>
                                                                     )}
                                                                     {lead.status === 'Won' && (
-                                                                        <span className="text-[9px] font-bold uppercase tracking-tighter bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-200/50">Proteção Ativada</span>
+                                                                        <span className="text-[9px] font-bold uppercase tracking-tighter bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-200/50">Client Won</span>
                                                                     )}
                                                                 </div>
                                                             </div>

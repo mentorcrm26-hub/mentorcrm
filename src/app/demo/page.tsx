@@ -86,7 +86,7 @@ export default function DemoDashboardPage() {
                                     <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold uppercase tracking-wider">Premium Feature</span>
                                 </h3>
                                 <p className="text-sm font-medium text-zinc-600 dark:text-zinc-300 mt-2 leading-relaxed">
-                                    You have <strong className="text-amber-600 dark:text-amber-400">{leads.filter(l => l.status === 'Contacting').length} leads</strong> stalled in "Contacting" for too long. Research shows that sending a follow-up SMS right now increases conversion by 34%. Would you like to generate an AI message?
+                                    You have <strong className="text-amber-600 dark:text-amber-400">{leads.filter(l => l.status === 'Attempting Contact').length} leads</strong> stalled in "Attempting Contact" for too long. Research shows that sending a follow-up SMS right now increases conversion by 34%. Would you like to generate an AI message?
                                 </p>
                                 <button disabled className="mt-4 inline-flex items-center text-sm font-semibold text-indigo-600 dark:text-indigo-400 opacity-60 cursor-not-allowed">
                                     Generate Message <span className="ml-1">→</span>

@@ -57,7 +57,7 @@ export async function updateSession(request: NextRequest) {
     // If user is logged in and trying to access root or login, redirect to dashboard
     if (
         user &&
-        (request.nextUrl.pathname === '/' || request.nextUrl.pathname === '/login')
+        (request.nextUrl.pathname === '/login')
     ) {
         const url = request.nextUrl.clone()
         url.pathname = user.user_metadata?.plan === 'sandbox' ? '/demo' : '/dashboard'

@@ -55,14 +55,14 @@ export default function DemoLeadsPage() {
                 <div className="absolute bottom-24 right-6 pointer-events-auto z-[9998]">
                     <VoiceAssistantButton
                         assistantId="demo-id"
-                        label="Falar com Especialista AI"
+                        label="Talk to Expert"
                     />
                 </div>
 
                 <AIChatWidget
                     configId="demo-config"
                     title="Mentor AI Strategic Advisor"
-                    subtitle="Planejamento e Proteção 24/7"
+                    subtitle="Planning & Strategy 24/7"
                 />
             </main>
         </div>

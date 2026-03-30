@@ -23,15 +23,15 @@ type Lead = {
 const todayStr = new Date().toISOString()
 
 const MOCK_LEADS: Lead[] = [
-    { id: '1', name: 'João Silva', email: 'joao@example.com', phone: '(11) 98765-4321', notes: 'Contato via site', status: 'Diagnostic', created_at: todayStr },
-    { id: '2', name: 'Maria Souza', email: 'maria@example.com', phone: '(21) 99887-6655', notes: 'Interesse em Proteção de Renda', status: 'Interview', created_at: todayStr },
-    { id: '3', name: 'Carlos Santos', email: 'carlos@example.com', phone: '(31) 91234-5678', notes: 'Cálculo de aposentadoria em andamento', status: 'Strategy', created_at: todayStr },
-    { id: '4', name: 'Ana Oliveira', email: 'ana@example.com', phone: '(41) 98877-6655', notes: 'Reunião de fechamento marcada', status: 'Presentation', created_at: todayStr },
-    { id: '5', name: 'Lucas Costa', email: 'lucas@example.com', phone: '(51) 91122-3344', notes: 'Apólice emitida e ativada', status: 'Active Protection', created_at: todayStr },
+    { id: '1', name: 'João Silva', email: 'joao@example.com', phone: '(11) 98765-4321', notes: 'Contact via website', status: 'New Lead', created_at: todayStr },
+    { id: '2', name: 'Maria Souza', email: 'maria@example.com', phone: '(21) 99887-6655', notes: 'Interested in Income Protection', status: 'Attempting Contact', created_at: todayStr },
+    { id: '3', name: 'Carlos Santos', email: 'carlos@example.com', phone: '(31) 91234-5678', notes: 'Retirement planning in progress', status: 'In Conversation', created_at: todayStr },
+    { id: '4', name: 'Ana Oliveira', email: 'ana@example.com', phone: '(41) 98877-6655', notes: 'Closing meeting scheduled', status: 'Scheduled', created_at: todayStr },
+    { id: '5', name: 'Lucas Costa', email: 'lucas@example.com', phone: '(51) 91122-3344', notes: 'Lead closed and winning', status: 'Won', created_at: todayStr },
     // Adicionando alguns extras para fazer volume
-    ...Array(10).fill(null).map((_, i) => ({ id: `new_${i}`, name: `Lead Extra ${i}`, email: null, phone: null, notes: null, status: 'Diagnostic', created_at: todayStr })),
-    ...Array(4).fill(null).map((_, i) => ({ id: `contact_${i}`, name: `Em Análise ${i}`, email: null, phone: null, notes: null, status: 'Interview', created_at: todayStr })),
-    ...Array(2).fill(null).map((_, i) => ({ id: `sched_${i}`, name: `Strategy Extra ${i}`, email: null, phone: null, notes: null, status: 'Strategy', created_at: todayStr })),
+    ...Array(10).fill(null).map((_, i) => ({ id: `new_${i}`, name: `Lead Extra ${i}`, email: null, phone: null, notes: null, status: 'New Lead', created_at: todayStr })),
+    ...Array(4).fill(null).map((_, i) => ({ id: `contact_${i}`, name: `Under Analysis ${i}`, email: null, phone: null, notes: null, status: 'Attempting Contact', created_at: todayStr })),
+    ...Array(2).fill(null).map((_, i) => ({ id: `sched_${i}`, name: `Strategy Extra ${i}`, email: null, phone: null, notes: null, status: 'In Conversation', created_at: todayStr })),
 ]
 
 type DemoContextType = {
@@ -50,7 +50,7 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
 
     // Opcional: Persistir no localStorage para não perder caso dê f5
     useEffect(() => {
-        const saved = localStorage.getItem('mentor_demo_leads')
+        const saved = localStorage.getItem('mentor_demo_leads_v2')
         if (saved) {
             try {
                 setLeads(JSON.parse(saved))
@@ -59,7 +59,7 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
     }, [])
 
     useEffect(() => {
-        localStorage.setItem('mentor_demo_leads', JSON.stringify(leads))
+        localStorage.setItem('mentor_demo_leads_v2', JSON.stringify(leads))
     }, [leads])
 
     const simulateLead = () => {
@@ -71,7 +71,7 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
             email: `${randomName.toLowerCase().replace(' ', '.')}@example.com`,
             phone: `(11) 9${Math.floor(10000000 + Math.random() * 90000000)}`,
             notes: 'Captured for Financial Diagnosis',
-            status: 'Diagnostic',
+            status: 'New Lead',
             created_at: new Date().toISOString()
         }
 
