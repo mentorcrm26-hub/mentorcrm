@@ -28,7 +28,6 @@ export async function getTenantsList() {
         .select('id')
     
     const superAdminIds = systemAdmins?.map(sa => sa.id) || []
-    console.log('Internal Super Admins to hide:', superAdminIds.length)
 
     // 4. Buscar Tenants e seus Usuários associados
     const { data, error } = await supabaseAdmin
@@ -54,15 +53,11 @@ export async function getTenantsList() {
 
     // 5. FILTRAR: Remover workspaces que pertencem exclusivamente a Super Admins
     const filteredCustomers = data.filter(tenant => {
-        // Se o tenant não tem usuários, ele é orfão e deve aparecer para auditoria
         if (!tenant.users || tenant.users.length === 0) return true
-        
-        // Se todos os usuários do tenant são Super Admins, escondemos ele da lista de clientes
         const onlyAdminInvolved = tenant.users.every((u: any) => superAdminIds.includes(u.id))
         return !onlyAdminInvolved
     })
 
-    console.log(`Displaying ${filteredCustomers.length} real customers (from ${data.length} total tenants)`)
     return { success: true, data: filteredCustomers }
 }
 
@@ -91,23 +86,57 @@ export async function toggleTenantStatus(tenantId: string, currentStatus: string
 
 /**
  * ATENÇÃO: UTILIZE COM CAUTELA.
+ * Esta função agora executa a LIMPEZA NUCLEAR tanto do banco de dados (Public)
+ * quanto da lista de Authentication (Auth.Users) do Supabase.
  */
 export async function dangerouslyClearAllClients() {
-    console.log('--- NUCLEAR CLEANUP START ---')
+    console.log('--- START NUCLEAR CLEANUP (AUTH + DB) ---')
     
     const supabaseUser = await createClient()
     const { data: { user } } = await supabaseUser.auth.getUser()
     const { data: isAdmin } = await supabaseUser.rpc('is_super_admin')
 
-    if (!user || !isAdmin) return { success: false, error: 'Acesso Negado.' }
+    if (!user || !isAdmin) {
+        console.error('Unauthorized attempt to clear database')
+        return { success: false, error: 'Acesso Negado.' }
+    }
 
     const supabaseAdmin = await createAdminClient()
 
-    // 1. Obter todos os Super Admins para proteção
+    // 1. Obter IDs de Super Admins para proteção
     const { data: systemAdmins } = await supabaseAdmin.from('system_admins').select('id')
     const superAdminIds = systemAdmins?.map(sa => sa.id) || []
 
-    // 2. Obter Tenants dos Super Admins para proteção
+    // 2. Identificar todos os usuários que NÃO são administradores para deletar do AUTH
+    const { data: usersToDelete, error: fetchUsersError } = await supabaseAdmin
+        .from('users')
+        .select('id, email')
+        .not('id', 'in', `(${superAdminIds.join(',')})`)
+
+    if (fetchUsersError) {
+        console.error('Error identifying users to delete from Auth:', fetchUsersError)
+    }
+
+    const userIdsToDelete = usersToDelete?.map(u => u.id) || []
+    console.log(`Users identified for Auth Deletion: ${userIdsToDelete.length}`)
+
+    // 3. DELETAR DO SUPABASE AUTH (Lista de Logins)
+    // Usamos o Auth Admin API para invalidar as credenciais permanentemente
+    for (const uid of userIdsToDelete) {
+        try {
+            const { error: authDelError } = await supabaseAdmin.auth.admin.deleteUser(uid)
+            if (authDelError) {
+                console.error(`Error deleting user ${uid} from Auth:`, authDelError.message)
+            } else {
+                console.log(`Successfully removed login credential for User ID: ${uid}`)
+            }
+        } catch (err) {
+            console.error(`Panic deleting user ${uid}:`, err)
+        }
+    }
+
+    // 4. LIMPEZA TOTAL DE TENANTS (Nuclear via Service Role no Banco Público)
+    // Isso apaga tudo vinculado via CASCADE (Leads, Mensagens, etc.)
     const { data: adminUsers } = await supabaseAdmin
         .from('users')
         .select('tenant_id')
@@ -115,22 +144,30 @@ export async function dangerouslyClearAllClients() {
     
     const protectedTenantIds = adminUsers?.map(u => u.tenant_id).filter(Boolean) as string[]
 
-    // 3. LIMPEZA TOTAL DE TENANTS NÃO PROTEGIDOS
     let tenantsQuery = supabaseAdmin.from('tenants').delete()
     if (protectedTenantIds.length > 0) {
         tenantsQuery = tenantsQuery.not('id', 'in', `(${protectedTenantIds.join(',')})`)
     }
     
-    const { data: deletedTenants } = await tenantsQuery.select('id')
+    const { data: deletedTenants, error: delTenantsError } = await tenantsQuery.select('id')
 
-    // 4. LIMPEZA DE USUÁRIOS NÃO PROTEGIDOS
+    if (delTenantsError) {
+        console.error('Error in nuclear tenant cleanup:', delTenantsError)
+        return { success: false, error: `Erro na remoção do DB Público: ${delTenantsError.message}` }
+    }
+
+    // 5. LIMPEZA DE USUÁRIOS NO BANCO PÚBLICO
     await supabaseAdmin
         .from('users')
         .delete()
         .not('id', 'in', `(${superAdminIds.join(',')})`)
 
-    console.log('--- NUCLEAR CLEANUP END ---')
+    console.log('--- NUCLEAR CLEANUP COMPLETED (AUTH + DB) ---')
     revalidatePath('/admin/clientes')
     revalidatePath('/admin')
-    return { success: true, message: `Base limpa! ${deletedTenants?.length || 0} workspaces removidos.` }
+    
+    return { 
+        success: true, 
+        message: `Tudo limpo! ${userIdsToDelete.length} Logins invalidados e ${deletedTenants?.length || 0} Workspaces removidos.` 
+    }
 }
