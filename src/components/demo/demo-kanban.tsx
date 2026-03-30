@@ -14,11 +14,13 @@ import { MessageSquareText, Mail } from 'lucide-react'
 import { useDemo } from '@/components/demo/demo-provider'
 
 const COLUMNS = [
-    { id: 'Diagnostic', title: 'Diagnóstico', color: 'bg-blue-500' },
-    { id: 'Interview', title: 'Entrevista', color: 'bg-yellow-500' },
-    { id: 'Strategy', title: 'Estratégia', color: 'bg-purple-500' },
-    { id: 'Presentation', title: 'Apresentação', color: 'bg-indigo-500' },
-    { id: 'Active Protection', title: 'Proteção Ativada', color: 'bg-emerald-500' },
+    { id: 'New Lead', title: 'New Lead', color: 'bg-blue-500' },
+    { id: 'Attempting Contact', title: 'Attempting Contact', color: 'bg-yellow-400' },
+    { id: 'In Conversation', title: 'In Conversation', color: 'bg-emerald-400' },
+    { id: 'Scheduled', title: 'Scheduled', color: 'bg-purple-500' },
+    { id: 'Proposal/Analysis', title: 'Proposal/Analysis', color: 'bg-orange-500' },
+    { id: 'Won', title: 'Won', color: 'bg-emerald-600' },
+    { id: 'Lost', title: 'Lost', color: 'bg-red-500' },
 ]
 
 type Lead = {
@@ -101,13 +103,13 @@ export function DemoKanbanBoard() {
 
                                                                 {/* Life Planner Specific Badges */}
                                                                 <div className="flex flex-wrap gap-1 mt-2">
-                                                                    {lead.status === 'Diagnostic' && (
+                                                                    {lead.status === 'New Lead' && (
                                                                         <span className="text-[9px] font-bold uppercase tracking-tighter bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 px-1.5 py-0.5 rounded border border-blue-200/50">Diagnóstico Pendente</span>
                                                                     )}
-                                                                    {lead.status === 'Strategy' && (
+                                                                    {lead.status === 'Scheduled' && (
                                                                         <span className="text-[9px] font-bold uppercase tracking-tighter bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 px-1.5 py-0.5 rounded border border-purple-200/50">Estratégia Pronta</span>
                                                                     )}
-                                                                    {lead.status === 'Active Protection' && (
+                                                                    {lead.status === 'Won' && (
                                                                         <span className="text-[9px] font-bold uppercase tracking-tighter bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-200/50">Proteção Ativada</span>
                                                                     )}
                                                                 </div>

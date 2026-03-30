@@ -6,7 +6,7 @@
  */
 
 import Link from 'next/link'
-import { LayoutDashboard, Users, LogIn } from 'lucide-react'
+import { LayoutDashboard, Users, LogIn, LogOut, Home } from 'lucide-react'
 import { DemoProvider } from '@/components/demo/demo-provider'
 
 export default function DemoLayout({ children }: { children: React.ReactNode }) {

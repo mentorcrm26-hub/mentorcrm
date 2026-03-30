@@ -21,14 +21,14 @@ export default function DemoLeadsPage() {
             <header className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 shrink-0 gap-4 relative z-10 px-6 pt-6">
                 <div className="flex flex-col">
                     <div className="flex items-center gap-3 mb-1">
-                        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">Painel de Planejamento</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">Lead Management</h1>
                         <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                             <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Live Engine</span>
                         </span>
                     </div>
                     <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400 max-w-md">
-                        Gestão estratégica de proteção familiar, planejamento de aposentadoria e blindagem patrimonial com suporte de inteligência artificial.
+                        Strategic management with artificial intelligence support. Interactive demo mode.
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
