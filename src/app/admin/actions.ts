@@ -1,32 +1,63 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { stripe, isStripeConfigured } from '@/lib/stripe'
 import Stripe from 'stripe'
 
+/**
+ * Função unificada para obter métricas globais do Super Admin.
+ * Usa Admin Client para garantir que NADA escape do relatório.
+ */
 export async function getAdminOverviewData() {
-    const supabase = await createClient()
+    console.log('--- GENERATING GLOBAL OVERVIEW (ADMIN PRIVILEGED) ---')
     
-    // Confirmação de segurança dupla na root do admin
-    const { data: isAdmin } = await supabase.rpc('is_super_admin')
+    // 1. Verificar permissão via client comum
+    const supabaseUser = await createClient()
+    const { data: isAdmin } = await supabaseUser.rpc('is_super_admin')
     if (!isAdmin) return { success: false, error: 'Acesso Restrito' }
 
+    // 2. Usar Admin Client para bypass total de RLS nas métricas
+    const supabaseAdmin = await createAdminClient()
+
     try {
-        // 1. Estatísticas de Workspaces / Clientes
-        const { data: tenants } = await supabase.from('tenants').select('status')
+        // A. Identificar IDs de Super Admins para filtro
+        const { data: systemAdmins } = await supabaseAdmin.from('system_admins').select('id')
+        const superAdminIds = systemAdmins?.map(sa => sa.id) || []
+
+        // B. Buscar todos os Tenants e seus usuários
+        const { data: allTenants, error: tenantErr } = await supabaseAdmin
+            .from('tenants')
+            .select('id, status, users(id)')
+
+        if (tenantErr) throw tenantErr
+
+        // C. FILTRAR: Apenas tenants que possuem pelo menos um usuário que NÃO é Super Admin
+        const realClientTenants = allTenants.filter(tenant => {
+            if (!tenant.users || tenant.users.length === 0) return true // Orphans count as system load
+            return tenant.users.some((u: any) => !superAdminIds.includes(u.id))
+        })
+
         const tenantStats = {
-            total: tenants?.length || 0,
-            active: tenants?.filter(t => t.status === 'active').length || 0,
-            trial: tenants?.filter(t => t.status === 'trial').length || 0,
-            suspended: tenants?.filter(t => t.status === 'suspended').length || 0
+            total: realClientTenants.length,
+            active: realClientTenants.filter(t => t.status === 'active').length,
+            trial: realClientTenants.filter(t => t.status === 'trial').length,
+            suspended: realClientTenants.filter(t => t.status === 'suspended').length
         }
 
-        // 2. Estatísticas de Automações Ativas no Ecossistema
-        const { count: automationsCount } = await supabase
-            .from('automations')
-            .select('*', { count: 'exact', head: true })
+        const realTenantIds = realClientTenants.map(t => t.id)
 
-        // 3. Cálculo de MRR Real Puxado Dinamicamente do Stripe
+        // D. Automações apenas de clientes reais
+        let automationsCount = 0
+        if (realTenantIds.length > 0) {
+            const { count } = await supabaseAdmin
+                .from('automations')
+                .select('*', { count: 'exact', head: true })
+                .in('tenant_id', realTenantIds)
+            
+            automationsCount = count || 0
+        }
+
+        // E. Cálculo de MRR (Stripe)
         let mrrCents = 0
         let hasStripeError = false
 
@@ -35,7 +66,6 @@ export async function getAdminOverviewData() {
                 let hasMore = true
                 let startingAfter: string | undefined = undefined
                 
-                // Em produção real com muitos clientes, lidar com paginação
                 while(hasMore) {
                     const subs: Stripe.ApiList<Stripe.Subscription> = await stripe.subscriptions.list({
                         status: 'active',
@@ -48,7 +78,7 @@ export async function getAdminOverviewData() {
                             if (item.price.unit_amount) {
                                 const amount = item.price.unit_amount * (item.quantity || 1)
                                 if (item.price.recurring?.interval === 'year') {
-                                    mrrCents += amount / 12 // Rateia as anuais para achar MRR
+                                    mrrCents += amount / 12
                                 } else if (item.price.recurring?.interval === 'month') {
                                     mrrCents += amount
                                 }
@@ -68,16 +98,19 @@ export async function getAdminOverviewData() {
             }
         }
 
+        console.log(`Overview generated: ${tenantStats.total} real clients.`)
+
         return {
             success: true,
             data: {
                 tenantStats,
-                automationsCount: automationsCount || 0,
+                automationsCount,
                 mrrCents,
                 hasStripeError
             }
         }
     } catch (e: any) {
+        console.error('Critical Error in Overview Data:', e)
         return { success: false, error: e.message }
     }
 }

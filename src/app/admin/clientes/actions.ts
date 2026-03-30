@@ -3,14 +3,35 @@
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
+/**
+ * Função Nuclear de Busca: Visualiza todos os clientes do sistema ignorando RLS
+ * mas filtrando os Super Administradores.
+ */
 export async function getTenantsList() {
-    const supabase = await createClient()
+    console.log('--- FETCHING CLIENTS (ADMIN PRIVILEGED) ---')
     
-    // Confirmação dupla de Super Admin
-    const { data: isAdmin } = await supabase.rpc('is_super_admin')
-    if (!isAdmin) return { success: false, data: [] }
+    // 1. Verificar permissão via client comum (RLS checker)
+    const supabaseUser = await createClient()
+    const { data: isAdmin } = await supabaseUser.rpc('is_super_admin')
+    
+    if (!isAdmin) {
+        console.warn('Unauthorized client list attempt')
+        return { success: false, data: [] }
+    }
 
-    const { data, error } = await supabase
+    // 2. Usar Admin Client (Service Role) para puxar todos os registros sem restrição
+    const supabaseAdmin = await createAdminClient()
+
+    // 3. Obter a lista de Super Admins para remover da visualização de "Clientes"
+    const { data: systemAdmins } = await supabaseAdmin
+        .from('system_admins')
+        .select('id')
+    
+    const superAdminIds = systemAdmins?.map(sa => sa.id) || []
+    console.log('Internal Super Admins to hide:', superAdminIds.length)
+
+    // 4. Buscar Tenants e seus Usuários associados
+    const { data, error } = await supabaseAdmin
         .from('tenants')
         .select(`
             id,
@@ -24,26 +45,37 @@ export async function getTenantsList() {
                 role
             )
         `)
-        .order('created_at', { ascending: false }) // Mais recentes primeiro
+        .order('created_at', { ascending: false })
 
     if (error) {
-        console.error('Erro ao buscar clientes:', error)
+        console.error('Error fetching tenants with admin privileges:', error)
         return { success: false, data: [] }
     }
 
-    return { success: true, data }
+    // 5. FILTRAR: Remover workspaces que pertencem exclusivamente a Super Admins
+    const filteredCustomers = data.filter(tenant => {
+        // Se o tenant não tem usuários, ele é orfão e deve aparecer para auditoria
+        if (!tenant.users || tenant.users.length === 0) return true
+        
+        // Se todos os usuários do tenant são Super Admins, escondemos ele da lista de clientes
+        const onlyAdminInvolved = tenant.users.every((u: any) => superAdminIds.includes(u.id))
+        return !onlyAdminInvolved
+    })
+
+    console.log(`Displaying ${filteredCustomers.length} real customers (from ${data.length} total tenants)`)
+    return { success: true, data: filteredCustomers }
 }
 
-// Suspender Workspace / Cliente
 export async function toggleTenantStatus(tenantId: string, currentStatus: string) {
-    const supabase = await createClient()
-    const { data: isAdmin } = await supabase.rpc('is_super_admin')
+    const supabaseAdmin = await createAdminClient()
+    const supabaseUser = await createClient()
     
+    const { data: isAdmin } = await supabaseUser.rpc('is_super_admin')
     if (!isAdmin) return { success: false, error: 'Acesso Restrito' }
 
     const newStatus = currentStatus === 'suspended' ? 'active' : 'suspended'
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
         .from('tenants')
         .update({ status: newStatus })
         .eq('id', tenantId)
@@ -59,63 +91,46 @@ export async function toggleTenantStatus(tenantId: string, currentStatus: string
 
 /**
  * ATENÇÃO: UTILIZE COM CAUTELA.
- * Esta função utiliza o ADMIN CLIENT (Service Role) para ignorar RLS e apagar TUDO.
- * Remove todos os tenants e usuários que NÃO pertencem ao Super Admin atual.
  */
 export async function dangerouslyClearAllClients() {
-    console.log('--- NUCLEAR CLEANUP START (ADMIN PRIVILEGED) ---')
+    console.log('--- NUCLEAR CLEANUP START ---')
     
-    // 1. Verificar permissão do usuário atual (Usando client comum para checar sessão)
     const supabaseUser = await createClient()
     const { data: { user } } = await supabaseUser.auth.getUser()
     const { data: isAdmin } = await supabaseUser.rpc('is_super_admin')
 
-    if (!user || !isAdmin) {
-        console.error('Unauthorized attempt to clear database')
-        return { success: false, error: 'Acesso Negado: Apenas Super Admins podem realizar esta limpeza.' }
-    }
+    if (!user || !isAdmin) return { success: false, error: 'Acesso Negado.' }
 
-    // 2. Criar Cliente Admin (Service Role) para Bypass de RLS
     const supabaseAdmin = await createAdminClient()
 
-    // 3. Obter ID do Tenant do Admin atual para protegê-lo
-    const { data: adminUserRecord } = await supabaseAdmin
+    // 1. Obter todos os Super Admins para proteção
+    const { data: systemAdmins } = await supabaseAdmin.from('system_admins').select('id')
+    const superAdminIds = systemAdmins?.map(sa => sa.id) || []
+
+    // 2. Obter Tenants dos Super Admins para proteção
+    const { data: adminUsers } = await supabaseAdmin
         .from('users')
         .select('tenant_id')
-        .eq('id', user.id)
-        .single()
+        .in('id', superAdminIds)
+    
+    const protectedTenantIds = adminUsers?.map(u => u.tenant_id).filter(Boolean) as string[]
 
-    const protectedTenantId = adminUserRecord?.tenant_id
-    console.log('Protecting Admin User ID:', user.id)
-    console.log('Protecting Admin Tenant ID:', protectedTenantId)
-
-    // 4. LIMPEZA TOTAL DE TENANTS (Nuclear via Service Role)
-    // Isso apaga tudo vinculado via CASCADE (Leads, Mensagens, Notas, etc.)
+    // 3. LIMPEZA TOTAL DE TENANTS NÃO PROTEGIDOS
     let tenantsQuery = supabaseAdmin.from('tenants').delete()
-    if (protectedTenantId) {
-        tenantsQuery = tenantsQuery.neq('id', protectedTenantId)
+    if (protectedTenantIds.length > 0) {
+        tenantsQuery = tenantsQuery.not('id', 'in', `(${protectedTenantIds.join(',')})`)
     }
     
-    const { data: deletedTenants, error: delTenantsError } = await tenantsQuery.select('id')
+    const { data: deletedTenants } = await tenantsQuery.select('id')
 
-    if (delTenantsError) {
-        console.error('Error in nuclear tenant cleanup:', delTenantsError)
-        return { success: false, error: `Erro na remoção nuclear: ${delTenantsError.message}` }
-    }
-
-    // 5. LIMPEZA DE USUÁRIOS (Não protegidos)
-    const { error: delUsersError } = await supabaseAdmin
+    // 4. LIMPEZA DE USUÁRIOS NÃO PROTEGIDOS
+    await supabaseAdmin
         .from('users')
         .delete()
-        .neq('id', user.id)
+        .not('id', 'in', `(${superAdminIds.join(',')})`)
 
-    if (delUsersError) {
-        console.error('Error in user cleanup:', delUsersError)
-    }
-
-    console.log('--- NUCLEAR CLEANUP END (SUCCESS) ---')
-    console.log('Tenants deleted:', deletedTenants?.length || 0)
-
+    console.log('--- NUCLEAR CLEANUP END ---')
     revalidatePath('/admin/clientes')
-    return { success: true, message: `Base de dados limpa! ${deletedTenants?.length || 0} workspaces e todos os leads vinculados foram removidos.` }
+    revalidatePath('/admin')
+    return { success: true, message: `Base limpa! ${deletedTenants?.length || 0} workspaces removidos.` }
 }
