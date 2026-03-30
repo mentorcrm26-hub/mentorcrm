@@ -8,7 +8,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { LayoutDashboard, Users, Settings, Gift, Calendar as CalendarIcon, Variable, Zap, MessageSquare, TrendingUp } from 'lucide-react'
+import { LayoutDashboard, Users, Settings, Gift, Calendar as CalendarIcon, Variable, Zap, MessageSquare, TrendingUp, ShieldCheck } from 'lucide-react'
 import { differenceInDays } from 'date-fns'
 import { MobileNav } from '@/components/dashboard/mobile-nav'
 import { NavLinks } from '@/components/dashboard/nav-links'
@@ -28,6 +28,8 @@ export default async function DashboardLayout({
     if (!user) {
         redirect('/login')
     }
+
+    const { data: isSuperAdmin } = await supabase.rpc('is_super_admin')
 
     // Fetch the user details to get tenant
     const { data: userProfile } = await supabase
@@ -57,6 +59,17 @@ export default async function DashboardLayout({
                     <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500">Mentor CRM</span>
                 </div>
 
+                {isSuperAdmin && (
+                    <div className="px-4 py-4 border-b border-zinc-200 dark:border-white/10">
+                        <Link href="/admin" className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-rose-600 to-orange-500 rounded-xl hover:shadow-[0_0_15px_rgba(244,63,94,0.4)] transition-all active:scale-95 group">
+                            <div className="p-1 bg-white/20 rounded-md group-hover:scale-110 transition-transform">
+                                <ShieldCheck className="w-4 h-4" />
+                            </div>
+                            PAINEL MASTER
+                        </Link>
+                    </div>
+                )}
+
                 <NavLinks role={userProfile?.role || null} tenantId={userProfile?.tenant_id || null} />
 
                 <div className="p-4 border-t border-zinc-200 dark:border-white/10">
@@ -81,7 +94,7 @@ export default async function DashboardLayout({
                 {/* Header Mobile */}
                 <header className="h-16 md:hidden flex items-center justify-between px-4 border-b border-zinc-200 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-md z-20">
                     <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500">Mentor CRM</span>
-                    <MobileNav role={userProfile?.role || null} tenantName={tenant?.name || null} tenantId={userProfile?.tenant_id || null} />
+                    <MobileNav role={userProfile?.role || null} tenantName={tenant?.name || null} tenantId={userProfile?.tenant_id || null} isSuperAdmin={isSuperAdmin} />
                 </header>
 
                 <PlanBanner

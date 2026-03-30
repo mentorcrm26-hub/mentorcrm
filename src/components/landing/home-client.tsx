@@ -446,7 +446,7 @@ const translations = {
   }
 };
 
-export function HomeClient() {
+export function HomeClient({ dbConfig }: { dbConfig?: any }) {
   const [activeTab, setActiveTab] = useState(0);
   const [lang, setLang] = useState<keyof typeof translations>('en');
   const [scrolled, setScrolled] = useState(false);
@@ -469,7 +469,31 @@ export function HomeClient() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const t = translations[lang];
+  let t = translations[lang];
+
+  if (dbConfig) {
+      t = {
+          ...t,
+          tier2Name: dbConfig.plan_agent_name || t.tier2Name,
+          tier2Price: dbConfig.plan_agent_price || t.tier2Price,
+          tier2PriceYearly: dbConfig.plan_agent_price_yearly || t.tier2PriceYearly,
+          tier2Cta: dbConfig.plan_agent_cta || t.tier2Cta,
+          
+          tier3Name: dbConfig.plan_team_name || t.tier3Name,
+          tier3Price: dbConfig.plan_team_price || t.tier3Price,
+          tier3Meta: dbConfig.plan_team_meta || t.tier3Meta,
+          tier3Cta: dbConfig.plan_team_cta || t.tier3Cta,
+      } as any;
+  }
+
+  const agentFeatures = dbConfig?.plan_agent_features?.length > 0 
+      ? dbConfig.plan_agent_features 
+      : [t.tier2Feat1, t.tier2Feat2, t.tier2Feat3, t.tier2Feat4, t.tier2Feat5].filter(Boolean);
+
+  const teamFeatures = dbConfig?.plan_team_features?.length > 0
+      ? dbConfig.plan_team_features
+      : [t.tier3Feat1, t.tier3Feat2, t.tier3Feat3, t.tier3Feat4, t.tier3Feat5, (t as any).tier3Feat6].filter(Boolean);
+
 
   return (
     <div className="relative min-h-screen w-full bg-brand-900 text-white/90 overflow-x-hidden selection:bg-brand-500/30 selection:text-brand-300 font-sans">
@@ -852,7 +876,7 @@ export function HomeClient() {
                   <p className="text-xs font-bold text-white/40 mt-1">{t.tier2PriceYearly}</p>
                 </div>
                 <div className="space-y-4 mb-12 flex-1">
-                  {[t.tier2Feat1, t.tier2Feat2, t.tier2Feat3, t.tier2Feat4, t.tier2Feat5].map((f, i) => (
+                  {agentFeatures.map((f: string, i: number) => (
                     <div key={i} className="flex items-center gap-3 text-sm font-bold text-white">
                       <Check className="h-4 w-4 text-brand-400" /> {f}
                     </div>
@@ -871,7 +895,7 @@ export function HomeClient() {
                   <p className="text-xs font-bold text-white/40 mt-1">{t.tier3Meta}</p>
                 </div>
                 <div className="space-y-4 mb-12 flex-1">
-                  {[t.tier3Feat1, t.tier3Feat2, t.tier3Feat3, t.tier3Feat4, t.tier3Feat5, t.tier3Feat6].map((f, i) => (
+                  {teamFeatures.map((f: string, i: number) => (
                     <div key={i} className="flex items-center gap-3 text-sm font-medium text-white/60">
                       <Check className="h-4 w-4 text-white/40" /> {f}
                     </div>

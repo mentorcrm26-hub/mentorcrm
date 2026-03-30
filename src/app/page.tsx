@@ -7,6 +7,7 @@
 
 import { Metadata } from 'next';
 import { HomeClient } from '@/components/landing/home-client';
+import { createClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = {
   title: 'Mentor CRM | The CRM Built for Life Planners',
@@ -29,7 +30,14 @@ export const metadata: Metadata = {
   }
 };
 
-export default function Page() {
+export default async function Page() {
+  const supabase = await createClient();
+  const { data: landingConfig } = await supabase
+    .from('landing_page_config')
+    .select('*')
+    .eq('id', 'global')
+    .single();
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
@@ -55,7 +63,7 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <HomeClient />
+      <HomeClient dbConfig={landingConfig} />
     </>
   );
 }

@@ -12,10 +12,10 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, Settings, Menu, X, LogOut, Gift, MessageSquare, Calendar as CalendarIcon, Archive, TrendingUp, PenLine, Tag } from 'lucide-react'
+import { LayoutDashboard, Users, Settings, Menu, X, LogOut, Gift, MessageSquare, Calendar as CalendarIcon, Archive, TrendingUp, PenLine, Tag, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
-export function MobileNav({ role, tenantName, tenantId }: { role: string | null, tenantName: string | null, tenantId: string | null }) {
+export function MobileNav({ role, tenantName, tenantId, isSuperAdmin }: { role: string | null, tenantName: string | null, tenantId: string | null, isSuperAdmin?: boolean }) {
     const [isOpen, setIsOpen] = useState(false)
     const [hasUnread, setHasUnread] = useState(false)
     const [mounted, setMounted] = useState(false)
@@ -123,6 +123,19 @@ export function MobileNav({ role, tenantName, tenantId }: { role: string | null,
                                     </Link>
                                 )
                             })}
+                            
+                            {isSuperAdmin && (
+                                <div className="mb-2">
+                                    <Link
+                                        href="/admin"
+                                        onClick={() => setIsOpen(false)}
+                                        className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-bold transition-all bg-gradient-to-r from-rose-600 to-orange-500 text-white shadow-md active:scale-95"
+                                    >
+                                        <ShieldCheck className="w-5 h-5 text-white/90" />
+                                        Painel Admin Master
+                                    </Link>
+                                </div>
+                            )}
                             
                             {role === 'admin' && (
                                 <>
