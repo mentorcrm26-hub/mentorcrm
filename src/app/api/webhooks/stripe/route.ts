@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
 
     const PRICE_TO_PLAN: Record<string, string> = {
         [process.env.STRIPE_PRICE_AGENT_MONTHLY!]: 'agent',
-        [process.env.STRIPE_PRICE_AGENT_ANNUAL!]:  'agent',
+        [process.env.STRIPE_PRICE_AGENT_ANNUAL!]:  'agent_annual',
         [process.env.STRIPE_PRICE_TEAM_MONTHLY!]:  'team',
     }
 
@@ -50,6 +50,20 @@ export async function POST(req: NextRequest) {
                     stripe_customer_id: session.customer as string,
                 }
             })
+
+            // Sincronizar o PLANO diretamente no workspace (tenant)
+            const { data: userData } = await supabaseAdmin
+                .from('users')
+                .select('tenant_id')
+                .eq('id', userId)
+                .single()
+            
+            if (userData?.tenant_id) {
+                await supabaseAdmin
+                    .from('tenants')
+                    .update({ plan })
+                    .eq('id', userData.tenant_id)
+            }
             break
         }
 
@@ -62,13 +76,30 @@ export async function POST(req: NextRequest) {
             if (!user) break
 
             const isActive = subscription.status === 'active' || subscription.status === 'trialing'
+            const priceId = subscription.items.data[0]?.price.id
+            const plan = PRICE_TO_PLAN[priceId] ?? 'agent'
+
             await supabaseAdmin.auth.admin.updateUserById(user.id, {
                 user_metadata: {
                     ...user.user_metadata,
+                    plan,
                     subscription_status: subscription.status,
                     onboarding_status: isActive ? 'active' : 'inactive',
                 }
             })
+
+            const { data: userData } = await supabaseAdmin
+                .from('users')
+                .select('tenant_id')
+                .eq('id', user.id)
+                .single()
+            
+            if (userData?.tenant_id) {
+                await supabaseAdmin
+                    .from('tenants')
+                    .update({ plan })
+                    .eq('id', userData.tenant_id)
+            }
             break
         }
 
@@ -89,6 +120,19 @@ export async function POST(req: NextRequest) {
                     stripe_subscription_id: null,
                 }
             })
+
+            const { data: userData } = await supabaseAdmin
+                .from('users')
+                .select('tenant_id')
+                .eq('id', user.id)
+                .single()
+            
+            if (userData?.tenant_id) {
+                await supabaseAdmin
+                    .from('tenants')
+                    .update({ plan: 'sandbox' })
+                    .eq('id', userData.tenant_id)
+            }
             break
         }
 

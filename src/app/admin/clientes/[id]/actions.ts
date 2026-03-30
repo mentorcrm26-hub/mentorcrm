@@ -15,18 +15,21 @@ export async function getTenantDetails(tenantId: string) {
 
     const supabase = await createClient()
     
-    // Confirmação de Super Admin
-    const { data: isAdmin, error: adminError } = await supabase.rpc('is_super_admin')
-    console.log('is_super_admin result:', isAdmin, 'error:', adminError)
+    // Confirmação de Super Admin (RLS Check via RPC)
+    const { data: isAdmin } = await supabase.rpc('is_super_admin')
     
     if (!isAdmin) {
         console.warn('Access denied: User is NOT super admin')
         return { success: false, error: 'Acesso Restrito' }
     }
 
+    // Usar Admin Client para bypass total de RLS e ver outros Tenants
+    const { createAdminClient } = await import('@/lib/supabase/server')
+    const supabaseAdmin = await createAdminClient()
+
     // Buscar tenant, seus usuários e outras métricas relevantes
-    console.log('Fetching tenant from DB for ID:', tenantId)
-    const { data, error } = await supabase
+    console.log('Fetching tenant with ADMIN privileges for ID:', tenantId)
+    const { data, error } = await supabaseAdmin
         .from('tenants')
         .select(`
             id,
@@ -35,6 +38,7 @@ export async function getTenantDetails(tenantId: string) {
             created_at,
             stripe_customer_id,
             is_vip,
+            plan,
             users (
                 id,
                 email,

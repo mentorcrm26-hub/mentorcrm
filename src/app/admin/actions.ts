@@ -27,7 +27,7 @@ export async function getAdminOverviewData() {
         // B. Buscar todos os Tenants e seus usuários
         const { data: allTenants, error: tenantErr } = await supabaseAdmin
             .from('tenants')
-            .select('id, status, users(id)')
+            .select('id, status, is_vip, plan, users(id)')
 
         if (tenantErr) throw tenantErr
 
@@ -41,7 +41,12 @@ export async function getAdminOverviewData() {
             total: realClientTenants.length,
             active: realClientTenants.filter(t => t.status === 'active').length,
             trial: realClientTenants.filter(t => t.status === 'trial').length,
-            suspended: realClientTenants.filter(t => t.status === 'suspended').length
+            suspended: realClientTenants.filter(t => t.status === 'suspended').length,
+            soloMonthly: realClientTenants.filter(t => t.plan === 'agent' && !t.is_vip).length, // Agregado por enquanto, o ideal seria diferenciar mensal/anual no DB futuramente
+            soloAnnual: realClientTenants.filter(t => t.plan === 'agent_annual' && !t.is_vip).length,
+            team: realClientTenants.filter(t => t.plan === 'team' && !t.is_vip).length,
+            sandbox: realClientTenants.filter(t => (t.plan === 'sandbox' || !t.plan) && !t.is_vip).length,
+            vip: realClientTenants.filter(t => t.is_vip).length
         }
 
         const realTenantIds = realClientTenants.map(t => t.id)

@@ -135,7 +135,13 @@ export function TenantDetailsClient({ data }: { data: any }) {
                         <CreditCard className="w-5 h-5" />
                     </div>
                     <p className="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-1">Assinatura</p>
-                    <h3 className="text-2xl font-black dark:text-white">Professional</h3>
+                    <h3 className="text-2xl font-black dark:text-white capitalize">
+                        {data.plan === 'agent' ? 'Agent Solo' : 
+                         data.plan === 'agent_annual' ? 'Agent Solo (Anual)' : 
+                         data.plan === 'team' ? 'Team' : 
+                         data.plan === 'sandbox' ? 'Sandbox' : 
+                         data.plan || 'Nenhum'}
+                    </h3>
                 </div>
 
                 <div className="bg-white dark:bg-zinc-950 p-6 rounded-2xl border border-zinc-200 dark:border-white/5 shadow-sm">
