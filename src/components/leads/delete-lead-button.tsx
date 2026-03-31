@@ -13,9 +13,11 @@ import { deleteLead } from '@/app/dashboard/leads/actions'
 import { toast } from 'sonner'
 import { Trash2 } from 'lucide-react'
 
-export function DeleteLeadButton({ leadId, leadName }: { leadId: string, leadName: string }) {
+export function DeleteLeadButton({ leadId, leadName, userRole = 'agent' }: { leadId: string, leadName: string, userRole?: string }) {
     const [isDeleting, setIsDeleting] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
+
+    if (userRole !== 'admin') return null
 
     async function handleDelete() {
         setIsDeleting(true)

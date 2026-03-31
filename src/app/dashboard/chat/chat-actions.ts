@@ -190,19 +190,59 @@ export async function sendInternalNote(conversationId: string, content: string) 
 
 export async function getConversation(id: string) {
     const supabase = await createClient()
-    const { data, error } = await supabase
+    
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { success: false, error: 'Unauthorized' }
+    
+    const { data: userProfile } = await supabase.from('users').select('role, tenant_id').eq('id', user.id).single()
+    if (!userProfile) return { success: false, error: 'Tenant not found' }
+
+    let query = supabase
         .from('conversations')
         .select(`
             *,
-            lead:leads(*)
+            lead:leads!inner(*)
         `)
         .eq('id', id)
-        .single()
+        .eq('tenant_id', userProfile.tenant_id)
 
-    if (error) {
+    // Role-based filtering
+    if (userProfile.role === 'agent') {
+        query = query.eq('leads.assigned_to', user.id)
+    }
+
+    const { data, error } = await query.single()
+
+    if (error || !data) {
         console.error('Error fetching conversation:', error)
-        return { success: false, error: 'Failed to load conversation' }
+        return { success: false, error: 'Failed to load conversation or unauthorized' }
     }
 
     return { success: true, data }
+}
+
+export async function transferConversation(conversationId: string, newAgentId: string) {
+    const supabase = await createClient()
+
+    // 1. Get the conversation to find the lead_id
+    const { data: conv } = await supabase
+        .from('conversations')
+        .select('lead_id')
+        .eq('id', conversationId)
+        .single()
+
+    if (!conv?.lead_id) return { success: false, error: 'Lead not found' }
+
+    // 2. Update lead assignment
+    const { error } = await supabase
+        .from('leads')
+        .update({ assigned_to: newAgentId || null })
+        .eq('id', conv.lead_id)
+
+    if (error) {
+        console.error('Error transferring conversation:', error)
+        return { success: false, error: 'Failed to transfer conversation' }
+    }
+
+    return { success: true }
 }

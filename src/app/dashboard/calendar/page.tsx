@@ -8,7 +8,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { CalendarView } from '@/components/calendar/calendar-view'
-import { getFloridaDate } from '@/lib/timezone'
 import { fetchExternalEvents, reconcileExternalChanges } from '@/lib/integrations/calendar/sync-engine'
 
 export const dynamic = 'force-dynamic'
@@ -25,23 +24,35 @@ export default async function CalendarPage() {
         redirect('/login')
     }
 
-    // Parallelize all data fetching for zero-wait UI
-    const [leadsRes, externalEvents] = await Promise.all([
-        supabase.from('leads').select('*').eq('is_archived', false).order('name', { ascending: true }),
-        fetchExternalEvents(supabase)
-    ])
-
+    // 1. Fetch user profile for role and tenant
     const { data: userProfile } = await supabase
         .from('users')
-        .select('role')
+        .select('role, tenant_id')
         .eq('id', user.id)
         .single()
 
+    if (!userProfile?.tenant_id) {
+        redirect('/login')
+    }
+
+    const userRole = userProfile.role || 'agent'
+    const tenantId = userProfile.tenant_id
+
+    // 2. Fetch all non-archived leads in the tenant
+    // Per USER REQUEST: Agents must see all relevant scheduling to avoid overlapping and check availability.
+    const [leadsRes, externalEvents] = await Promise.all([
+        supabase
+            .from('leads')
+            .select('*')
+            .eq('tenant_id', tenantId)
+            .eq('is_archived', false)
+            .order('name', { ascending: true }),
+        fetchExternalEvents(supabase)
+    ])
+
     const allLeads = leadsRes.data || []
 
-    // Run reconciliation in parallel with the render if possible, 
-    // or just ensure it uses pre-fetched events. 
-    // Since this is a server component, we wait here, but it's now parallel.
+    // 3. Sync external changes in the background (server-side)
     await reconcileExternalChanges(supabase, externalEvents)
 
     return (
@@ -64,7 +75,11 @@ export default async function CalendarPage() {
             </header>
 
             <main className="flex-1 min-h-0 bg-white dark:bg-zinc-950 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col md:flex-row">
-                <CalendarView initialLeads={allLeads || []} externalEvents={externalEvents} userRole={userProfile?.role || 'agent'} />
+                <CalendarView 
+                    initialLeads={allLeads} 
+                    externalEvents={externalEvents} 
+                    userRole={userRole} 
+                />
             </main>
         </div>
     )

@@ -44,7 +44,7 @@ async function checkSchedulingConflict(supabase: SupabaseClient, tenantId: strin
     return data && data.length > 0 ? data[0] : null
 }
 
-export async function createLead(data: { name: string, email?: string, phone?: string, notes?: string, birth_date?: string, meeting_at?: string }) {
+export async function createLead(data: { name: string, email?: string, phone?: string, notes?: string, birth_date?: string, meeting_at?: string, assigned_to?: string }) {
     const supabase = await createClient()
 
     const { data: { user } } = await supabase.auth.getUser()
@@ -84,7 +84,8 @@ export async function createLead(data: { name: string, email?: string, phone?: s
             notes: data.notes || null,
             birth_date: data.birth_date || null,
             meeting_at: data.meeting_at || null,
-            status: data.meeting_at ? 'Scheduled' : 'New Lead' // Auto-schedule if time set
+            status: data.meeting_at ? 'Scheduled' : 'New Lead', // Auto-schedule if time set
+            assigned_to: data.assigned_to || user.id
         }])
         .select()
         .single()
@@ -167,8 +168,10 @@ export async function deleteLead(leadId: string) {
     return { success: true }
 }
 
-export async function updateLead(leadId: string, data: { name: string, email?: string, phone?: string, notes?: string, birth_date?: string, meeting_at?: string, status?: string }) {
+export async function updateLead(leadId: string, data: { name: string, email?: string, phone?: string, notes?: string, birth_date?: string, meeting_at?: string, status?: string, assigned_to?: string }) {
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { success: false, error: 'Unauthorized' }
 
     // Fetch old lead to check for changes
     const { data: oldLead } = await supabase.from('leads').select('*').eq('id', leadId).single()
@@ -180,6 +183,7 @@ export async function updateLead(leadId: string, data: { name: string, email?: s
         notes: data.notes || null,
         birth_date: data.birth_date || null,
         meeting_at: data.meeting_at || null,
+        assigned_to: data.assigned_to || user.id,
         updated_at: new Date().toISOString()
     }
 
@@ -324,7 +328,7 @@ export async function updateLeadStatus(leadId: string, newStatus: string) {
     return { success: true, syncError }
 }
 
-export async function createManyLeads(leads: { name: string, email?: string, phone?: string, notes?: string, birth_date?: string, status?: string, product_interest?: string }[]) {
+export async function createManyLeads(leads: { name: string, email?: string, phone?: string, notes?: string, birth_date?: string, status?: string, product_interest?: string }[], assignedTo?: string) {
     const supabase = await createClient()
 
     const { data: { user } } = await supabase.auth.getUser()
@@ -350,7 +354,8 @@ export async function createManyLeads(leads: { name: string, email?: string, pho
         notes: lead.notes || null,
         product_interest: lead.product_interest || null,
         birth_date: lead.birth_date || null,
-        status: lead.status || 'New Lead'
+        status: lead.status || 'New Lead',
+        assigned_to: assignedTo || user.id
     }))
 
     const { data: insertedData, error } = await supabase

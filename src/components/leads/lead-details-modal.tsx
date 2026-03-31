@@ -26,13 +26,15 @@ export function LeadDetailsModal({
     onClose,
     lead,
     availableTags = [],
-    userRole = 'agent'
+    userRole = 'agent',
+    agents = []
 }: {
     isOpen: boolean
     onClose: () => void
     lead: Lead | null
     availableTags?: LeadTag[]
     userRole?: string
+    agents?: { id: string, full_name: string }[]
 }) {
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -52,6 +54,9 @@ export function LeadDetailsModal({
     const [editingContent, setEditingContent] = useState("")
     const [confirmDeleteNoteId, setConfirmDeleteNoteId] = useState<string | null>(null)
     const [optimisticTags, setOptimisticTags] = useState<LeadTag[]>([])
+
+    // New assignment state
+    const [assignedTo, setAssignedTo] = useState<string>(lead?.assigned_to || "")
 
     // Helper to format phone visually
     const formatPhoneUI = (raw: string) => {
@@ -77,6 +82,7 @@ export function LeadDetailsModal({
     useEffect(() => {
         if (lead && isOpen) {
             setPhoneStr(formatPhoneUI(lead.phone || ""))
+            setAssignedTo(lead.assigned_to || "")
             setConfirmDeleteLead(false)
             setConfirmCancel(false)
             setConfirmArchive(false)
@@ -210,7 +216,8 @@ export function LeadDetailsModal({
             phone: finalPhone,
             notes: lead.notes || undefined, 
             birth_date: birth_date || undefined,
-            meeting_at
+            meeting_at,
+            assigned_to: assignedTo || undefined
         })
 
         if (!res.success) {
@@ -219,6 +226,7 @@ export function LeadDetailsModal({
         } else {
             toast.success('Lead updated successfully')
             onClose()
+            router.refresh()
         }
 
         setIsSubmitting(false)
@@ -247,6 +255,7 @@ export function LeadDetailsModal({
             toast.success('Meeting cancelled. Lead moved to Conversation.')
             setConfirmCancel(false)
             onClose()
+            router.refresh()
         }
         setIsSubmitting(false)
     }
@@ -258,6 +267,7 @@ export function LeadDetailsModal({
         if (res.success) {
             toast.success('Lead moved to Vault')
             onClose()
+            router.refresh()
         } else {
             toast.error('Failed to archive lead')
         }
@@ -430,6 +440,25 @@ export function LeadDetailsModal({
                                 </div>
                             </div>
 
+                            {/* Agent Assignment (Admin Only) */}
+                            {userRole === 'admin' && agents.length > 0 && (
+                                <div className="space-y-2">
+                                    <label className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                                        <User className="w-4 h-4 text-zinc-400" /> Lead Assignment
+                                    </label>
+                                    <select
+                                        value={assignedTo}
+                                        onChange={(e) => setAssignedTo(e.target.value)}
+                                        className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-indigo-500/50 transition-all font-medium text-zinc-700 dark:text-zinc-300 [&:not(:placeholder-shown)]:border-indigo-400 cursor-pointer"
+                                    >
+                                        <option value="">Owner (Self)</option>
+                                        {agents.map(agent => (
+                                            <option key={agent.id} value={agent.id}>{agent.full_name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+
                             {/* Cancel Meeting Area */}
                             {userRole === 'admin' && lead.meeting_at && (
                                 <div className="space-y-2 flex flex-col pt-0">
@@ -520,12 +549,6 @@ export function LeadDetailsModal({
                                 </div>
                             )}
                         </div>
-
-                        {/* Smart Playbook Widget (Hidden for now as requested)
-                        <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                            <LeadPlaybookWidget leadId={lead.id} />
-                        </div>
-                        */}
 
                         {/* Enhanced Notes Section */}
                         <div className="space-y-4">
@@ -706,6 +729,3 @@ export function LeadDetailsModal({
         </>
     )
 }
-
-
-

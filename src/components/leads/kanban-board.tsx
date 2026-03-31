@@ -10,7 +10,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
-import { MessageSquareText, Mail, Megaphone, AlertTriangle, Clock, CalendarX, X, Search } from 'lucide-react'
+import { MessageSquareText, Mail, Megaphone, AlertTriangle, Clock, CalendarX, X, Search, User } from 'lucide-react'
 import { updateLeadStatus } from '@/app/dashboard/leads/actions'
 import { formatFlorida } from '@/lib/timezone'
 import { toast } from 'sonner'
@@ -32,7 +32,7 @@ const COLUMNS = [
 ]
 
 
-export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agent' }: { initialLeads: Lead[], availableTags?: LeadTag[], userRole?: string }) {
+export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agent', agents = [] }: { initialLeads: Lead[], availableTags?: LeadTag[], userRole?: string, agents?: { id: string, full_name: string }[] }) {
     const [leads, setLeads] = useState<Lead[]>(initialLeads)
     const [isMounted, setIsMounted] = useState(false)
     const [messageModalState, setMessageModalState] = useState<{
@@ -288,6 +288,12 @@ export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agen
                                                                     <h4 className="font-medium text-sm text-zinc-900 dark:text-zinc-100 truncate">{lead.name}</h4>
                                                                     {lead.email && <p className="text-xs text-zinc-500 mt-1 truncate">{lead.email}</p>}
                                                                     {lead.phone && <p className="text-xs text-zinc-500 mt-1">{lead.phone}</p>}
+                                                                    {lead.assigned_to && agents.find(a => a.id === lead.assigned_to) && (
+                                                                        <div className="flex items-center gap-1 mt-1.5 text-[10px] font-bold text-indigo-500/80 dark:text-indigo-400/80 uppercase tracking-tight">
+                                                                            <User className="w-3 h-3" />
+                                                                            {agents.find(a => a.id === lead.assigned_to)?.full_name}
+                                                                        </div>
+                                                                    )}
                                                                     {lead.tags && lead.tags.length > 0 && (
                                                                         <div className="flex flex-wrap gap-1.5 mt-2.5">
                                                                             {lead.tags.map((t: LeadTag) => (
@@ -303,7 +309,7 @@ export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agen
                                                                     onClick={(e) => e.stopPropagation()}
                                                                 >
                                                                     {userRole === 'admin' && (
-                                                                        <DeleteLeadButton leadId={lead.id} leadName={lead.name} />
+                                                                        <DeleteLeadButton leadId={lead.id} leadName={lead.name} userRole={userRole} />
                                                                     )}
                                                                 </div>
                                                             </div>
@@ -375,6 +381,7 @@ export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agen
                     lead={detailsModalLead}
                     availableTags={availableTags}
                     userRole={userRole}
+                    agents={agents}
                 />
 
                 <NewLeadModal
@@ -384,6 +391,8 @@ export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agen
                     mode="appointment"
                     initialLeadId={appointmentModalLead?.id}
                     showTrigger={false}
+                    userRole={userRole}
+                    agents={agents}
                 />
 
                 {/* Downgrade Confirmation Modal */}

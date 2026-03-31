@@ -38,7 +38,7 @@ import {
     Smile
 } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
-import { getMessages, sendMessage, markAsRead, sendInternalNote, getConversation, sendMediaMessage } from './chat-actions'
+import { getMessages, sendMessage, markAsRead, sendInternalNote, getConversation, sendMediaMessage, transferConversation } from './chat-actions'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import Link from 'next/link'
@@ -49,6 +49,7 @@ interface Lead {
     name: string
     phone: string
     email: string | null
+    assigned_to: string | null
 }
 
 interface Conversation {
@@ -74,11 +75,15 @@ interface Message {
 export function ChatClient({ 
     initialConversations, 
     tenantId, 
+    userRole,
+    agents,
     whatsappConnected,
     instanceName
 }: { 
     initialConversations: Conversation[]
     tenantId: string
+    userRole: string
+    agents: { id: string, full_name: string }[]
     whatsappConnected: boolean
     instanceName?: string
 }) {
@@ -94,9 +99,12 @@ export function ChatClient({
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [isUploading, setIsUploading] = useState(false)
     const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+    const [showTransferList, setShowTransferList] = useState(false)
+    const [isTransferring, setIsTransferring] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const emojiPickerRef = useRef<HTMLDivElement>(null)
+    const transferRef = useRef<HTMLDivElement>(null)
 
     const EMOJI_CATEGORIES = [
         { label: '😊 Frequentes', emojis: ['😊','😂','❤️','👍','🔥','✨','🎉','💯','🙏','😍','🤔','😢','😅','🤣','😘','💪','👏','🥰','😎','🤩','😆','😁','🥳','😜','🤗'] },
@@ -107,11 +115,14 @@ export function ChatClient({
         { label: '🌟 Símbolos', emojis: ['⭐','🌟','✨','💫','⚡','🔥','🌈','☀️','🌙','❄️','💥','🎆','🎇','🌊','💨','🌸','🌺','🍀','🌴','🌿','🍃','🦋','🐝','🌻','🌷'] },
     ]
 
-    // Close emoji picker on outside click
+    // Close emoji picker and transfer list on outside click
     useEffect(() => {
         const handler = (e: MouseEvent) => {
             if (emojiPickerRef.current && !emojiPickerRef.current.contains(e.target as Node)) {
                 setShowEmojiPicker(false)
+            }
+            if (transferRef.current && !transferRef.current.contains(e.target as Node)) {
+                setShowTransferList(false)
             }
         }
         document.addEventListener('mousedown', handler)
@@ -356,6 +367,34 @@ export function ChatClient({
         }
     }
 
+    const handleTransfer = async (agentId: string) => {
+        if (!activeConversation || isTransferring) return
+        
+        setIsTransferring(true)
+        try {
+            const res = await transferConversation(activeConversation.id, agentId)
+            
+            if (res.success) {
+                toast.success(`Conversation transferred successfully`)
+                setShowTransferList(false)
+                // Update local state for the active conversation's lead
+                setConversations(prev => prev.map(c => 
+                    c.id === activeConversation.id 
+                        ? { ...c, lead: { ...c.lead, assigned_to: agentId } } 
+                        : c
+                ))
+                setActiveConversation(prev => prev ? { ...prev, lead: { ...prev.lead, assigned_to: agentId } } : null)
+            } else {
+                toast.error(res.error || 'Failed to transfer conversation')
+            }
+        } catch (error) {
+            console.error('Transfer Error:', error)
+            toast.error('Unexpected error during transfer')
+        } finally {
+            setIsTransferring(false)
+        }
+    }
+
     const filteredConversations = conversations.filter(c => 
         c.lead.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
         c.lead.phone.includes(searchQuery)
@@ -432,7 +471,6 @@ export function ChatClient({
                                             : 'hover:bg-zinc-100 dark:hover:bg-zinc-800/80'
                                     }`}
                                 >
-                                    {/* Unread indicator removed from here to be placed inside the flex row below */}
                                     <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 border transition-colors ${
                                         activeConversation?.id === conv.id 
                                             ? 'bg-white/20 border-white/20' 
@@ -485,6 +523,49 @@ export function ChatClient({
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
+                                {userRole === 'admin' && (
+                                    <div className="relative" ref={transferRef}>
+                                        <button 
+                                            onClick={() => setShowTransferList(!showTransferList)}
+                                            className={`p-2 rounded-full transition-all flex items-center gap-2 px-3 border cursor-pointer hover:scale-105 active:scale-95 ${
+                                                showTransferList 
+                                                ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/20' 
+                                                : 'bg-white dark:bg-zinc-800 text-zinc-500 border-zinc-200 dark:border-white/10'
+                                            }`}
+                                        >
+                                            <Shield className="w-4 h-4" />
+                                            <span className="text-[10px] font-black uppercase tracking-tight">Transferir</span>
+                                        </button>
+
+                                        {showTransferList && (
+                                            <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden">
+                                                <div className="p-3 border-b border-zinc-100 dark:border-white/5">
+                                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Atribuir a Agente</p>
+                                                </div>
+                                                <div className="max-h-60 overflow-y-auto custom-scrollbar">
+                                                    {agents.map(agent => (
+                                                        <button
+                                                            key={agent.id}
+                                                            onClick={() => handleTransfer(agent.id)}
+                                                            disabled={isTransferring}
+                                                            className="w-full text-left p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors flex items-center justify-between group cursor-pointer"
+                                                        >
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center border border-zinc-200 dark:border-white/5">
+                                                                    <User className="w-4 h-4 text-zinc-400 group-hover:text-indigo-500" />
+                                                                </div>
+                                                                <span className="text-sm font-semibold truncate max-w-[140px] uppercase">{agent.full_name}</span>
+                                                            </div>
+                                                            {activeConversation.lead.assigned_to === agent.id && (
+                                                                <div className="w-2 h-2 bg-indigo-500 rounded-full" />
+                                                            )}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                                 <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full text-[10px] font-bold text-zinc-500 uppercase tracking-widest border border-zinc-200 dark:border-white/5">
                                     <Shield className="w-3 h-3 text-emerald-500" />
                                     SECURE_COMM
@@ -558,7 +639,7 @@ export function ChatClient({
                                                                     ? 'bg-white/20 text-white border border-white/10' 
                                                                     : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30'
                                                             }`}>
-                                                               🚫 Mensagem Revogada
+                                                                🚫 Mensagem Revogada
                                                             </div>
                                                         )}
 

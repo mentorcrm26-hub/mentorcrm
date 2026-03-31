@@ -1,5 +1,3 @@
-'use server'
-
 /**
  * ************ By Inova Digital Marketing ***************
  * ******************* inovamkt.io ************************
@@ -7,6 +5,7 @@
  * *************** contact@inovamkt.io ******************
  */
 
+'use server'
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
@@ -27,15 +26,17 @@ export async function getColdCallData(weekStartDate: string) {
     const monthEnd = new Date(start.getFullYear(), start.getMonth() + 1, 0)
 
     // 1. Fetch Daily Stats for the week
+    // Each agent sees ONLY their own stats
     const { data: dailyStats } = await supabase
         .from('cold_call_daily_stats')
         .select('*')
         .eq('tenant_id', tenantId)
+        .eq('user_id', user.id)
         .gte('date', format(start, 'yyyy-MM-dd'))
         .lte('date', format(end, 'yyyy-MM-dd'))
 
     // 2. Fetch Weekly Targets
-    // Using ISO weeks for consistency (standard in modern business)
+    // Each agent has their OWN set of targets
     const weekNumber = getISOWeek(start)
     const year = getYear(start)
 
@@ -43,6 +44,7 @@ export async function getColdCallData(weekStartDate: string) {
         .from('cold_call_targets')
         .select('*')
         .eq('tenant_id', tenantId)
+        .eq('user_id', user.id)
         .eq('year', year)
         .eq('week_number', weekNumber)
         .single()
@@ -52,6 +54,7 @@ export async function getColdCallData(weekStartDate: string) {
         .from('cold_call_daily_stats')
         .select('*')
         .eq('tenant_id', tenantId)
+        .eq('user_id', user.id)
         .gte('date', format(monthStart, 'yyyy-MM-dd'))
         .lte('date', format(monthEnd, 'yyyy-MM-dd'))
 
@@ -74,10 +77,12 @@ export async function updateDailyStat(date: string, field: string, value: number
     if (!profile) return { success: false, error: 'User profile not found' }
 
     // Fetch existing first to ensure we don't wipe other fields
+    // Crucially filter by user_id
     const { data: existing } = await supabase
         .from('cold_call_daily_stats')
         .select('*')
         .eq('tenant_id', profile.tenant_id)
+        .eq('user_id', user.id)
         .eq('date', date)
         .single()
 
@@ -86,9 +91,10 @@ export async function updateDailyStat(date: string, field: string, value: number
         .upsert({
             ...(existing || {}),
             tenant_id: profile.tenant_id,
+            user_id: user.id,
             date,
             [field]: value
-        }, { onConflict: 'tenant_id,date' })
+        }, { onConflict: 'tenant_id,user_id,date' })
 
     if (error) {
         console.error('Error updating daily stat:', error)
@@ -111,6 +117,7 @@ export async function updateWeeklyTarget(year: number, weekNumber: number, field
         .from('cold_call_targets')
         .select('*')
         .eq('tenant_id', profile.tenant_id)
+        .eq('user_id', user.id)
         .eq('year', year)
         .eq('week_number', weekNumber)
         .single()
@@ -120,10 +127,11 @@ export async function updateWeeklyTarget(year: number, weekNumber: number, field
         .upsert({
             ...(existing || {}),
             tenant_id: profile.tenant_id,
+            user_id: user.id,
             year,
             week_number: weekNumber,
             [field]: value
-        }, { onConflict: 'tenant_id,year,week_number' })
+        }, { onConflict: 'tenant_id,user_id,year,week_number' })
 
     if (error) {
         console.error('Error updating weekly target:', error)

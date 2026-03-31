@@ -1384,3 +1384,66 @@
 [2026-03-29T14:59:46.394Z] [External Fetch] No integrations found in DB for this tenant.
 [2026-03-29T15:00:32.309Z] [External Fetch] No integrations found in DB for this tenant.
 [2026-03-30T23:12:24.726Z] [External Fetch] No integrations found in DB for this tenant.
+[2026-03-31T00:02:15.071Z] [External Fetch] No integrations found in DB for this tenant.
+[2026-03-31T00:17:38.603Z] [External Fetch] Found 1 integrations: whatsapp
+[2026-03-31T00:17:38.610Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:17:38.648Z] [External Fetch] Found 1 integrations: whatsapp
+[2026-03-31T00:17:38.649Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:17:44.470Z] [External Fetch] Found 1 integrations: whatsapp
+[2026-03-31T00:17:44.471Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:17:50.262Z] [External Fetch] Found 1 integrations: whatsapp
+[2026-03-31T00:17:50.263Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:18:28.699Z] [External Fetch] Found 1 integrations: whatsapp
+[2026-03-31T00:18:28.700Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:18:39.105Z] [External Fetch] Found 1 integrations: whatsapp
+[2026-03-31T00:18:39.106Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:22:16.534Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:22:16.535Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:22:41.413Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:22:41.414Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:22:41.574Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:22:41.575Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:23:02.509Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:23:02.510Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:23:02.618Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:23:02.620Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:29:42.389Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:29:42.391Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:34:46.697Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:34:46.698Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:35:31.825Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:35:31.826Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:36:10.589Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:36:10.591Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:36:14.979Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:36:14.980Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:36:15.242Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:36:15.243Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:36:15.469Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:36:15.470Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:36:26.718Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:36:26.720Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:36:43.541Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:36:43.543Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:36:43.581Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:36:43.582Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:39:28.650Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:39:28.651Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:39:37.986Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:39:37.987Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:39:52.228Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:39:52.229Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:39:54.972Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:39:54.973Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:40:32.642Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:40:32.643Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:41:00.051Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:41:00.052Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:42:33.132Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:42:33.133Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:43:10.974Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:43:10.975Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T00:45:39.363Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T00:45:39.364Z] [External Fetch] Total external events retrieved: 0
+[2026-03-31T01:04:54.161Z] [External Fetch] Found 2 integrations: whatsapp, twilio
+[2026-03-31T01:04:54.163Z] [External Fetch] Total external events retrieved: 0

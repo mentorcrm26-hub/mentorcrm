@@ -24,6 +24,7 @@ interface Lead {
     birth_date: string | null
     meeting_at: string | null
     status: string
+    assigned_to?: string | null
 }
 
 export function NewLeadModal({
@@ -33,7 +34,9 @@ export function NewLeadModal({
     showTrigger = true,
     availableLeads = [],
     mode = 'lead', // 'lead' or 'appointment'
-    initialLeadId = ""
+    initialLeadId = "",
+    agents = [],
+    userRole = 'agent'
 }: {
     isOpen?: boolean,
     onToggle?: (open: boolean) => void,
@@ -41,7 +44,9 @@ export function NewLeadModal({
     showTrigger?: boolean,
     availableLeads?: Lead[],
     mode?: 'lead' | 'appointment',
-    initialLeadId?: string
+    initialLeadId?: string,
+    agents?: { id: string, full_name: string }[],
+    userRole?: string
 } = {}) {
     const [internalOpen, setInternalOpen] = useState(false)
     const isControlled = controlledOpen !== undefined
@@ -67,6 +72,7 @@ export function NewLeadModal({
     const [birthDate, setBirthDate] = useState("")
     const [notes, setNotes] = useState("")
     const [meetingAt, setMeetingAt] = useState(initialMeetingAt || "")
+    const [assignedTo, setAssignedTo] = useState<string>("")
 
     useEffect(() => {
         if (initialLeadId) {
@@ -83,6 +89,7 @@ export function NewLeadModal({
                 setPhoneStr(formatPhoneUI(lead.phone || ""))
                 setBirthDate(lead.birth_date || "")
                 setNotes(lead.notes || "")
+                setAssignedTo(lead.assigned_to || "")
             }
         } else if (!selectedLeadId) {
             // Reset if deselected (but keep what was typed if creation)
@@ -130,6 +137,7 @@ export function NewLeadModal({
         setPhoneStr(formatPhoneUI(lead.phone || ''))
         setBirthDate(lead.birth_date || '')
         setNotes(lead.notes || '')
+        setAssignedTo(lead.assigned_to || '')
         setShowDropdown(false)
         toast.info(`Lead "${lead.name}" selecionado.`)
     }
@@ -160,7 +168,8 @@ export function NewLeadModal({
             phone: finalPhone || undefined,
             notes: notes || undefined,
             birth_date: birthDate || undefined,
-            meeting_at: meetingAt ? parseFloridaTime(meetingAt) : undefined
+            meeting_at: meetingAt ? parseFloridaTime(meetingAt) : undefined,
+            assigned_to: assignedTo || undefined
         }
 
         let res
@@ -173,7 +182,7 @@ export function NewLeadModal({
         }
 
         if (!res.success) {
-            setError(res.error || 'Failed to save appointment')
+            setError(res.error || 'Failed to save lead')
             toast.error('An error occurred while saving.')
         } else {
             if (res.syncError) {
@@ -196,6 +205,7 @@ export function NewLeadModal({
         setBirthDate('')
         setMeetingAt('')
         setNotes('')
+        setAssignedTo('')
         setShowDropdown(false)
         setError(null)
     }
@@ -350,6 +360,26 @@ export function NewLeadModal({
                                         />
                                     </div>
                                 </div>
+
+                                {/* Agent Assignment (Admin Only) */}
+                                {userRole === 'admin' && agents.length > 0 && (
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                                            <User className="w-4 h-4 text-zinc-400" /> Assign to Agent
+                                        </label>
+                                        <select
+                                            value={assignedTo}
+                                            onChange={(e) => setAssignedTo(e.target.value)}
+                                            className="w-full px-4 py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 text-sm focus:ring-2 focus:ring-indigo-500/50 transition-all font-medium text-zinc-700 dark:text-zinc-300 [&:not(:placeholder-shown)]:border-indigo-400 cursor-pointer"
+                                        >
+                                            <option value="">Owner (Self)</option>
+                                            {agents.map(agent => (
+                                                <option key={agent.id} value={agent.id}>{agent.full_name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
+
                                 <div className="space-y-2">
                                     <label className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                                         <FileText className="w-4 h-4 text-zinc-400" /> Internal Notes

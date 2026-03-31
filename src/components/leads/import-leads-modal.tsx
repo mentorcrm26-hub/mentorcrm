@@ -60,7 +60,7 @@ const HeaderSelect = ({ label, icon: Icon, field, mapping, setMapping, fileHeade
     </div>
 )
 
-export function ImportLeadsModal() {
+export function ImportLeadsModal({ agents = [] }: { agents?: { id: string, full_name: string }[] }) {
     const router = useRouter()
     const [isOpen, setIsOpen] = useState(false)
     const [step, setStep] = useState<1 | 2 | 3>(1)
@@ -78,6 +78,7 @@ export function ImportLeadsModal() {
     const [rawRows, setRawRows] = useState<Record<string, string>[]>([])
 
     // Mapping State
+    const [assignedTo, setAssignedTo] = useState<string>("")
     const [mapping, setMapping] = useState<ColumnMapping>({
         name: '',
         email: '',
@@ -199,7 +200,7 @@ export function ImportLeadsModal() {
             return
         }
 
-        const res = await createManyLeads(processedLeads)
+        const res = await createManyLeads(processedLeads, assignedTo || undefined)
 
         if (!res.success) {
             toast.error(res.error || 'Failed to import leads')
@@ -321,6 +322,35 @@ export function ImportLeadsModal() {
                                     <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/50 rounded-xl p-4 text-sm text-indigo-700 dark:text-indigo-400">
                                         We found <strong>{fileHeaders.length} columns</strong> and <strong>{rawRows.length} rows</strong> in <strong>{fileName}</strong>. Please confirm how they map to our CRM fields. We auto-selected the best matches.
                                     </div>
+
+                                    {/* Agent Assignment Selection */}
+                                    {agents.length > 0 && (
+                                        <div className="flex items-center justify-between p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-sm mb-6">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 bg-indigo-100 dark:bg-indigo-900/40 rounded-lg text-indigo-600 dark:text-indigo-400">
+                                                    <User className="w-4 h-4" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+                                                        Assign leads to:
+                                                    </p>
+                                                    <p className="text-[10px] text-zinc-500 font-medium tracking-tight">
+                                                        Batch ownership
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <select
+                                                value={assignedTo}
+                                                onChange={(e) => setAssignedTo(e.target.value)}
+                                                className="w-1/2 px-3 py-2.5 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-indigo-500 font-bold shadow-sm cursor-pointer"
+                                            >
+                                                <option value="">Owner (Self)</option>
+                                                {agents.map(agent => (
+                                                    <option key={agent.id} value={agent.id}>{agent.full_name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
 
                                     <div className="space-y-3">
                                         <HeaderSelect label="Full Name" icon={User} field="name" mapping={mapping} setMapping={setMapping} fileHeaders={fileHeaders} required={true} />

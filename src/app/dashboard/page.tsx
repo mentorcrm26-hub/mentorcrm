@@ -22,17 +22,35 @@ export default async function DashboardPage() {
         redirect('/login')
     }
 
-    // Fetch everything in parallel
-    const [userProfileRes, allLeadsRes] = await Promise.all([
-        supabase.from('users').select('role, tenants (name, status)').eq('id', user.id).single(),
-        supabase.from('leads').select('id, status, created_at').eq('is_archived', false)
-    ])
+    // 1. Fetch user profile to determine role and tenant
+    const { data: userProfile } = await supabase
+        .from('users')
+        .select('role, tenant_id, tenants (name, status)')
+        .eq('id', user.id)
+        .single()
 
-    const userProfile = userProfileRes.data
-    const allLeads = allLeadsRes.data
-    const tenant = (userProfile?.tenants as any)
+    if (!userProfile?.tenant_id) {
+        redirect('/login')
+    }
 
-    const leads = allLeads || []
+    const tenantId = userProfile.tenant_id
+    const userRole = userProfile.role || 'agent'
+
+    // 2. Build leads query with role-based filtering
+    // Admins see all tenant leads; Agents see only their assigned leads.
+    let leadsQuery = supabase
+        .from('leads')
+        .select('id, status, created_at')
+        .eq('tenant_id', tenantId)
+        .eq('is_archived', false)
+
+    if (userRole === 'agent') {
+        leadsQuery = leadsQuery.eq('assigned_to', user.id)
+    }
+
+    const { data: leadsRes } = await leadsQuery
+    const leads = leadsRes || []
+
     const baseTotal = leads.length
     const wonCount = leads.filter(l => l.status === 'Won').length
     const newCount = leads.filter(l => l.status === 'New Lead').length
@@ -45,7 +63,10 @@ export default async function DashboardPage() {
                 <div>
                     <h1 className="text-4xl font-semibold tracking-tight text-zinc-900 dark:text-white mb-2">Metrics</h1>
                     <p className="text-base text-zinc-500 dark:text-zinc-400">
-                        Workspace · <span className="font-medium text-zinc-800 dark:text-zinc-200">{userProfile?.role === 'admin' ? 'Dono da Conta' : 'Agente'}</span>
+                        Workspace · <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                            {userRole === 'admin' ? 'Dono da Conta' : 'Agente'}
+                            {userRole === 'agent' && ` (${user.email})`}
+                        </span>
                     </p>
                 </div>
             </header>

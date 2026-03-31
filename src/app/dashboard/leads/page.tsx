@@ -26,13 +26,17 @@ export default async function LeadsPage() {
         redirect('/login')
     }
 
-    const { data: userProfile } = await supabase.from('users').select('role').eq('id', user.id).single()
+    const { data: userProfile } = await supabase.from('users').select('role, tenant_id').eq('id', user.id).single()
     const userRole = userProfile?.role || 'agent'
+    const tenantId = userProfile?.tenant_id
 
-    // 1. Fetch external events and tags first
-    const [externalEvents, { data: allTags }] = await Promise.all([
+    // 1. Fetch external events, tags and agents (if admin)
+    const [externalEvents, { data: allTags }, { data: agents }] = await Promise.all([
         fetchExternalEvents(supabase),
-        supabase.from('tags').select('*').order('name')
+        supabase.from('tags').select('*').order('name'),
+        userRole === 'admin' 
+            ? supabase.from('users').select('id, full_name').eq('tenant_id', tenantId).order('full_name')
+            : Promise.resolve({ data: [] })
     ])
     
     console.log(`[DEBUG LeadsPage] External events fetched: ${externalEvents.length}`)
@@ -42,15 +46,20 @@ export default async function LeadsPage() {
     console.log(`[DEBUG LeadsPage] Sync reconciliation performed. Updates made: ${wasUpdated}`)
 
     // 3. Fetch final leads data from DB (after reconciliation)
-    const { data: leadsResponse } = await supabase
+    let query = supabase
         .from('leads')
         .select(`
             *,
             lead_tags(tags(id, name, color_hex))
         `)
         .eq('is_archived', false)
-        .order('created_at', { ascending: false })
 
+    // FILTER: Agents see only assigned leads. Admins see all.
+    if (userRole === 'agent') {
+        query = query.eq('assigned_to', user.id)
+    }
+
+    const { data: leadsResponse } = await query.order('created_at', { ascending: false })
 
     const leads = (leadsResponse || []).map(lead => ({
         ...lead,
@@ -65,13 +74,13 @@ export default async function LeadsPage() {
                     <p className="text-zinc-500 dark:text-zinc-400 mt-1">Drag and drop your leads in the sales funnel.</p>
                 </div>
                 <div className="flex gap-4 items-center">
-                    <NewLeadModal mode="lead" />
-                    {userRole === 'admin' && <ImportLeadsModal />}
+                    <NewLeadModal mode="lead" agents={agents || []} userRole={userRole} />
+                    {userRole === 'admin' && <ImportLeadsModal agents={agents || []} />}
                 </div>
             </header>
 
             <main className="flex-1 overflow-x-auto min-h-0">
-                <KanbanBoard initialLeads={leads || []} availableTags={allTags || []} userRole={userRole} />
+                <KanbanBoard initialLeads={leads || []} availableTags={allTags || []} userRole={userRole} agents={agents || []} />
             </main>
         </div>
     )

@@ -18,6 +18,7 @@ export type Lead = {
     tenant_id: string
     apple_event_id?: string | null
     google_event_id?: string | null
+    assigned_to?: string | null
     tags?: LeadTag[]
 }
 
