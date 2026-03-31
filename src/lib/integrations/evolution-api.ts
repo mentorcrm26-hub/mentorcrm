@@ -179,6 +179,35 @@ export async function configureWebhook(instanceName: string, webhookUrlParam: st
 
   return { success: true, data: await response.json().catch(() => ({})) };
 }
+export async function revokeEvolutionMessage(instanceName: string, remoteJid: string, messageId: string) {
+  if (!EVOLUTION_API_URL || !EVOLUTION_API_KEY) {
+    throw new Error('Configuração de WhatsApp incompleta');
+  }
+
+  const response = await fetch(`${EVOLUTION_API_URL}/chat/deleteMessageForEveryone/${instanceName}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': EVOLUTION_API_KEY,
+    },
+    body: JSON.stringify({
+      id: messageId,
+      remoteJid,
+      fromMe: true,
+      participant: '',
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const errorMsg = errorData.message || errorData.error || 'Erro ao revogar mensagem';
+    console.error(`[WA-API] Revoke Error ${response.status}:`, errorMsg);
+    throw new Error(errorMsg);
+  }
+
+  return { success: true };
+}
+
 export async function sendEvolutionMedia(instanceName: string, phone: string, mediaUrl: string, mediaType: 'image' | 'video' | 'document' | 'audio', caption?: string, fileName?: string) {
   if (!EVOLUTION_API_URL || !EVOLUTION_API_KEY) {
     throw new Error('Configuração de WhatsApp incompleta');

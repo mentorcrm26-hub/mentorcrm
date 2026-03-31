@@ -16,7 +16,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { sendEvolutionMessage, sendEvolutionMedia } from '@/lib/integrations/evolution-api'
+import { sendEvolutionMessage, sendEvolutionMedia, revokeEvolutionMessage } from '@/lib/integrations/evolution-api'
 
 export async function getMessages(conversationId: string) {
     const supabase = await createClient()
@@ -219,6 +219,38 @@ export async function getConversation(id: string) {
     }
 
     return { success: true, data }
+}
+
+export async function deleteMessage(messageId: string, instanceName?: string, phone?: string) {
+    const supabase = await createClient()
+
+    // 1. Get evolution_message_id from DB
+    const { data: msg } = await supabase
+        .from('messages')
+        .select('evolution_message_id')
+        .eq('id', messageId)
+        .single()
+
+    // 2. Revoke on WhatsApp if we have all data
+    if (msg?.evolution_message_id && instanceName && phone) {
+        const digits = phone.replace(/\D/g, '')
+        const remoteJid = `${digits}@s.whatsapp.net`
+        try {
+            await revokeEvolutionMessage(instanceName, remoteJid, msg.evolution_message_id)
+        } catch (err) {
+            console.error('[deleteMessage] WhatsApp revoke failed:', err)
+            // Continue to delete from DB even if WhatsApp revoke fails
+        }
+    }
+
+    // 3. Delete from DB
+    const { error } = await supabase
+        .from('messages')
+        .delete()
+        .eq('id', messageId)
+
+    if (error) return { success: false, error: 'Failed to delete message' }
+    return { success: true }
 }
 
 export async function transferConversation(conversationId: string, newAgentId: string) {

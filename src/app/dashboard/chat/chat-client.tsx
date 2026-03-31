@@ -18,12 +18,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { 
-    Send, 
-    Phone, 
-    User, 
-    MessageSquareOff, 
-    UserCircle2, 
-    StickyNote, 
+    Send,
+    Phone,
+    User,
+    MessageSquareOff,
+    UserCircle2,
+    StickyNote,
     MessageCircle,
     Search,
     MoreVertical,
@@ -35,10 +35,11 @@ import {
     Image as ImageIcon,
     Video,
     X,
-    Smile
+    Smile,
+    Trash2
 } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
-import { getMessages, sendMessage, markAsRead, sendInternalNote, getConversation, sendMediaMessage, transferConversation } from './chat-actions'
+import { getMessages, sendMessage, markAsRead, sendInternalNote, getConversation, sendMediaMessage, transferConversation, deleteMessage } from './chat-actions'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import Link from 'next/link'
@@ -395,10 +396,20 @@ export function ChatClient({
         }
     }
 
-    const filteredConversations = conversations.filter(c => 
-        c.lead.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const filteredConversations = conversations.filter(c =>
+        c.lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         c.lead.phone.includes(searchQuery)
     )
+
+    const handleDeleteMessage = async (msgId: string) => {
+        const res = await deleteMessage(msgId, instanceName, activeConversation?.lead.phone)
+        if (res.success) {
+            setMessages(prev => prev.filter(m => m.id !== msgId))
+            toast.success('Message deleted')
+        } else {
+            toast.error('Failed to delete message')
+        }
+    }
 
     if (!whatsappConnected) {
         return (
@@ -621,12 +632,21 @@ export function ChatClient({
                                             }
 
                                              return (
-                                                <motion.div 
+                                                <motion.div
                                                     initial={{ opacity: 0, x: isOutbound ? 10 : -10 }}
                                                     animate={{ opacity: 1, x: 0 }}
-                                                    key={msg.id} 
-                                                    className={`flex ${isOutbound ? 'justify-end' : 'justify-start'}`}
+                                                    key={msg.id}
+                                                    className={`flex items-end gap-2 group/msg ${isOutbound ? 'justify-end' : 'justify-start'}`}
                                                 >
+                                                    {isOutbound && !msg.is_deleted && (
+                                                        <button
+                                                            onClick={() => handleDeleteMessage(msg.id)}
+                                                            className="opacity-0 group-hover/msg:opacity-100 transition-opacity p-1.5 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-zinc-300 hover:text-red-500 shrink-0 mb-1"
+                                                            title="Delete message"
+                                                        >
+                                                            <Trash2 className="w-3.5 h-3.5" />
+                                                        </button>
+                                                    )}
                                                     <div className={`max-w-[70%] p-4 rounded-3xl shadow-sm border transition-all ${
                                                         isOutbound 
                                                             ? 'bg-emerald-600 text-white rounded-br-sm border-emerald-500 shadow-emerald-500/10' 

@@ -346,6 +346,14 @@ export async function createManyLeads(leads: { name: string, email?: string, pho
 
     const tenantId = userProfile.tenant_id
 
+    const VALID_STATUSES = ['New Lead', 'Attempting Contact', 'In Conversation', 'Scheduled', 'Proposal/Analysis', 'Won', 'Lost']
+
+    const normalizeStatus = (raw?: string): string => {
+        if (!raw) return 'New Lead'
+        const match = VALID_STATUSES.find(s => s.toLowerCase() === raw.trim().toLowerCase())
+        return match || 'New Lead'
+    }
+
     const payload = leads.map(lead => ({
         tenant_id: tenantId,
         name: lead.name,
@@ -354,7 +362,7 @@ export async function createManyLeads(leads: { name: string, email?: string, pho
         notes: lead.notes || null,
         product_interest: lead.product_interest || null,
         birth_date: lead.birth_date || null,
-        status: lead.status || 'New Lead',
+        status: normalizeStatus(lead.status),
         assigned_to: assignedTo || user.id
     }))
 
