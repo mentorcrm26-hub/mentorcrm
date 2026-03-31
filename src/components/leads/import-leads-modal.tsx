@@ -14,6 +14,7 @@ import { createManyLeads } from '@/app/dashboard/leads/actions'
 import { toast } from 'sonner'
 import Papa from 'papaparse'
 import { X, UploadCloud, FileSpreadsheet, ArrowRight, CheckCircle2, User, Mail, Phone, Calendar, FileText, Loader2, Zap, Info } from 'lucide-react'
+import { cleanPhone } from '@/lib/utils'
 
 type ColumnMapping = {
     name: string
@@ -124,15 +125,6 @@ export function ImportLeadsModal({ agents = [] }: { agents?: { id: string, full_
         })
     }
 
-    const formatPhone = (rawPhone: string) => {
-        let val = String(rawPhone || '').replace(/\D/g, '')
-        if (val.length > 11) val = val.substring(0, 11)
-
-        if (val.length === 11) return `(${val.substring(0, 2)}) ${val.substring(2, 7)}-${val.substring(7)}`
-        if (val.length === 10) return `(${val.substring(0, 2)}) ${val.substring(2, 6)}-${val.substring(6)}`
-        return val
-    }
-
     const parseDate = (rawDate: string) => {
         if (!rawDate) return undefined
         const clean = rawDate.trim()
@@ -186,7 +178,7 @@ export function ImportLeadsModal({ agents = [] }: { agents?: { id: string, full_
             return {
                 name: String(row[mapping.name] || '').trim(),
                 email: mapping.email ? String(row[mapping.email] || '').trim() : undefined,
-                phone: mapping.phone ? formatPhone(row[mapping.phone]) : undefined,
+                phone: mapping.phone ? cleanPhone(String(row[mapping.phone] || '')) : undefined,
                 birth_date: mapping.birth_date ? parseDate(String(row[mapping.birth_date] || '')) : undefined,
                 notes: mapping.notes ? String(row[mapping.notes] || '').trim() : undefined,
                 status: mapping.status ? String(row[mapping.status] || '').trim() : undefined,
@@ -276,7 +268,7 @@ export function ImportLeadsModal({ agents = [] }: { agents?: { id: string, full_
                                         <div className="mt-6">
                                             <button 
                                                 onClick={() => {
-                                                    const csvString = "Name,Email,Phone,Date of Birth,Notes,Status,Product Interest\nJohn Doe,john@example.com,(11) 98888-7777,1990-05-15,Lead warm,New Lead,Car Insurance"
+                                                    const csvString = "Name,Email,Phone,Date of Birth,Notes,Status,Product Interest\nJohn Doe,john@example.com,4075551234,1990-05-15,Lead warm,New Lead,Car Insurance"
                                                     const blob = new Blob([csvString], { type: 'text/csv' })
                                                     const url = window.URL.createObjectURL(blob)
                                                     const a = document.createElement('a')

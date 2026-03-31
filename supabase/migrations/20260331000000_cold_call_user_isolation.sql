@@ -38,8 +38,9 @@ RETURNS TRIGGER AS $$
 DECLARE
     target_user_id UUID;
 BEGIN
-    -- Determine the user to attribute the stat to (assigned agent or creator)
-    target_user_id := COALESCE(NEW.assigned_to, NEW.created_by);
+    -- Determine the user to attribute the stat to (assigned agent)
+    -- Note: leads table has no created_by column, only assigned_to
+    target_user_id := NEW.assigned_to;
 
     IF target_user_id IS NULL THEN
         RETURN NEW;

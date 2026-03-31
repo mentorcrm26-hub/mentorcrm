@@ -13,6 +13,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import { MessageSquareText, Mail, Megaphone, AlertTriangle, Clock, CalendarX, X, Search, User } from 'lucide-react'
 import { updateLeadStatus } from '@/app/dashboard/leads/actions'
 import { formatFlorida } from '@/lib/timezone'
+import { formatPhoneDisplay } from '@/lib/utils'
 import { toast } from 'sonner'
 import { DeleteLeadButton } from './delete-lead-button'
 import { SendMessageModal } from './send-message-modal'
@@ -287,7 +288,7 @@ export function KanbanBoard({ initialLeads, availableTags = [], userRole = 'agen
                                                                 <div className="min-w-0 flex-1">
                                                                     <h4 className="font-medium text-sm text-zinc-900 dark:text-zinc-100 truncate">{lead.name}</h4>
                                                                     {lead.email && <p className="text-xs text-zinc-500 mt-1 truncate">{lead.email}</p>}
-                                                                    {lead.phone && <p className="text-xs text-zinc-500 mt-1">{lead.phone}</p>}
+                                                                    {lead.phone && <p className="text-xs text-zinc-500 mt-1">{formatPhoneDisplay(lead.phone)}</p>}
                                                                     {lead.assigned_to && agents.find(a => a.id === lead.assigned_to) && (
                                                                         <div className="flex items-center gap-1 mt-1.5 text-[10px] font-bold text-indigo-500/80 dark:text-indigo-400/80 uppercase tracking-tight">
                                                                             <User className="w-3 h-3" />
