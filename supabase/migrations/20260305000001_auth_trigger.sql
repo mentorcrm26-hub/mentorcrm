@@ -24,6 +24,12 @@ begin
   insert into public.users (id, tenant_id, role, full_name)
   values (new.id, new_tenant_id, 'admin', user_full_name);
 
+  -- Semeia as tags nativas para o novo tenant
+  insert into public.tags (tenant_id, name, color_hex, is_native)
+  values
+    (new_tenant_id, 'Closed', '#10b981', true),
+    (new_tenant_id, 'Lost',   '#ef4444', true);
+
   return new;
 end;
 $$ language plpgsql security definer;

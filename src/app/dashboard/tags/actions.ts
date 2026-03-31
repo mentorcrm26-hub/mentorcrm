@@ -63,9 +63,16 @@ export async function deleteTag(tagId: string) {
 
 export async function toggleLeadTag(leadId: string, tagId: string, attach: boolean) {
     const supabase = await createClient()
+
+    // Prevent manually detaching native tags — they are controlled by lead status changes only
+    if (!attach) {
+        const { data: tag } = await supabase.from('tags').select('is_native').eq('id', tagId).single()
+        if (tag?.is_native) return { success: false, error: 'Native tags are managed automatically by the system.' }
+    }
+
     if (attach) {
         const { error } = await supabase.from('lead_tags').insert({ lead_id: leadId, tag_id: tagId })
-        if (error && error.code !== '23505') return { success: false, error: error.message } 
+        if (error && error.code !== '23505') return { success: false, error: error.message }
     } else {
         const { error } = await supabase.from('lead_tags').delete().match({ lead_id: leadId, tag_id: tagId })
         if (error) return { success: false, error: error.message }
