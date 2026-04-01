@@ -22,9 +22,9 @@ export async function GET(request: Request) {
         redirectUri
     )
 
+    // Using only the specific scope required for managing calendar events
     const scopes = [
-        'https://www.googleapis.com/auth/calendar.events',
-        'https://www.googleapis.com/auth/calendar.readonly'
+        'https://www.googleapis.com/auth/calendar.events'
     ]
 
     const url = oauth2Client.generateAuthUrl({

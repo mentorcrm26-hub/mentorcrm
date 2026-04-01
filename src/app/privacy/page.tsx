@@ -34,7 +34,9 @@ const translations = {
         footerText: '© 2026 MENTOR CRM. ATENDENDO LIFE PLANNERS NOS EUA.',
         terms: 'Termos',
         privacy: 'Privacidade',
-        login: 'Entrar'
+        login: 'Entrar',
+        googleTitle: '7. USO DE DADOS DO GOOGLE',
+        googleContent: 'O uso e a transferência do Mentor CRM para qualquer outro aplicativo de informações recebidas das APIs do Google obedecerão à Política de Dados do Usuário dos Serviços de API do Google, incluindo os requisitos de Uso Limitado.'
     },
     en: {
         back: 'BACK',
@@ -56,7 +58,9 @@ const translations = {
         footerText: '© 2026 MENTOR CRM. SERVING LIFE PLANNERS IN THE USA.',
         terms: 'Terms',
         privacy: 'Privacy',
-        login: 'Login'
+        login: 'Login',
+        googleTitle: '7. GOOGLE DATA USAGE',
+        googleContent: "Mentor CRM's use and transfer to any other app of information received from Google APIs will adhere to the Google API Service User Data Policy, including the Limited Use requirements."
     },
     es: {
         back: 'VOLVER',
@@ -78,7 +82,9 @@ const translations = {
         footerText: '© 2026 MENTOR CRM. SIRVIENDO A LIFE PLANNERS EN EE.UU.',
         terms: 'Términos',
         privacy: 'Privacidad',
-        login: 'Login'
+        login: 'Login',
+        googleTitle: '7. USO DE DATOS DE GOOGLE',
+        googleContent: 'El uso y la transferencia por parte de Mentor CRM a cualquier outra aplicación de la información recibida de las API de Google cumplirá con la Política de datos del usuario de los serviços de la API de Google, incluidos los requisitos de Uso limitado.'
     }
 }
 
@@ -172,7 +178,8 @@ export default function PrivacyPage() {
                             { icon: <ShieldCheck className="h-6 w-6 text-brand-300" />, title: (t as any).section3Title, content: (t as any).section3Content },
                             { icon: <Globe className="h-6 w-6 text-brand-400" />, title: (t as any).section4Title, content: (t as any).section4Content },
                             { icon: <Database className="h-6 w-6 text-amber-400" />, title: (t as any).section5Title, content: (t as any).section5Content },
-                            { icon: <UserCheck className="h-6 w-6 text-emerald-400" />, title: (t as any).section6Title, content: (t as any).section6Content }
+                            { icon: <UserCheck className="h-6 w-6 text-emerald-400" />, title: (t as any).section6Title, content: (t as any).section6Content },
+                            { icon: <Globe className="h-6 w-6 text-brand-300" />, title: (t as any).googleTitle, content: (t as any).googleContent }
                         ].map((section, idx) => (
                             <section key={idx} className="glass-strong p-6 sm:p-12 rounded-3xl sm:rounded-[3.5rem] animate-fade-up border-white/5" style={{ animationDelay: `${idx * 100}ms` }}>
                                 <h2 className="text-2xl font-display font-black mb-8 tracking-tight text-white flex items-center gap-4">

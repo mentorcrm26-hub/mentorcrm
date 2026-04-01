@@ -130,7 +130,7 @@ const translations = {
     tier1Feat4: 'Visual Exploration',
     tier1Cta: 'EXPLORE THE SANDBOX',
     tier2Name: 'AGENT (SOLO)',
-    tier2Price: '$49/mo',
+    tier2Price: '$59/mo',
     tier2PriceYearly: 'or $490/year',
     tier2Feat1: 'Unlimited Leads',
     tier2Feat2: 'Email & SMS Automation',
@@ -472,25 +472,40 @@ export function HomeClient({ dbConfig }: { dbConfig?: any }) {
   let t = translations[lang];
 
   if (dbConfig) {
+      // Helper function to translate price strings from DB if language is not PT
+      const translatePrice = (price?: string) => {
+          if (!price) return undefined;
+          if (lang === 'pt') return price;
+          let p = price;
+          if (lang === 'en') {
+              p = p.replace('/mês', '/mo').replace(/mês/g, 'mo').replace('/ano', '/yr').replace(/ano/g, 'year').replace(/ou /g, 'or ');
+          } else if (lang === 'es') {
+              p = p.replace('/mês', '/mes').replace('/ano', '/año').replace('ou ', 'o ');
+          }
+          return p;
+      };
+
       t = {
           ...t,
-          tier2Name: dbConfig.plan_agent_name || t.tier2Name,
-          tier2Price: dbConfig.plan_agent_price || t.tier2Price,
-          tier2PriceYearly: dbConfig.plan_agent_price_yearly || t.tier2PriceYearly,
-          tier2Cta: dbConfig.plan_agent_cta || t.tier2Cta,
+          // Only use DB overrides for names/CTA if we are in Portuguese
+          // Otherwise, we'd be overriding EN translations with hardcoded PT database values.
+          tier2Name: lang === 'pt' ? (dbConfig.plan_agent_name || t.tier2Name) : t.tier2Name,
+          tier2Price: translatePrice(dbConfig.plan_agent_price) || t.tier2Price,
+          tier2PriceYearly: translatePrice(dbConfig.plan_agent_price_yearly) || t.tier2PriceYearly,
+          tier2Cta: lang === 'pt' ? (dbConfig.plan_agent_cta || t.tier2Cta) : t.tier2Cta,
           
-          tier3Name: dbConfig.plan_team_name || t.tier3Name,
-          tier3Price: dbConfig.plan_team_price || t.tier3Price,
-          tier3Meta: dbConfig.plan_team_meta || t.tier3Meta,
-          tier3Cta: dbConfig.plan_team_cta || t.tier3Cta,
+          tier3Name: lang === 'pt' ? (dbConfig.plan_team_name || t.tier3Name) : t.tier3Name,
+          tier3Price: translatePrice(dbConfig.plan_team_price) || t.tier3Price,
+          tier3Meta: translatePrice(dbConfig.plan_team_meta) || t.tier3Meta,
+          tier3Cta: lang === 'pt' ? (dbConfig.plan_team_cta || t.tier3Cta) : t.tier3Cta,
       } as any;
   }
 
-  const agentFeatures = dbConfig?.plan_agent_features?.length > 0 
+  const agentFeatures = (dbConfig?.plan_agent_features?.length > 0 && lang === 'pt') 
       ? dbConfig.plan_agent_features 
       : [t.tier2Feat1, t.tier2Feat2, t.tier2Feat3, t.tier2Feat4, t.tier2Feat5].filter(Boolean);
 
-  const teamFeatures = dbConfig?.plan_team_features?.length > 0
+  const teamFeatures = (dbConfig?.plan_team_features?.length > 0 && lang === 'pt')
       ? dbConfig.plan_team_features
       : [t.tier3Feat1, t.tier3Feat2, t.tier3Feat3, t.tier3Feat4, t.tier3Feat5, (t as any).tier3Feat6].filter(Boolean);
 
@@ -863,6 +878,7 @@ export function HomeClient({ dbConfig }: { dbConfig?: any }) {
                 <Link href="/signup?plan=sandbox" className="w-full py-4 bg-brand-500 hover:bg-brand-400 text-white rounded-full text-center text-xs font-display font-black uppercase tracking-widest shadow-[0_4px_15px_rgba(0,112,204,0.4)] transition-all active:scale-95">
                   {t.tier1Cta}
                 </Link>
+                <p className="text-center text-[9px] text-white/20 font-display font-black uppercase tracking-widest mt-3">Sem cartão. Dados simulados.</p>
               </div>
 
               {/* Tier 2 - Featured */}
@@ -882,8 +898,11 @@ export function HomeClient({ dbConfig }: { dbConfig?: any }) {
                     </div>
                   ))}
                 </div>
-                <Link href="/signup?plan=agent" className="w-full py-5 bg-gradient-to-r from-brand-500 to-brand-700 text-white rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:shadow-[0_10px_30px_rgba(0,112,204,0.5)] active:scale-95 transition-all shadow-xl">
+                <Link href="/assinar?plan=agent_monthly" className="w-full py-5 bg-gradient-to-r from-brand-500 to-brand-700 text-white rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:shadow-[0_10px_30px_rgba(0,112,204,0.5)] active:scale-95 transition-all shadow-xl">
                   {t.tier2Cta}
+                </Link>
+                <Link href="/assinar?plan=agent_annual" className="w-full py-3 mt-3 glass border border-brand-500/30 text-brand-300 rounded-full text-center text-[10px] font-display font-black uppercase tracking-widest hover:bg-brand-500/10 active:scale-95 transition-all">
+                  {t.tier2PriceYearly ? `Plano Anual — ${t.tier2PriceYearly}` : 'Ver Plano Anual'}
                 </Link>
               </div>
 
@@ -901,7 +920,7 @@ export function HomeClient({ dbConfig }: { dbConfig?: any }) {
                     </div>
                   ))}
                 </div>
-                <Link href="/signup?plan=team" className="w-full py-4 glass border border-white/10 rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:bg-white/10 active:scale-95 transition-all">
+                <Link href="/assinar?plan=team" className="w-full py-4 glass border border-white/10 rounded-full text-center text-xs font-display font-black uppercase tracking-widest hover:bg-white/10 active:scale-95 transition-all">
                   {t.tier3Cta}
                 </Link>
               </div>

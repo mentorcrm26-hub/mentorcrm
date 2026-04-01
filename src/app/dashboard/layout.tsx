@@ -5,7 +5,7 @@
  * *************** contact@inovamkt.io ******************
  */
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { LayoutDashboard, Users, Settings, Gift, Calendar as CalendarIcon, Variable, Zap, MessageSquare, TrendingUp, ShieldCheck } from 'lucide-react'
@@ -31,28 +31,57 @@ export default async function DashboardLayout({
 
     const { data: isSuperAdmin } = await supabase.rpc('is_super_admin')
 
-    // Fetch the user details to get tenant
-    const { data: userProfile } = await supabase
-        .from('users')
-        .select(`
-            role, 
-            tenant_id,
-            tenants (
-                name, 
-                status, 
-                created_at,
-                is_vip
-            )
-        `)
-        .eq('id', user.id)
-        .single()
+    // Impersonation logic for Super Admins
+    const { cookies: getCookies, headers: getHeaders } = await import('next/headers')
+    const cookieStore = await getCookies()
+    const headerStore = await getHeaders()
+    const impersonatedTenantId = headerStore.get('x-impersonated-tenant-id') || cookieStore.get('impersonated_tenant_id')?.value
+    
+    // Determine which profile to fetch
+    const targetUserId = (isSuperAdmin && impersonatedTenantId) 
+        ? null // We will fetch by tenant_id directly if impersonating
+        : user.id
 
-    const tenant = (userProfile?.tenants as any)
+    let userProfile = null
+    let tenant = null
+
+    if (targetUserId) {
+        // Normal Flow: Fetch by User ID
+        const { data } = await supabase
+            .from('users')
+            .select(`
+                role, 
+                tenant_id,
+                tenants (
+                    id,
+                    name, 
+                    plan,
+                    status, 
+                    created_at,
+                    is_vip
+                )
+            `)
+            .eq('id', targetUserId)
+            .single()
+        userProfile = data
+        tenant = (data?.tenants as any)
+    } else if (isSuperAdmin && impersonatedTenantId) {
+        // Impersonation Flow: Use admin client to bypass RLS
+        const supabaseAdmin = await createAdminClient()
+        const { data } = await supabaseAdmin
+            .from('tenants')
+            .select('*')
+            .eq('id', impersonatedTenantId)
+            .single()
+        tenant = data
+        userProfile = { role: 'admin', tenant_id: impersonatedTenantId } // Admin-view role
+    }
+
     const isVip = tenant?.is_vip === true
     const currentPlan = tenant?.plan || user.user_metadata?.plan || 'sandbox'
 
-    // Only redirect to demo if NOT VIP and plan is sandbox
-    if (!isVip && currentPlan === 'sandbox') {
+    // Only redirect to demo if NOT Super Admin, NOT VIP and plan is sandbox
+    if (!isSuperAdmin && !isVip && currentPlan === 'sandbox') {
         redirect('/demo')
     }
 
@@ -82,9 +111,19 @@ export default async function DashboardLayout({
 
                 <div className="p-4 border-t border-zinc-200 dark:border-white/10">
                     <div className="flex flex-col mb-4">
-                        <span className="text-sm font-medium truncate">{tenant?.name || 'Your Workspace'}</span>
+                        <div className="flex items-center gap-2 mb-1">
+                             <span className={`text-sm font-bold truncate ${userProfile?.is_impersonating ? 'text-rose-600 dark:text-rose-400' : ''}`}>
+                                {tenant?.name || 'Your Workspace'}
+                             </span>
+                             {userProfile?.is_impersonating && (
+                                <span className="px-1.5 py-0.5 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 text-[8px] font-black rounded uppercase border border-rose-200 dark:border-rose-800">
+                                    IMP
+                                </span>
+                             )}
+                        </div>
                         <span className="text-xs text-zinc-500">{userProfile?.role === 'admin' ? 'Account Owner' : 'Agent'}</span>
                         {isVip && <span className="text-[10px] font-black uppercase text-amber-500 mt-1">Status VIP Ativo</span>}
+                        {userProfile?.is_impersonating && <span className="text-[10px] font-bold text-rose-500 mt-1 uppercase italic underline">Visualização Master</span>}
                     </div>
 
                     <form action="/auth/signout" method="post">

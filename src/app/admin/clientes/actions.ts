@@ -2,6 +2,7 @@
 
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
 
 /**
  * Função Nuclear de Busca: Visualiza todos os clientes do sistema ignorando RLS
@@ -194,4 +195,27 @@ export async function dangerouslyClearAllClients() {
         success: true, 
         message: `Tudo limpo! ${userIdsToDelete.length} Logins invalidados e ${deletedTenants?.length || 0} Workspaces removidos.` 
     }
+}
+
+export async function setImpersonation(tenantId: string | null) {
+    const supabase = await createClient()
+    const { data: isAdmin } = await supabase.rpc('is_super_admin')
+
+    if (!isAdmin) {
+        return { success: false, error: 'Acesso Restrito' }
+    }
+
+    const cookieStore = await cookies()
+    if (tenantId) {
+        cookieStore.set('impersonated_tenant_id', tenantId, { 
+            path: '/', 
+            maxAge: 3600,
+            sameSite: 'lax',
+            httpOnly: true 
+        })
+    } else {
+        cookieStore.delete('impersonated_tenant_id')
+    }
+
+    return { success: true }
 }

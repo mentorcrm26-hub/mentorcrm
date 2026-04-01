@@ -53,8 +53,7 @@ export function TenantDetailsClient({ data }: { data: any }) {
   }
 
   const handleAccessWorkspace = () => {
-    toast.info('Abrindo painel do cliente...')
-    window.open(`${window.location.origin}/dashboard`, '_blank')
+    window.location.href = `/api/admin/impersonate?tenant_id=${data.id}`
   }
 
   const handleStripeDashboard = () => {

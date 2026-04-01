@@ -30,47 +30,135 @@ export async function POST(req: NextRequest) {
     }
 
     switch (event.type) {
+
         case 'checkout.session.completed': {
             const session = event.data.object as Stripe.Checkout.Session
             const userId  = session.metadata?.user_id
-            if (!userId) break
+            const source  = session.metadata?.source
 
             const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
             const priceId = subscription.items.data[0]?.price.id
             const plan    = PRICE_TO_PLAN[priceId] ?? 'agent'
 
-            await supabaseAdmin.auth.admin.updateUserById(userId, {
-                user_metadata: {
-                    plan,
-                    trial: false,
-                    trial_ends_at: null,
-                    onboarding_status: 'active',
-                    subscription_status: 'active',
-                    stripe_subscription_id: subscription.id,
-                    stripe_customer_id: session.customer as string,
-                }
-            })
+            // ─── PATH A: Existing user upgrading (old flow from /dashboard/settings/billing) ───
+            if (userId) {
+                await supabaseAdmin.auth.admin.updateUserById(userId, {
+                    user_metadata: {
+                        plan,
+                        trial: false,
+                        trial_ends_at: null,
+                        onboarding_status: 'active',
+                        subscription_status: 'active',
+                        stripe_subscription_id: subscription.id,
+                        stripe_customer_id: session.customer as string,
+                    }
+                })
 
-            // Sincronizar o PLANO diretamente no workspace (tenant)
-            const { data: userData } = await supabaseAdmin
-                .from('users')
-                .select('tenant_id')
-                .eq('id', userId)
-                .single()
-            
-            if (userData?.tenant_id) {
-                await supabaseAdmin
-                    .from('tenants')
-                    .update({ plan })
-                    .eq('id', userData.tenant_id)
+                const { data: userData } = await supabaseAdmin
+                    .from('users')
+                    .select('tenant_id')
+                    .eq('id', userId)
+                    .single()
+
+                if (userData?.tenant_id) {
+                    await supabaseAdmin
+                        .from('tenants')
+                        .update({
+                            plan,
+                            status: 'active',
+                            stripe_customer_id: session.customer as string,
+                            stripe_subscription_id: subscription.id,
+                        })
+                        .eq('id', userData.tenant_id)
+                }
+                break
+            }
+
+            // ─── PATH B: New user via public checkout (payment-first flow) ───
+            if (source === 'public_checkout') {
+                const email    = session.customer_details?.email
+                const fullName = session.customer_details?.name || 'Novo Usuário'
+
+                if (!email) {
+                    console.error('public_checkout: no email in session.customer_details')
+                    break
+                }
+
+                // Check if a user with this email already exists
+                const { data: { users: allUsers } } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 })
+                const existingUser = allUsers.find(u => u.email?.toLowerCase() === email.toLowerCase())
+
+                let targetUserId: string
+
+                if (existingUser) {
+                    // User exists (e.g. had a sandbox account) — just upgrade them
+                    targetUserId = existingUser.id
+                    await supabaseAdmin.auth.admin.updateUserById(existingUser.id, {
+                        user_metadata: {
+                            ...existingUser.user_metadata,
+                            plan,
+                            trial: false,
+                            trial_ends_at: null,
+                            onboarding_status: 'active',
+                            subscription_status: 'active',
+                            stripe_subscription_id: subscription.id,
+                            stripe_customer_id: session.customer as string,
+                        }
+                    })
+                } else {
+                    // Brand new user — invite them (DB trigger will create tenant + user automatically)
+                    const appUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? ''
+                    const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(
+                        email,
+                        {
+                            data: {
+                                full_name: fullName,
+                                plan,
+                                onboarding_status: 'active',
+                                subscription_status: 'active',
+                                stripe_subscription_id: subscription.id,
+                                stripe_customer_id: session.customer as string,
+                            },
+                            redirectTo: `${appUrl}/dashboard`,
+                        }
+                    )
+
+                    if (inviteError || !inviteData?.user) {
+                        console.error('Failed to invite new user:', inviteError)
+                        break
+                    }
+
+                    targetUserId = inviteData.user.id
+                }
+
+                // Update tenant with Stripe details and correct plan/status
+                // The DB trigger already created the tenant when user was invited,
+                // so we just need to update the plan and Stripe IDs.
+                const { data: userRecord } = await supabaseAdmin
+                    .from('users')
+                    .select('tenant_id')
+                    .eq('id', targetUserId)
+                    .single()
+
+                if (userRecord?.tenant_id) {
+                    await supabaseAdmin
+                        .from('tenants')
+                        .update({
+                            plan,
+                            status: 'active',
+                            stripe_customer_id: session.customer as string,
+                            stripe_subscription_id: subscription.id,
+                        })
+                        .eq('id', userRecord.tenant_id)
+                }
             }
             break
         }
 
         case 'customer.subscription.updated': {
             const subscription = event.data.object as Stripe.Subscription
-            const { data: users } = await supabaseAdmin.auth.admin.listUsers()
-            const user = users.users.find(
+            const { data: { users: allUsers } } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 })
+            const user = allUsers.find(
                 (u) => u.user_metadata?.stripe_customer_id === subscription.customer
             )
             if (!user) break
@@ -93,11 +181,11 @@ export async function POST(req: NextRequest) {
                 .select('tenant_id')
                 .eq('id', user.id)
                 .single()
-            
+
             if (userData?.tenant_id) {
                 await supabaseAdmin
                     .from('tenants')
-                    .update({ plan })
+                    .update({ plan, status: isActive ? 'active' : 'suspended' })
                     .eq('id', userData.tenant_id)
             }
             break
@@ -105,8 +193,8 @@ export async function POST(req: NextRequest) {
 
         case 'customer.subscription.deleted': {
             const subscription = event.data.object as Stripe.Subscription
-            const { data: users } = await supabaseAdmin.auth.admin.listUsers()
-            const user = users.users.find(
+            const { data: { users: allUsers } } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 })
+            const user = allUsers.find(
                 (u) => u.user_metadata?.stripe_customer_id === subscription.customer
             )
             if (!user) break
@@ -126,11 +214,11 @@ export async function POST(req: NextRequest) {
                 .select('tenant_id')
                 .eq('id', user.id)
                 .single()
-            
+
             if (userData?.tenant_id) {
                 await supabaseAdmin
                     .from('tenants')
-                    .update({ plan: 'sandbox' })
+                    .update({ plan: 'sandbox', status: 'suspended' })
                     .eq('id', userData.tenant_id)
             }
             break
@@ -138,8 +226,8 @@ export async function POST(req: NextRequest) {
 
         case 'invoice.payment_failed': {
             const invoice = event.data.object as Stripe.Invoice
-            const { data: users } = await supabaseAdmin.auth.admin.listUsers()
-            const user = users.users.find(
+            const { data: { users: allUsers } } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 })
+            const user = allUsers.find(
                 (u) => u.user_metadata?.stripe_customer_id === invoice.customer
             )
             if (!user) break

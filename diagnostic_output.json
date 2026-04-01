@@ -1,0 +1,42 @@
+{
+  "email": "mentorcrm26@gmail.com",
+  "date": "2026-03-31T03:10:37.074Z",
+  "auth_user": {
+    "id": "c86358df-8802-4a67-a81d-ecddfd0ea964",
+    "metadata": {
+      "email_verified": true,
+      "full_name": "Mentor CRM - Cliente"
+    }
+  },
+  "public_user": {
+    "id": "c86358df-8802-4a67-a81d-ecddfd0ea964",
+    "tenant_id": "780afd73-dacb-4ead-96cc-3853aa9a0404",
+    "role": "admin",
+    "full_name": "Mentor CRM - Cliente",
+    "created_at": "2026-03-29T13:53:28.560267+00:00",
+    "updated_at": "2026-03-29T13:53:28.560267+00:00",
+    "phone": null,
+    "google_meet_link": null,
+    "other_meet_link": null,
+    "email": "mentorcrm26@gmail.com",
+    "tenants": {
+      "id": "780afd73-dacb-4ead-96cc-3853aa9a0404",
+      "name": "Mentor CRM - Cliente Workspace",
+      "plan": "sandbox",
+      "is_vip": false,
+      "status": "trial",
+      "created_at": "2026-03-29T13:53:28.560267+00:00",
+      "updated_at": "2026-03-29T13:53:28.560267+00:00",
+      "stripe_customer_id": null,
+      "stripe_subscription_id": null
+    }
+  },
+  "in_system_admins": true,
+  "total_system_admins": 1,
+  "all_system_admins": [
+    {
+      "id": "c86358df-8802-4a67-a81d-ecddfd0ea964",
+      "created_at": "2026-03-29T23:42:16.708441+00:00"
+    }
+  ]
+}

@@ -5,36 +5,20 @@
  * *************** contact@inovamkt.io ******************
  */
 
-import { createClient } from '@/lib/supabase/server'
+import { getDashboardContext } from '@/lib/dashboard/context'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { OverviewCharts } from '@/components/dashboard/overview-charts'
 import { PipelineMiniCards } from '@/components/dashboard/pipeline-mini-cards'
 
 export default async function DashboardPage() {
-    const supabase = await createClient()
-
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-        redirect('/login')
+    const context = await getDashboardContext()
+    if ('redirect' in context && typeof context.redirect === 'string') {
+        redirect(context.redirect)
     }
-
-    // 1. Fetch user profile to determine role and tenant
-    const { data: userProfile } = await supabase
-        .from('users')
-        .select('role, tenant_id, tenants (name, status)')
-        .eq('id', user.id)
-        .single()
-
-    if (!userProfile?.tenant_id) {
-        redirect('/login')
-    }
-
-    const tenantId = userProfile.tenant_id
-    const userRole = userProfile.role || 'agent'
+    
+    // Type guards are messy here, but context.supabase exists if we got past previous check.
+    const { supabase, user, userRole, tenantId } = context as any
 
     // 2. Build leads query with role-based filtering
     // Admins see all tenant leads; Agents see only their assigned leads.
@@ -52,8 +36,8 @@ export default async function DashboardPage() {
     const leads = leadsRes || []
 
     const baseTotal = leads.length
-    const wonCount = leads.filter(l => l.status === 'Won').length
-    const newCount = leads.filter(l => l.status === 'New Lead').length
+    const wonCount = leads.filter((l: any) => l.status === 'Won').length
+    const newCount = leads.filter((l: any) => l.status === 'New Lead').length
 
     const conversionRate = baseTotal > 0 ? ((wonCount / baseTotal) * 100).toFixed(1) : "0.0"
 

@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { signup } from '../actions';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import SignupForm from './signup-form';
 
 const translations = {
@@ -29,7 +30,9 @@ const translations = {
         submit: { sandbox: 'CRIAR CONTA SANDBOX', agent: 'SOLICITAR ACESSO AGORA', team: 'SOLICITAR ACESSO TEAM' },
         alreadyHaveAccount: 'JÁ POSSUI CONTA?',
         loginLink: 'Acessar Painel',
-        defaultError: 'Erro ao criar conta. Tente novamente.'
+        defaultError: 'Erro ao criar conta. Tente novamente.',
+        emailExists: 'ESTE E-MAIL JÁ ESTÁ EM USO.',
+        phoneExists: 'ESTE TELEFONE JÁ ESTÁ EM USO.'
     },
     en: {
         sandbox: { title: 'EXPLORE THE SANDBOX', subtitle: 'No credit card required. Explore with mock data at your own pace.' },
@@ -47,7 +50,9 @@ const translations = {
         submit: { sandbox: 'CREATE SANDBOX ACCOUNT', agent: 'REQUEST ACCESS NOW', team: 'REQUEST TEAM ACCESS' },
         alreadyHaveAccount: 'ALREADY HAVE AN ACCOUNT?',
         loginLink: 'Login to Dashboard',
-        defaultError: 'Error creating account. Try again.'
+        defaultError: 'Error creating account. Try again.',
+        emailExists: 'THIS EMAIL IS ALREADY IN USE.',
+        phoneExists: 'THIS PHONE IS ALREADY IN USE.'
     },
     es: {
         sandbox: { title: 'EXPLORAR EL SANDBOX', subtitle: 'Sin tarjeta. Datos simulados para explorar a tu ritmo.' },
@@ -65,7 +70,9 @@ const translations = {
         submit: { sandbox: 'CREAR CUENTA SANDBOX', agent: 'SOLICITAR ACCESO AHORA', team: 'SOLICITAR ACCESO TEAM' },
         alreadyHaveAccount: '¿YA TIENE UNA CUENTA?',
         loginLink: 'Acceder al Panel',
-        defaultError: 'Error al crear la cuenta. Intente de nuevo.'
+        defaultError: 'Error al crear la cuenta. Intente de nuevo.',
+        emailExists: 'ESTE E-MAIL YA ESTÁ EN USO.',
+        phoneExists: 'ESTE TELÉFONO YA ESTÁ EN USO.'
     }
 };
 
@@ -86,6 +93,10 @@ export default async function SignupPage({
 
     const validPlans: Plan[] = ['sandbox', 'agent', 'team'];
     const plan: Plan = validPlans.includes(p?.plan as Plan) ? (p.plan as Plan) : 'agent';
+
+    // Paid plans now go through the payment-first flow at /assinar
+    if (plan === 'agent') redirect('/assinar?plan=agent_monthly')
+    if (plan === 'team') redirect('/assinar?plan=team')
 
     const planInfo = t[plan];
     const submitLabel = t.submit[plan];

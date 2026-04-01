@@ -10,6 +10,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { getAppUrl } from '@/lib/utils'
 
@@ -40,12 +41,15 @@ export async function login(formData: FormData) {
             .eq('id', user.id)
             .single()
 
+        // Also check if super admin via RPC (more robust)
+        const { data: isSuperAdmin } = await supabase.rpc('is_super_admin')
+
         const tenant = (dbProfile?.tenants as any)
         const isVip = tenant?.is_vip === true
         const plan = tenant?.plan || user.user_metadata?.plan || 'sandbox'
 
-        if (dbProfile?.role === 'super_admin') {
-            dest = '/settings'
+        if (isSuperAdmin || dbProfile?.role === 'super_admin') {
+            dest = '/admin'
         } else if (!isVip && plan === 'sandbox') {
             dest = '/demo'
         }
@@ -71,12 +75,40 @@ export async function signup(formData: FormData) {
         ? new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString()
         : null;
 
+    const email = (formData.get('email') as string).trim().toLowerCase();
+    const cookieStore = await cookies();
+    const lang = cookieStore.get('NEXT_LOCALE')?.value || 'en';
+
+    // 1. Check for duplicate Email in public.users (Case-Insensitive)
+    const { data: existingEmail } = await supabase
+        .from('users')
+        .select('id')
+        .ilike('email', email) // Using ilike for case-insensitivity
+        .maybeSingle();
+
+    if (existingEmail) {
+        const msg = lang === 'pt' ? 'ESTE E-MAIL JÁ ESTÁ EM USO.' : lang === 'es' ? 'ESTE E-MAIL YA ESTÁ EN USO.' : 'THIS EMAIL IS ALREADY IN USE.';
+        return redirect(`/signup?error=true&plan=${plan}&msg=` + encodeURIComponent(msg));
+    }
+
+    // 2. Check for duplicate Phone in public.users
+    const { data: existingPhone } = await supabase
+        .from('users')
+        .select('id')
+        .eq('phone', formattedPhone)
+        .maybeSingle();
+
+    if (existingPhone) {
+        const msg = lang === 'pt' ? 'ESTE TELEFONE JÁ ESTÁ EM USO.' : lang === 'es' ? 'ESTE TELÉFONO YA ESTÁ EN USO.' : 'THIS PHONE IS ALREADY IN USE.';
+        return redirect(`/signup?error=true&plan=${plan}&msg=` + encodeURIComponent(msg));
+    }
+
     const data = {
-        email: formData.get('email') as string,
+        email,
         password: formData.get('password') as string,
         options: {
             data: {
-                full_name: formData.get('full_name') as string,
+                full_name: (formData.get('full_name') as string).trim(),
                 phone: formattedPhone,
                 plan,
                 trial_ends_at: trialEndsAt,
@@ -89,13 +121,13 @@ export async function signup(formData: FormData) {
     const { error } = await supabase.auth.signUp(data)
 
     if (error) {
-        redirect('/signup?error=true&msg=' + encodeURIComponent(error.message))
+        return redirect(`/signup?error=true&plan=${plan}&msg=` + encodeURIComponent(error.message))
     }
 
     revalidatePath('/', 'layout')
 
     if (plan === 'sandbox') {
-        redirect('/demo')
+        return redirect('/demo')
     }
-    redirect('/dashboard')
+    return redirect('/dashboard')
 }

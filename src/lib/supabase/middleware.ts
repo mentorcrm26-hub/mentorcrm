@@ -9,8 +9,14 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function updateSession(request: NextRequest) {
+    const nextUrl = request.nextUrl
+    const tenantIdParam = nextUrl.searchParams.get('tenant_id')
+
+    // Initial response
     let supabaseResponse = NextResponse.next({
-        request,
+        request: {
+            headers: request.headers,
+        },
     })
 
     const supabase = createServerClient(
@@ -35,33 +41,59 @@ export async function updateSession(request: NextRequest) {
     )
 
     // IMPORTANT: Avoid writing any logic between createServerClient and
-    // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-    // issues with users being randomly logged out.
-
+    // supabase.auth.getUser().
     const {
         data: { user },
     } = await supabase.auth.getUser()
 
-    // Protect the dashboard routes
-    if (
-        !user &&
-        (request.nextUrl.pathname.startsWith('/dashboard') ||
-            request.nextUrl.pathname.startsWith('/admin'))
-    ) {
-        // no user, potentially respond by redirecting the user to the login page
-        const url = request.nextUrl.clone()
+    // 1. Session Protection
+    if (!user && (nextUrl.pathname.startsWith('/dashboard') || nextUrl.pathname.startsWith('/admin'))) {
+        const url = nextUrl.clone()
         url.pathname = '/login'
         return NextResponse.redirect(url)
     }
 
-    // If user is logged in and trying to access root or login, redirect to dashboard
-    if (
-        user &&
-        (request.nextUrl.pathname === '/login')
-    ) {
-        const url = request.nextUrl.clone()
-        url.pathname = user.user_metadata?.plan === 'sandbox' ? '/demo' : '/dashboard'
+    // 2. Redirect logged-in users hitting /login
+    if (user && nextUrl.pathname === '/login') {
+        const url = nextUrl.clone()
+        const { data: isAdmin } = await supabase.rpc('is_super_admin')
+        if (isAdmin) url.pathname = '/admin'
+        else if (user.user_metadata?.plan === 'sandbox') url.pathname = '/demo'
+        else url.pathname = '/dashboard'
         return NextResponse.redirect(url)
+    }
+
+    // 3. NUCLEAR IMPERSONATION FIX: Redirect with Cookie
+    // If a Super Admin passes tenant_id, we set the cookie AND redirect.
+    // This forces the next request to HAVE the cookie in its headers.
+    if (user && tenantIdParam && nextUrl.pathname.startsWith('/dashboard')) {
+        const { data: isAdmin } = await supabase.rpc('is_super_admin')
+        if (isAdmin) {
+            console.log('Impersonation requested for tenant:', tenantIdParam)
+            
+            const redirectUrl = nextUrl.clone()
+            redirectUrl.searchParams.delete('tenant_id') // Clean URL
+            
+            const response = NextResponse.redirect(redirectUrl)
+            
+            // Set the impersonation cookie on the REDIRECT response
+            response.cookies.set('impersonated_tenant_id', tenantIdParam, { 
+                path: '/', 
+                maxAge: 3600,
+                sameSite: 'lax',
+                httpOnly: true 
+            })
+            
+            return response
+        }
+    }
+
+    // 4. Auto-clear impersonation only on direct navigation to admin (GET)
+    // This prevents clearing it when the server action is running (POST)
+    if (request.method === 'GET' && nextUrl.pathname.startsWith('/admin')) {
+        if (request.cookies.has('impersonated_tenant_id')) {
+            supabaseResponse.cookies.delete('impersonated_tenant_id')
+        }
     }
 
     return supabaseResponse
