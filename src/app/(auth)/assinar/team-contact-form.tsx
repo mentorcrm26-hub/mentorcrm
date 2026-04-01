@@ -63,10 +63,19 @@ const T = {
     },
 }
 
+function formatUSPhone(raw: string): string {
+    const digits = raw.replace(/\D/g, '').slice(0, 10)
+    if (digits.length === 0) return ''
+    if (digits.length <= 3) return `(${digits}`
+    if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
+}
+
 export function TeamContactForm({ locale = 'en' }: { locale?: Locale }) {
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [phone, setPhone] = useState('')
 
     const t = T[locale] ?? T.en
 
@@ -79,7 +88,7 @@ export function TeamContactForm({ locale = 'en' }: { locale?: Locale }) {
         const data = {
             name: (form.elements.namedItem('name') as HTMLInputElement).value,
             email: (form.elements.namedItem('email') as HTMLInputElement).value,
-            phone: (form.elements.namedItem('phone') as HTMLInputElement).value,
+            phone: (form.elements.namedItem('phone_full') as HTMLInputElement).value || (form.elements.namedItem('phone') as HTMLInputElement).value,
             team_size: (form.elements.namedItem('team_size') as HTMLSelectElement).value,
             message: (form.elements.namedItem('message') as HTMLTextAreaElement).value,
         }
@@ -151,12 +160,19 @@ export function TeamContactForm({ locale = 'en' }: { locale?: Locale }) {
                 <label className="text-[10px] font-display font-black uppercase tracking-widest text-white/40 block mb-2">
                     {t.labelPhone}
                 </label>
-                <input
-                    name="phone"
-                    required
-                    placeholder={t.placeholderPhone}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-sm font-display text-white placeholder-white/20 focus:outline-none focus:border-brand-400 transition-colors"
-                />
+                <div className="flex items-center bg-white/5 border border-white/10 rounded-2xl focus-within:border-brand-400 transition-colors overflow-hidden">
+                    <span className="pl-5 pr-2 text-sm font-display font-bold text-white/50 shrink-0">+1</span>
+                    <input
+                        name="phone"
+                        required
+                        value={phone}
+                        onChange={e => setPhone(formatUSPhone(e.target.value))}
+                        placeholder="(000) 000-0000"
+                        className="flex-1 bg-transparent pr-5 py-3.5 text-sm font-display text-white placeholder-white/20 focus:outline-none"
+                    />
+                </div>
+                {/* Hidden field with full value for the server action */}
+                <input type="hidden" name="phone_full" value={phone ? `+1 ${phone}` : ''} />
             </div>
 
             <div>
