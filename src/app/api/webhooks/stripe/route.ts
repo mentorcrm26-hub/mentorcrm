@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
                     // redirectTo must go through /auth/confirm so that:
                     // - valid tokens: logs the user in and redirects to /dashboard
                     // - expired/invalid tokens: redirects to /login?error=true (not /dashboard)
-                    const confirmUrl = `${appUrl}/auth/confirm?next=/configurar-senha`
+                    const confirmUrl = `${appUrl}/auth/verify?next=/configurar-senha`
                     console.log(`[WEBHOOK PATH B] new user — calling inviteUserByEmail to ${email}, redirectTo=${confirmUrl}`)
 
                     const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(
