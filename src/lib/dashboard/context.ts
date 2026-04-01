@@ -59,7 +59,7 @@ export async function getDashboardContext() {
             return redirect('/login')
         }
 
-        userProfile = profile
+        userProfile = { ...profile, is_impersonating: false }
         tenantId = profile.tenant_id
         userRole = profile.role || 'agent'
     }

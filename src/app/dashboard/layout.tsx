@@ -63,7 +63,7 @@ export default async function DashboardLayout({
             `)
             .eq('id', targetUserId)
             .single()
-        userProfile = data
+        userProfile = { ...data, is_impersonating: false }
         tenant = (data?.tenants as any)
     } else if (isSuperAdmin && impersonatedTenantId) {
         // Impersonation Flow: Use admin client to bypass RLS
@@ -74,7 +74,7 @@ export default async function DashboardLayout({
             .eq('id', impersonatedTenantId)
             .single()
         tenant = data
-        userProfile = { role: 'admin', tenant_id: impersonatedTenantId } // Admin-view role
+        userProfile = { role: 'admin', tenant_id: impersonatedTenantId, is_impersonating: true }
     }
 
     const isVip = tenant?.is_vip === true
