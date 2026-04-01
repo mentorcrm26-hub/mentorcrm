@@ -4,10 +4,71 @@ import { useState } from 'react'
 import { ArrowRight, Loader2, CheckCircle2 } from 'lucide-react'
 import { submitTeamContact } from './actions'
 
-export function TeamContactForm() {
+type Locale = 'en' | 'pt' | 'es'
+
+const T = {
+    en: {
+        intro: 'Fill out the form and our team will get back to you within 24h.',
+        labelName: 'Full Name',
+        placeholderName: 'Your name',
+        labelEmail: 'Professional Email',
+        placeholderEmail: 'you@agency.com',
+        labelPhone: 'WhatsApp / Phone',
+        placeholderPhone: '(XXX) XXX-XXXX',
+        labelTeamSize: 'Team Size',
+        optionSelect: 'Select...',
+        labelMessage: 'Message (optional)',
+        placeholderMessage: 'Tell us a bit about your agency or needs...',
+        submitBtn: 'Request Team Access',
+        sending: 'Sending...',
+        successTitle: 'Request Sent!',
+        successDesc: 'Our team will reach out within 24h to set up your Team workspace.',
+        errorFallback: 'Error sending. Please try again.',
+    },
+    pt: {
+        intro: 'Preencha o formulário e nossa equipe entra em contato em até 24h.',
+        labelName: 'Nome Completo',
+        placeholderName: 'Seu nome',
+        labelEmail: 'Email Profissional',
+        placeholderEmail: 'voce@agencia.com',
+        labelPhone: 'WhatsApp / Telefone',
+        placeholderPhone: '(XXX) XXX-XXXX',
+        labelTeamSize: 'Tamanho da Equipe',
+        optionSelect: 'Selecione...',
+        labelMessage: 'Mensagem (opcional)',
+        placeholderMessage: 'Conte um pouco sobre sua agência ou necessidade...',
+        submitBtn: 'Solicitar Acesso Team',
+        sending: 'Enviando...',
+        successTitle: 'Solicitação Enviada!',
+        successDesc: 'Nossa equipe entrará em contato em até 24h para configurar seu workspace Team.',
+        errorFallback: 'Erro ao enviar. Tente novamente.',
+    },
+    es: {
+        intro: 'Completa el formulario y nuestro equipo te contactará en menos de 24h.',
+        labelName: 'Nombre Completo',
+        placeholderName: 'Tu nombre',
+        labelEmail: 'Email Profesional',
+        placeholderEmail: 'tu@agencia.com',
+        labelPhone: 'WhatsApp / Teléfono',
+        placeholderPhone: '(XXX) XXX-XXXX',
+        labelTeamSize: 'Tamaño del Equipo',
+        optionSelect: 'Selecciona...',
+        labelMessage: 'Mensaje (opcional)',
+        placeholderMessage: 'Cuéntanos un poco sobre tu agencia o necesidades...',
+        submitBtn: 'Solicitar Acceso Team',
+        sending: 'Enviando...',
+        successTitle: '¡Solicitud Enviada!',
+        successDesc: 'Nuestro equipo se pondrá en contacto en menos de 24h para configurar tu workspace Team.',
+        errorFallback: 'Error al enviar. Inténtalo de nuevo.',
+    },
+}
+
+export function TeamContactForm({ locale = 'en' }: { locale?: Locale }) {
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const [error, setError] = useState<string | null>(null)
+
+    const t = T[locale] ?? T.en
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -29,7 +90,7 @@ export function TeamContactForm() {
         if (res.success) {
             setSuccess(true)
         } else {
-            setError(res.error || 'Erro ao enviar. Tente novamente.')
+            setError(res.error || t.errorFallback)
         }
     }
 
@@ -38,10 +99,10 @@ export function TeamContactForm() {
             <div className="text-center py-8 space-y-4">
                 <CheckCircle2 className="w-12 h-12 text-brand-400 mx-auto" />
                 <p className="text-white font-display font-black text-lg tracking-tight">
-                    Solicitação Enviada!
+                    {t.successTitle}
                 </p>
                 <p className="text-white/40 text-xs font-display font-black uppercase tracking-widest">
-                    Nossa equipe entrará em contato em até 24h para configurar seu workspace Team.
+                    {t.successDesc}
                 </p>
             </div>
         )
@@ -51,7 +112,7 @@ export function TeamContactForm() {
         <form onSubmit={handleSubmit} className="space-y-5">
             <div className="text-center mb-6">
                 <p className="text-xs font-display font-black uppercase tracking-widest text-white/40">
-                    Preencha o formulário e nossa equipe entra em contato em até 24h.
+                    {t.intro}
                 </p>
             </div>
 
@@ -63,66 +124,66 @@ export function TeamContactForm() {
 
             <div>
                 <label className="text-[10px] font-display font-black uppercase tracking-widest text-white/40 block mb-2">
-                    Nome Completo
+                    {t.labelName}
                 </label>
                 <input
                     name="name"
                     required
-                    placeholder="Seu nome"
+                    placeholder={t.placeholderName}
                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-sm font-display text-white placeholder-white/20 focus:outline-none focus:border-brand-400 transition-colors"
                 />
             </div>
 
             <div>
                 <label className="text-[10px] font-display font-black uppercase tracking-widest text-white/40 block mb-2">
-                    Email Profissional
+                    {t.labelEmail}
                 </label>
                 <input
                     name="email"
                     type="email"
                     required
-                    placeholder="voce@agencia.com"
+                    placeholder={t.placeholderEmail}
                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-sm font-display text-white placeholder-white/20 focus:outline-none focus:border-brand-400 transition-colors"
                 />
             </div>
 
             <div>
                 <label className="text-[10px] font-display font-black uppercase tracking-widest text-white/40 block mb-2">
-                    WhatsApp / Telefone
+                    {t.labelPhone}
                 </label>
                 <input
                     name="phone"
                     required
-                    placeholder="(XXX) XXX-XXXX"
+                    placeholder={t.placeholderPhone}
                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-sm font-display text-white placeholder-white/20 focus:outline-none focus:border-brand-400 transition-colors"
                 />
             </div>
 
             <div>
                 <label className="text-[10px] font-display font-black uppercase tracking-widest text-white/40 block mb-2">
-                    Tamanho da Equipe
+                    {t.labelTeamSize}
                 </label>
                 <select
                     name="team_size"
                     required
                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-sm font-display text-white focus:outline-none focus:border-brand-400 transition-colors"
                 >
-                    <option value="" className="bg-brand-900">Selecione...</option>
-                    <option value="2-3" className="bg-brand-900">2–3 agentes</option>
-                    <option value="4-6" className="bg-brand-900">4–6 agentes</option>
-                    <option value="7-10" className="bg-brand-900">7–10 agentes</option>
-                    <option value="10+" className="bg-brand-900">Mais de 10 agentes</option>
+                    <option value="" className="bg-brand-900">{t.optionSelect}</option>
+                    <option value="2-3" className="bg-brand-900">2–3</option>
+                    <option value="4-6" className="bg-brand-900">4–6</option>
+                    <option value="7-10" className="bg-brand-900">7–10</option>
+                    <option value="10+" className="bg-brand-900">10+</option>
                 </select>
             </div>
 
             <div>
                 <label className="text-[10px] font-display font-black uppercase tracking-widest text-white/40 block mb-2">
-                    Mensagem (opcional)
+                    {t.labelMessage}
                 </label>
                 <textarea
                     name="message"
                     rows={3}
-                    placeholder="Conte um pouco sobre sua agência ou necessidade..."
+                    placeholder={t.placeholderMessage}
                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-sm font-display text-white placeholder-white/20 focus:outline-none focus:border-brand-400 transition-colors resize-none"
                 />
             </div>
@@ -133,9 +194,9 @@ export function TeamContactForm() {
                 className="w-full py-5 bg-gradient-to-r from-brand-500 to-brand-700 text-white rounded-full text-xs font-display font-black uppercase tracking-widest hover:shadow-[0_10px_30px_rgba(0,112,204,0.5)] active:scale-95 transition-all shadow-xl flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
                 {loading ? (
-                    <><Loader2 className="w-4 h-4 animate-spin" /> Enviando...</>
+                    <><Loader2 className="w-4 h-4 animate-spin" /> {t.sending}</>
                 ) : (
-                    <>Solicitar Acesso Team <ArrowRight className="w-4 h-4" /></>
+                    <>{t.submitBtn} <ArrowRight className="w-4 h-4" /></>
                 )}
             </button>
         </form>

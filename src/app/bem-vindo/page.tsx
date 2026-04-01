@@ -1,7 +1,41 @@
 import Link from 'next/link'
 import { CheckCircle2, Mail, ArrowRight } from 'lucide-react'
+import { cookies } from 'next/headers'
 
-export default function BemVindoPage() {
+type Locale = 'en' | 'pt' | 'es'
+
+const T = {
+    en: {
+        title: 'Payment Confirmed!',
+        desc: 'Your workspace is being created. You will receive an email shortly with a link to set your password and access the CRM.',
+        emailHint: 'Check your inbox (and spam folder) for an email from Mentor CRM',
+        emailNote: 'The email may take up to 5 minutes to arrive.',
+        alreadySet: 'Already set your password?',
+        accessPanel: 'Access the Dashboard',
+    },
+    pt: {
+        title: 'Pagamento Confirmado!',
+        desc: 'Seu workspace está sendo criado. Você receberá um email em instantes com o link para definir sua senha e acessar o CRM.',
+        emailHint: 'Verifique sua caixa de entrada (e a pasta de spam) pelo email da Mentor CRM',
+        emailNote: 'O email pode levar até 5 minutos para chegar.',
+        alreadySet: 'Já definiu sua senha?',
+        accessPanel: 'Acessar o Painel',
+    },
+    es: {
+        title: '¡Pago Confirmado!',
+        desc: 'Tu workspace está siendo creado. Recibirás un email en instantes con el enlace para establecer tu contraseña y acceder al CRM.',
+        emailHint: 'Revisa tu bandeja de entrada (y la carpeta de spam) por el email de Mentor CRM',
+        emailNote: 'El email puede tardar hasta 5 minutos en llegar.',
+        alreadySet: '¿Ya definiste tu contraseña?',
+        accessPanel: 'Acceder al Panel',
+    },
+}
+
+export default async function BemVindoPage() {
+    const cookieStore = await cookies()
+    const locale = (cookieStore.get('NEXT_LOCALE')?.value ?? 'en') as Locale
+    const t = T[locale] ?? T.en
+
     return (
         <div className="min-h-screen bg-brand-900 text-white flex flex-col items-center justify-center p-6 relative overflow-hidden">
             {/* Background */}
@@ -38,10 +72,10 @@ export default function BemVindoPage() {
                 {/* Message */}
                 <div className="space-y-3">
                     <h1 className="text-3xl font-display font-black tracking-tight text-white">
-                        Pagamento Confirmado!
+                        {t.title}
                     </h1>
                     <p className="text-white/50 font-display font-bold text-sm leading-relaxed">
-                        Seu workspace está sendo criado. Você receberá um email em instantes com o link para definir sua senha e acessar o CRM.
+                        {t.desc}
                     </p>
                 </div>
 
@@ -49,18 +83,18 @@ export default function BemVindoPage() {
                 <div className="glass-strong p-6 rounded-3xl border border-white/5 space-y-3">
                     <div className="flex items-center gap-3 text-sm font-display font-bold text-white/60">
                         <Mail className="w-5 h-5 text-brand-400 shrink-0" />
-                        Verifique sua caixa de entrada (e a pasta de spam) pelo email da Mentor CRM
+                        {t.emailHint}
                     </div>
                     <p className="text-[10px] font-display font-black uppercase tracking-widest text-white/20">
-                        O email pode levar até 5 minutos para chegar.
+                        {t.emailNote}
                     </p>
                 </div>
 
                 {/* Login link */}
                 <p className="text-white/30 text-xs font-display font-black uppercase tracking-widest">
-                    Já definiu sua senha?{' '}
+                    {t.alreadySet}{' '}
                     <Link href="/login" className="text-brand-300 hover:text-white transition-colors inline-flex items-center gap-1">
-                        Acessar o Painel <ArrowRight className="w-3 h-3" />
+                        {t.accessPanel} <ArrowRight className="w-3 h-3" />
                     </Link>
                 </p>
             </div>
