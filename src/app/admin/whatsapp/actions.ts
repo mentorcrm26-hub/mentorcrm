@@ -52,9 +52,15 @@ export async function createAdminWhatsAppInstance(name: string, number: string) 
             status: 'disconnected',
         }
 
-        await supabaseAdmin
+        // id = SETTING_KEY para garantir upsert correto (PK da tabela é `id text`)
+        const { error: upsertErr } = await supabaseAdmin
             .from('admin_settings')
-            .upsert({ key_name: SETTING_KEY, key_value: JSON.stringify(credentials) }, { onConflict: 'key_name' })
+            .upsert({ id: SETTING_KEY, key_name: SETTING_KEY, key_value: JSON.stringify(credentials) }, { onConflict: 'id' })
+
+        if (upsertErr) {
+            console.error('[ADMIN-WA] Upsert error:', upsertErr)
+            return { success: false, error: 'Erro ao salvar configuração no banco.' }
+        }
 
         revalidatePath('/admin/whatsapp')
         return { success: true, data: credentials }

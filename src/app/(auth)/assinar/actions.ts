@@ -42,7 +42,7 @@ export async function submitTeamContact(data: {
 
             if (settingRow?.key_value) {
                 const credentials = JSON.parse(settingRow.key_value)
-                if (credentials?.status === 'connected' && credentials?.instanceName && credentials?.number) {
+                if (credentials?.instanceName && credentials?.number) {
                     // Normaliza o número: remove tudo que não é dígito
                     const rawNumber = String(credentials.number).replace(/\D/g, '')
 
