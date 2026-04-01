@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 
 export const dynamic = 'force-dynamic'
+export const maxDuration = 60 // Vercel Pro: up to 60s for webhook processing
 
 export async function POST(req: NextRequest) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
@@ -79,21 +80,28 @@ export async function POST(req: NextRequest) {
                 const email    = session.customer_details?.email
                 const fullName = session.customer_details?.name || 'Novo Usuário'
 
+                console.log(`[WEBHOOK PATH B] session=${session.id} email=${email} plan=${plan}`)
+
                 if (!email) {
-                    console.error('public_checkout: no email in session.customer_details')
+                    console.error('[WEBHOOK PATH B] ABORT: no email in session.customer_details')
                     break
                 }
 
                 // Check if a user with this email already exists
-                const { data: { users: allUsers } } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 })
+                const { data: { users: allUsers }, error: listError } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 })
+                if (listError) {
+                    console.error('[WEBHOOK PATH B] listUsers error:', listError.message)
+                    return NextResponse.json({ error: 'listUsers failed' }, { status: 500 })
+                }
+
                 const existingUser = allUsers.find(u => u.email?.toLowerCase() === email.toLowerCase())
 
                 let targetUserId: string
 
                 if (existingUser) {
-                    // User exists (e.g. had a sandbox account) — just upgrade them
+                    console.log(`[WEBHOOK PATH B] existing user found: ${existingUser.id} — upgrading`)
                     targetUserId = existingUser.id
-                    await supabaseAdmin.auth.admin.updateUserById(existingUser.id, {
+                    const { error: updateErr } = await supabaseAdmin.auth.admin.updateUserById(existingUser.id, {
                         user_metadata: {
                             ...existingUser.user_metadata,
                             plan,
@@ -105,9 +113,12 @@ export async function POST(req: NextRequest) {
                             stripe_customer_id: session.customer as string,
                         }
                     })
+                    if (updateErr) console.error('[WEBHOOK PATH B] updateUserById error:', updateErr.message)
                 } else {
                     // Brand new user — invite them (DB trigger will create tenant + user automatically)
                     const appUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? ''
+                    console.log(`[WEBHOOK PATH B] new user — calling inviteUserByEmail to ${email}, redirectTo=${appUrl}/dashboard`)
+
                     const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(
                         email,
                         {
@@ -124,24 +135,25 @@ export async function POST(req: NextRequest) {
                     )
 
                     if (inviteError || !inviteData?.user) {
-                        console.error('Failed to invite new user:', inviteError)
-                        break
+                        console.error('[WEBHOOK PATH B] inviteUserByEmail FAILED:', inviteError?.message, inviteError?.status)
+                        return NextResponse.json({ error: 'invite failed' }, { status: 500 })
                     }
 
                     targetUserId = inviteData.user.id
+                    console.log(`[WEBHOOK PATH B] invite sent, new user id=${targetUserId}`)
                 }
 
-                // Update tenant with Stripe details and correct plan/status.
-                // The DB trigger that creates the tenant runs asynchronously after
-                // inviteUserByEmail, so we retry until the record appears.
+                // Update tenant with Stripe details.
+                // The DB trigger that creates tenant+user runs after invite, retry up to 5x.
                 let tenantId: string | null = null
-                for (let attempt = 0; attempt < 8; attempt++) {
-                    await new Promise(r => setTimeout(r, 1500))
+                for (let attempt = 0; attempt < 5; attempt++) {
+                    await new Promise(r => setTimeout(r, 2000))
                     const { data: userRecord } = await supabaseAdmin
                         .from('users')
                         .select('tenant_id')
                         .eq('id', targetUserId)
                         .single()
+                    console.log(`[WEBHOOK PATH B] tenant lookup attempt ${attempt + 1}: tenant_id=${userRecord?.tenant_id ?? 'null'}`)
                     if (userRecord?.tenant_id) {
                         tenantId = userRecord.tenant_id
                         break
@@ -158,9 +170,12 @@ export async function POST(req: NextRequest) {
                             stripe_subscription_id: subscription.id,
                         })
                         .eq('id', tenantId)
+                    console.log(`[WEBHOOK PATH B] tenant ${tenantId} updated with Stripe IDs — DONE`)
                 } else {
-                    console.error(`public_checkout: tenant not found after retries for user ${targetUserId}`)
+                    console.error(`[WEBHOOK PATH B] tenant not found after retries for user ${targetUserId}`)
                 }
+            } else {
+                console.log(`[WEBHOOK] checkout.session.completed — no userId, no public_checkout source. source=${source}`)
             }
             break
         }
