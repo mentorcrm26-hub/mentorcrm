@@ -43,19 +43,29 @@ export async function submitTeamContact(data: {
             if (settingRow?.key_value) {
                 const credentials = JSON.parse(settingRow.key_value)
                 if (credentials?.status === 'connected' && credentials?.instanceName && credentials?.number) {
+                    // Normaliza o número: remove tudo que não é dígito
+                    const rawNumber = String(credentials.number).replace(/\D/g, '')
+
+                    const appUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || 'https://www.mentorcrm.site'
+
                     const msg = [
-                        `🔔 *Nova Solicitação Team Plan*`,
+                        `🚀 *Novo Lead — Plano Team!*`,
+                        ``,
+                        `Acabou de chegar uma nova solicitação de acesso ao plano Team no Mentor CRM.`,
                         ``,
                         `👤 *Nome:* ${data.name}`,
                         `📧 *Email:* ${data.email}`,
                         `📱 *Telefone:* ${data.phone}`,
-                        `👥 *Equipe:* ${data.team_size} agentes`,
+                        `👥 *Tamanho da equipe:* ${data.team_size} agentes`,
                         data.message ? `💬 *Mensagem:* ${data.message}` : null,
                         ``,
-                        `👉 Acesse: ${process.env.NEXT_PUBLIC_APP_URL || 'https://www.mentorcrm.site'}/admin/team-requests`,
+                        `⚡ Entre em contato em até 24h para fechar mais esse cliente!`,
+                        ``,
+                        `👉 ${appUrl}/admin/team-requests`,
                     ].filter(Boolean).join('\n')
 
-                    await sendEvolutionMessage(credentials.instanceName, credentials.number, msg)
+                    await sendEvolutionMessage(credentials.instanceName, rawNumber, msg)
+                    console.log('[TEAM-CONTACT] WhatsApp notification sent to', rawNumber)
                 }
             }
         } catch (notifErr) {
