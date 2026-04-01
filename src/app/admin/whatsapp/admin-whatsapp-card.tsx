@@ -20,6 +20,7 @@ export function AdminWhatsAppCard({ initialData }: { initialData: any | null }) 
     const [pollingActive, setPollingActive] = useState(false)
     const [name, setName] = useState('')
     const [number, setNumber] = useState('')
+    const [notifyNumber, setNotifyNumber] = useState('')
 
     const isConnected = integration?.status === 'connected'
 
@@ -42,7 +43,7 @@ export function AdminWhatsAppCard({ initialData }: { initialData: any | null }) 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsLoading(true)
-        const res = await createAdminWhatsAppInstance(name, number)
+        const res = await createAdminWhatsAppInstance(name, number, notifyNumber)
         setIsLoading(false)
         if (res.success && res.data) {
             setIntegration(res.data)
@@ -176,7 +177,7 @@ export function AdminWhatsAppCard({ initialData }: { initialData: any | null }) 
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Número do WhatsApp</label>
+                                <label className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Número da Instância (WhatsApp do remetente)</label>
                                 <input
                                     className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-500/50"
                                     placeholder="ex: 4077473001"
@@ -184,7 +185,18 @@ export function AdminWhatsAppCard({ initialData }: { initialData: any | null }) 
                                     onChange={e => setNumber(e.target.value)}
                                     required
                                 />
-                                <p className="text-[10px] text-zinc-400">Apenas dígitos. O código +1 será adicionado automaticamente a números de 10 dígitos.</p>
+                                <p className="text-[10px] text-zinc-400">Número vinculado à instância. Apenas dígitos, sem o +1.</p>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Seu número para receber notificações</label>
+                                <input
+                                    className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-rose-500/50"
+                                    placeholder="ex: 14077473001"
+                                    value={notifyNumber}
+                                    onChange={e => setNotifyNumber(e.target.value)}
+                                    required
+                                />
+                                <p className="text-[10px] text-zinc-400">Número completo com código do país. As notificações de novos leads serão enviadas para cá.</p>
                             </div>
                             <button
                                 type="submit"

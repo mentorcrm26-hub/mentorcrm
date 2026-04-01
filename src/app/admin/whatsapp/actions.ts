@@ -30,7 +30,7 @@ export async function getAdminWhatsAppInstance() {
     }
 }
 
-export async function createAdminWhatsAppInstance(name: string, number: string) {
+export async function createAdminWhatsAppInstance(name: string, number: string, notifyNumber: string) {
     try {
         await assertSuperAdmin()
         const supabaseAdmin = await createAdminClient()
@@ -49,6 +49,7 @@ export async function createAdminWhatsAppInstance(name: string, number: string) 
             instanceName: instanceData.instanceName,
             instanceId: instanceData.instanceId,
             number,
+            notifyNumber: notifyNumber.replace(/\D/g, ''), // número que receberá as notificações
             status: 'disconnected',
         }
 

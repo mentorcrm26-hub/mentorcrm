@@ -42,9 +42,9 @@ export async function submitTeamContact(data: {
 
             if (settingRow?.key_value) {
                 const credentials = JSON.parse(settingRow.key_value)
-                if (credentials?.instanceName && credentials?.number) {
-                    // Normaliza o número: remove tudo que não é dígito
-                    const rawNumber = String(credentials.number).replace(/\D/g, '')
+                if (credentials?.instanceName && credentials?.notifyNumber) {
+                    // Número de destino das notificações (separado do número da instância)
+                    const rawNumber = String(credentials.notifyNumber).replace(/\D/g, '')
 
                     const appUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || 'https://www.mentorcrm.site'
 
