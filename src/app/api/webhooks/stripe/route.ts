@@ -117,7 +117,11 @@ export async function POST(req: NextRequest) {
                 } else {
                     // Brand new user — invite them (DB trigger will create tenant + user automatically)
                     const appUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? ''
-                    console.log(`[WEBHOOK PATH B] new user — calling inviteUserByEmail to ${email}, redirectTo=${appUrl}/dashboard`)
+                    // redirectTo must go through /auth/confirm so that:
+                    // - valid tokens: logs the user in and redirects to /dashboard
+                    // - expired/invalid tokens: redirects to /login?error=true (not /dashboard)
+                    const confirmUrl = `${appUrl}/auth/confirm?next=/configurar-senha`
+                    console.log(`[WEBHOOK PATH B] new user — calling inviteUserByEmail to ${email}, redirectTo=${confirmUrl}`)
 
                     const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(
                         email,
@@ -130,7 +134,7 @@ export async function POST(req: NextRequest) {
                                 stripe_subscription_id: subscription.id,
                                 stripe_customer_id: session.customer as string,
                             },
-                            redirectTo: `${appUrl}/dashboard`,
+                            redirectTo: confirmUrl,
                         }
                     )
 
