@@ -3,12 +3,11 @@
 /**
  * Universal auth callback handler.
  *
- * Handles both Supabase auth flows:
- *  - PKCE:     URL contains ?code=xxx  (server can read, but we handle here too)
- *  - Implicit: URL contains #access_token=xxx  (hash — only readable client-side)
- *
- * After a successful session, redirects to the `next` query param (default /dashboard).
- * On failure, redirects to /login?error=true.
+ * Handles all Supabase auth token flows:
+ *  - PKCE:       ?code=xxx
+ *  - Token hash: ?token_hash=xxx&type=invite
+ *  - Implicit:   #access_token=xxx&refresh_token=yyy  (hash — only readable client-side)
+ *  - Error:      #error=access_denied&error_description=...
  */
 
 import { useEffect, useState } from 'react'
@@ -17,7 +16,7 @@ import { createBrowserClient } from '@supabase/ssr'
 
 export default function AuthVerifyPage() {
     const router = useRouter()
-    const [status, setStatus] = useState<'verifying' | 'error'>('verifying')
+    const [message, setMessage] = useState('Verificando...')
 
     useEffect(() => {
         const supabase = createBrowserClient(
@@ -25,51 +24,72 @@ export default function AuthVerifyPage() {
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         )
 
-        const params  = new URLSearchParams(window.location.search)
-        const hash    = new URLSearchParams(window.location.hash.slice(1))
-        const next    = params.get('next') || '/dashboard'
-        const code    = params.get('code')
-        const error   = params.get('error') || hash.get('error')
+        async function handleAuth() {
+            const searchParams  = new URLSearchParams(window.location.search)
+            const hashParams    = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+            const next          = searchParams.get('next') || '/dashboard'
 
-        if (error) {
-            router.replace(`/login?error=true&msg=${encodeURIComponent(hash.get('error_description') || 'Link inválido ou expirado.')}`)
-            return
-        }
+            // ── 1. Error in hash or query ─────────────────────────────────────
+            const errorDesc = hashParams.get('error_description') || searchParams.get('error_description')
+            if (hashParams.get('error') || searchParams.get('error')) {
+                router.replace(`/login?error=true&msg=${encodeURIComponent(errorDesc || 'Link inválido ou expirado.')}`)
+                return
+            }
 
-        if (code) {
-            // PKCE flow
-            supabase.auth.exchangeCodeForSession(code).then(({ error: err }) => {
-                if (err) {
-                    router.replace('/login?error=true&msg=' + encodeURIComponent(err.message))
+            // ── 2. PKCE flow: ?code=xxx ───────────────────────────────────────
+            const code = searchParams.get('code')
+            if (code) {
+                const { error } = await supabase.auth.exchangeCodeForSession(code)
+                if (error) {
+                    router.replace(`/login?error=true&msg=${encodeURIComponent(error.message)}`)
                 } else {
                     router.replace(next)
                 }
-            })
-            return
-        }
-
-        // Implicit flow — Supabase client picks up #access_token automatically
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' && session) {
-                subscription.unsubscribe()
-                router.replace(next)
-            } else if (event === 'SIGNED_OUT') {
-                setStatus('error')
-                router.replace('/login?error=true&msg=' + encodeURIComponent('Não foi possível verificar o link.'))
+                return
             }
-        })
 
-        // Fallback: if no event fires in 5s, redirect to login
-        const timeout = setTimeout(() => {
-            subscription.unsubscribe()
-            setStatus('error')
-            router.replace('/login?error=true&msg=' + encodeURIComponent('Link expirado ou inválido.'))
-        }, 5000)
+            // ── 3. Token hash flow: ?token_hash=xxx&type=invite ───────────────
+            const tokenHash = searchParams.get('token_hash')
+            const type      = searchParams.get('type') as any
+            if (tokenHash && type) {
+                const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type })
+                if (error) {
+                    router.replace(`/login?error=true&msg=${encodeURIComponent(error.message)}`)
+                } else {
+                    router.replace(next)
+                }
+                return
+            }
 
-        return () => {
-            subscription.unsubscribe()
-            clearTimeout(timeout)
+            // ── 4. Implicit flow: #access_token=xxx&refresh_token=yyy ─────────
+            const accessToken  = hashParams.get('access_token')
+            const refreshToken = hashParams.get('refresh_token')
+            if (accessToken && refreshToken) {
+                setMessage('Autenticando...')
+                const { error } = await supabase.auth.setSession({
+                    access_token:  accessToken,
+                    refresh_token: refreshToken,
+                })
+                if (error) {
+                    router.replace(`/login?error=true&msg=${encodeURIComponent(error.message)}`)
+                } else {
+                    router.replace(next)
+                }
+                return
+            }
+
+            // ── 5. Already have a valid session (e.g. page refresh) ───────────
+            const { data: { session } } = await supabase.auth.getSession()
+            if (session) {
+                router.replace(next)
+                return
+            }
+
+            // ── 6. Nothing matched ────────────────────────────────────────────
+            router.replace('/login?error=true&msg=' + encodeURIComponent('Link inválido ou expirado.'))
         }
+
+        handleAuth()
     }, [router])
 
     return (
@@ -77,7 +97,7 @@ export default function AuthVerifyPage() {
             <div className="flex flex-col items-center gap-4">
                 <div className="w-10 h-10 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
                 <p className="text-white/40 text-xs font-bold uppercase tracking-widest">
-                    {status === 'verifying' ? 'Verificando...' : 'Redirecionando...'}
+                    {message}
                 </p>
             </div>
         </div>
