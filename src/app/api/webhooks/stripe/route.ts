@@ -131,16 +131,24 @@ export async function POST(req: NextRequest) {
                     targetUserId = inviteData.user.id
                 }
 
-                // Update tenant with Stripe details and correct plan/status
-                // The DB trigger already created the tenant when user was invited,
-                // so we just need to update the plan and Stripe IDs.
-                const { data: userRecord } = await supabaseAdmin
-                    .from('users')
-                    .select('tenant_id')
-                    .eq('id', targetUserId)
-                    .single()
+                // Update tenant with Stripe details and correct plan/status.
+                // The DB trigger that creates the tenant runs asynchronously after
+                // inviteUserByEmail, so we retry until the record appears.
+                let tenantId: string | null = null
+                for (let attempt = 0; attempt < 8; attempt++) {
+                    await new Promise(r => setTimeout(r, 1500))
+                    const { data: userRecord } = await supabaseAdmin
+                        .from('users')
+                        .select('tenant_id')
+                        .eq('id', targetUserId)
+                        .single()
+                    if (userRecord?.tenant_id) {
+                        tenantId = userRecord.tenant_id
+                        break
+                    }
+                }
 
-                if (userRecord?.tenant_id) {
+                if (tenantId) {
                     await supabaseAdmin
                         .from('tenants')
                         .update({
@@ -149,7 +157,9 @@ export async function POST(req: NextRequest) {
                             stripe_customer_id: session.customer as string,
                             stripe_subscription_id: subscription.id,
                         })
-                        .eq('id', userRecord.tenant_id)
+                        .eq('id', tenantId)
+                } else {
+                    console.error(`public_checkout: tenant not found after retries for user ${targetUserId}`)
                 }
             }
             break

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { CheckCircle2, Mail, ArrowRight } from 'lucide-react'
 import { cookies } from 'next/headers'
+import Stripe from 'stripe'
 
 type Locale = 'en' | 'pt' | 'es'
 
@@ -8,6 +9,7 @@ const T = {
     en: {
         title: 'Payment Confirmed!',
         desc: 'Your workspace is being created. You will receive an email shortly with a link to set your password and access the CRM.',
+        emailSentTo: 'Email sent to:',
         emailHint: 'Check your inbox (and spam folder) for an email from Mentor CRM',
         emailNote: 'The email may take up to 5 minutes to arrive.',
         alreadySet: 'Already set your password?',
@@ -16,6 +18,7 @@ const T = {
     pt: {
         title: 'Pagamento Confirmado!',
         desc: 'Seu workspace está sendo criado. Você receberá um email em instantes com o link para definir sua senha e acessar o CRM.',
+        emailSentTo: 'Email enviado para:',
         emailHint: 'Verifique sua caixa de entrada (e a pasta de spam) pelo email da Mentor CRM',
         emailNote: 'O email pode levar até 5 minutos para chegar.',
         alreadySet: 'Já definiu sua senha?',
@@ -24,6 +27,7 @@ const T = {
     es: {
         title: '¡Pago Confirmado!',
         desc: 'Tu workspace está siendo creado. Recibirás un email en instantes con el enlace para establecer tu contraseña y acceder al CRM.',
+        emailSentTo: 'Email enviado a:',
         emailHint: 'Revisa tu bandeja de entrada (y la carpeta de spam) por el email de Mentor CRM',
         emailNote: 'El email puede tardar hasta 5 minutos en llegar.',
         alreadySet: '¿Ya definiste tu contraseña?',
@@ -31,10 +35,28 @@ const T = {
     },
 }
 
-export default async function BemVindoPage() {
+async function getCustomerEmail(sessionId: string): Promise<string | null> {
+    try {
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+        const session = await stripe.checkout.sessions.retrieve(sessionId)
+        return session.customer_details?.email ?? null
+    } catch {
+        return null
+    }
+}
+
+export default async function BemVindoPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ session_id?: string }>
+}) {
+    const { session_id } = await searchParams
+
     const cookieStore = await cookies()
     const locale = (cookieStore.get('NEXT_LOCALE')?.value ?? 'en') as Locale
     const t = T[locale] ?? T.en
+
+    const customerEmail = session_id ? await getCustomerEmail(session_id) : null
 
     return (
         <div className="min-h-screen bg-brand-900 text-white flex flex-col items-center justify-center p-6 relative overflow-hidden">
@@ -81,6 +103,16 @@ export default async function BemVindoPage() {
 
                 {/* Email hint */}
                 <div className="glass-strong p-6 rounded-3xl border border-white/5 space-y-3">
+                    {customerEmail && (
+                        <div className="pb-3 mb-3 border-b border-white/5">
+                            <p className="text-[10px] font-display font-black uppercase tracking-widest text-white/30 mb-1">
+                                {t.emailSentTo}
+                            </p>
+                            <p className="text-sm font-display font-bold text-brand-300 break-all">
+                                {customerEmail}
+                            </p>
+                        </div>
+                    )}
                     <div className="flex items-center gap-3 text-sm font-display font-bold text-white/60">
                         <Mail className="w-5 h-5 text-brand-400 shrink-0" />
                         {t.emailHint}
