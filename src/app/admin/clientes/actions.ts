@@ -197,6 +197,75 @@ export async function dangerouslyClearAllClients() {
     }
 }
 
+export async function createVipClient(data: {
+    email: string
+    full_name: string
+    plan: 'agent' | 'agent_annual' | 'team'
+}) {
+    const supabaseUser = await createClient()
+    const { data: isAdmin } = await supabaseUser.rpc('is_super_admin')
+    if (!isAdmin) return { success: false, error: 'Acesso Restrito' }
+
+    const supabaseAdmin = await createAdminClient()
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? ''
+
+    // Check if user already exists
+    const { data: { users: allUsers } } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 })
+    const existingUser = allUsers.find(u => u.email?.toLowerCase() === data.email.toLowerCase())
+
+    if (existingUser) {
+        return { success: false, error: 'Este email já está cadastrado no sistema.' }
+    }
+
+    const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(
+        data.email,
+        {
+            data: {
+                full_name: data.full_name || data.email,
+                plan: data.plan,
+                onboarding_status: 'active',
+                subscription_status: 'active',
+                is_vip: true,
+            },
+            redirectTo: `${appUrl}/auth/verify?next=/configurar-senha`,
+        }
+    )
+
+    if (inviteError || !inviteData?.user) {
+        console.error('createVipClient invite error:', inviteError)
+        return { success: false, error: inviteError?.message || 'Falha ao criar convite.' }
+    }
+
+    const userId = inviteData.user.id
+
+    // Wait for DB trigger to create tenant, then mark as VIP
+    let tenantId: string | null = null
+    for (let i = 0; i < 6; i++) {
+        await new Promise(r => setTimeout(r, 1500))
+        const { data: userRecord } = await supabaseAdmin
+            .from('users')
+            .select('tenant_id')
+            .eq('id', userId)
+            .single()
+        if (userRecord?.tenant_id) {
+            tenantId = userRecord.tenant_id
+            break
+        }
+    }
+
+    if (tenantId) {
+        await supabaseAdmin
+            .from('tenants')
+            .update({ plan: data.plan, status: 'active', is_vip: true })
+            .eq('id', tenantId)
+    } else {
+        console.error('createVipClient: tenant not found after retries for user', userId)
+    }
+
+    revalidatePath('/admin/clientes')
+    return { success: true }
+}
+
 export async function setImpersonation(tenantId: string | null) {
     const supabase = await createClient()
     const { data: isAdmin } = await supabase.rpc('is_super_admin')
