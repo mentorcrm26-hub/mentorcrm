@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, CreditCard, LayoutTemplate, ShieldCheck, UsersRound } from 'lucide-react'
+import { LayoutDashboard, Users, CreditCard, LayoutTemplate, ShieldCheck, UsersRound, MessageCircle } from 'lucide-react'
 
 export function AdminNavLinks() {
     const pathname = usePathname()
@@ -13,6 +13,7 @@ export function AdminNavLinks() {
         { href: '/admin/team-requests', label: 'Solicitações Team', icon: UsersRound },
         { href: '/admin/stripe', label: 'Central Stripe', icon: CreditCard },
         { href: '/admin/landing-page', label: 'Landing Page Config', icon: LayoutTemplate },
+        { href: '/admin/whatsapp', label: 'WhatsApp Admin', icon: MessageCircle },
         { href: '/admin/system', label: 'Saúde do Sistema', icon: ShieldCheck },
     ]
 
