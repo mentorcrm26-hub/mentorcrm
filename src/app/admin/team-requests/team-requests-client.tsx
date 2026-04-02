@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { updateTeamRequestStatus } from './actions'
-import { Search, Phone, Mail, Users, MessageSquare, Clock, CheckCircle2, XCircle, ArrowRightCircle, Loader2 } from 'lucide-react'
+import { updateTeamRequestStatus, sendTeamPaymentLink } from './actions'
+import { Search, Phone, Mail, Users, MessageSquare, Clock, CheckCircle2, XCircle, ArrowRightCircle, Loader2, Send, X } from 'lucide-react'
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; dot: string }> = {
     pending:   { label: 'Pendente',   color: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-900/30',   dot: 'bg-amber-500 animate-pulse' },
@@ -22,6 +22,8 @@ export function TeamRequestsClient({ initialData }: { initialData: any[] }) {
     const [statusFilter, setStatusFilter] = useState('all')
     const [loadingId, setLoadingId] = useState<string | null>(null)
     const [expandedId, setExpandedId] = useState<string | null>(null)
+    const [sendLinkTarget, setSendLinkTarget] = useState<any | null>(null)
+    const [sendingLink, setSendingLink] = useState(false)
 
     const handleStatus = async (id: string, status: string) => {
         setLoadingId(id)
@@ -32,6 +34,20 @@ export function TeamRequestsClient({ initialData }: { initialData: any[] }) {
             router.refresh()
         } else {
             toast.error(res.error || 'Erro ao atualizar status')
+        }
+    }
+
+    const handleSendLink = async () => {
+        if (!sendLinkTarget) return
+        setSendingLink(true)
+        const res = await sendTeamPaymentLink(sendLinkTarget.id)
+        setSendingLink(false)
+        if (res.success) {
+            toast.success(`Link de pagamento enviado para ${sendLinkTarget.name} via WhatsApp!`)
+            setSendLinkTarget(null)
+            router.refresh()
+        } else {
+            toast.error(res.error || 'Erro ao enviar link')
         }
     }
 
@@ -51,6 +67,42 @@ export function TeamRequestsClient({ initialData }: { initialData: any[] }) {
     }
 
     return (
+        <>
+        {/* Modal de confirmação de envio do link */}
+        {sendLinkTarget && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-sm">
+                <div className="bg-white dark:bg-zinc-950 w-full max-w-md rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+                    <div className="flex justify-between items-center p-5 border-b border-zinc-100 dark:border-zinc-800">
+                        <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Enviar Link de Pagamento</h2>
+                        <button onClick={() => setSendLinkTarget(null)} className="text-zinc-400 hover:text-zinc-700 cursor-pointer">
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+                    <div className="p-6 space-y-4">
+                        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                            O sistema vai gerar um link de pagamento do <strong>Plano Team</strong> no Stripe com o email pré-preenchido e enviar pelo seu WhatsApp para o cliente.
+                        </p>
+                        <div className="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-4 space-y-1.5 text-sm border border-zinc-200 dark:border-zinc-800">
+                            <p><span className="font-bold text-zinc-500">Nome:</span> <span className="text-zinc-900 dark:text-white font-semibold">{sendLinkTarget.name}</span></p>
+                            <p><span className="font-bold text-zinc-500">Email:</span> {sendLinkTarget.email}</p>
+                            <p><span className="font-bold text-zinc-500">WhatsApp:</span> {sendLinkTarget.phone}</p>
+                        </div>
+                        <div className="flex flex-col gap-3 pt-1">
+                            <button
+                                onClick={handleSendLink}
+                                disabled={sendingLink}
+                                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-3 text-sm font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                            >
+                                {sendingLink ? <><Loader2 className="w-4 h-4 animate-spin" /> Enviando...</> : <><Send className="w-4 h-4" /> Gerar e Enviar pelo WhatsApp</>}
+                            </button>
+                            <button onClick={() => setSendLinkTarget(null)} className="text-zinc-500 text-sm font-bold py-2 cursor-pointer hover:text-zinc-700">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
         <div className="space-y-6">
             {/* Filters */}
             <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
@@ -139,12 +191,17 @@ export function TeamRequestsClient({ initialData }: { initialData: any[] }) {
                                                 )}
                                                 {(req.status === 'pending' || req.status === 'contacted') && (
                                                     <button
-                                                        onClick={() => handleStatus(req.id, 'converted')}
-                                                        title="Marcar como convertido"
+                                                        onClick={() => setSendLinkTarget(req)}
+                                                        title="Enviar link de pagamento por WhatsApp"
                                                         className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-black uppercase tracking-widest bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30 rounded-lg transition-all active:scale-95 cursor-pointer"
                                                     >
-                                                        <CheckCircle2 className="w-3.5 h-3.5" /> Convertido
+                                                        <Send className="w-3.5 h-3.5" /> Enviar Link
                                                     </button>
+                                                )}
+                                                {req.status === 'converted' && (
+                                                    <span className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-black uppercase tracking-widest bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/30 rounded-lg">
+                                                        <CheckCircle2 className="w-3.5 h-3.5" /> Convertido
+                                                    </span>
                                                 )}
                                                 {req.status !== 'dismissed' && (
                                                     <button
@@ -179,5 +236,6 @@ export function TeamRequestsClient({ initialData }: { initialData: any[] }) {
                 )}
             </div>
         </div>
+        </>
     )
 }
