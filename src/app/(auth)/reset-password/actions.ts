@@ -8,15 +8,15 @@ export async function updatePassword(formData: FormData) {
     const confirm = formData.get('confirm') as string
 
     if (password !== confirm) {
-        redirect('/atualizar-senha?error=true&msg=' + encodeURIComponent('AS SENHAS NÃO COINCIDEM.'))
+        redirect('/reset-password?error=true&msg=' + encodeURIComponent('PASSWORDS DO NOT MATCH.'))
     }
 
     const supabase = await createClient()
     const { error } = await supabase.auth.updateUser({ password })
 
     if (error) {
-        redirect('/atualizar-senha?error=true&msg=' + encodeURIComponent(error.message))
+        redirect('/reset-password?error=true&msg=' + encodeURIComponent(error.message))
     }
 
-    redirect('/login?msg=' + encodeURIComponent('SENHA ATUALIZADA COM SUCESSO.'))
+    redirect('/login?msg=' + encodeURIComponent('PASSWORD UPDATED SUCCESSFULLY.'))
 }

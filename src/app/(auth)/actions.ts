@@ -10,11 +10,29 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { getAppUrl } from '@/lib/utils'
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
+
+const ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(5, '15 m'),
+    analytics: true,
+})
 
 export async function login(formData: FormData) {
+    const headersList = await headers()
+    const ip = headersList.get('x-forwarded-for')?.split(',')[0]?.trim()
+        ?? headersList.get('x-real-ip')
+        ?? 'anonymous'
+
+    const { success } = await ratelimit.limit(`login:${ip}`)
+
+    if (!success) {
+        redirect('/login?error=true&msg=' + encodeURIComponent('MUITAS TENTATIVAS. AGUARDE 15 MINUTOS E TENTE NOVAMENTE.'))
+    }
     const supabase = await createClient()
 
     // type-casting here for convenience
