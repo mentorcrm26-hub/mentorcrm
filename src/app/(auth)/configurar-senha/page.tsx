@@ -34,6 +34,8 @@ const T = {
     },
 }
 
+import { PasswordInput } from '@/components/ui/password-input'
+
 export default async function ConfigurarSenhaPage({
     searchParams,
 }: {
@@ -77,13 +79,12 @@ export default async function ConfigurarSenhaPage({
                     <label className="text-[10px] font-display font-black uppercase tracking-widest text-white/40 block mb-2">
                         {t.labelPassword}
                     </label>
-                    <input
+                    <PasswordInput
                         name="password"
-                        type="password"
                         required
                         minLength={8}
                         placeholder={t.placeholderPassword}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-sm font-display text-white placeholder-white/20 focus:outline-none focus:border-brand-400 transition-colors"
+                        className="py-3.5"
                     />
                 </div>
 
@@ -91,15 +92,15 @@ export default async function ConfigurarSenhaPage({
                     <label className="text-[10px] font-display font-black uppercase tracking-widest text-white/40 block mb-2">
                         {t.labelConfirm}
                     </label>
-                    <input
+                    <PasswordInput
                         name="confirm"
-                        type="password"
                         required
                         minLength={8}
                         placeholder={t.placeholderConfirm}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-sm font-display text-white placeholder-white/20 focus:outline-none focus:border-brand-400 transition-colors"
+                        className="py-3.5"
                     />
                 </div>
+
 
                 <button
                     type="submit"

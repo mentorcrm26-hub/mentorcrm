@@ -10,6 +10,8 @@
 import React, { useState } from 'react';
 import { signup } from '../actions';
 
+import { PasswordInput } from '@/components/ui/password-input';
+
 interface SignupFormProps {
     fullName: string;
     namePlaceholder: string;
@@ -86,16 +88,15 @@ export default function SignupForm({ fullName, namePlaceholder, emailLabel, emai
             {/* Password */}
             <div className="flex flex-col gap-3">
                 <label className="text-[10px] font-display font-black tracking-[0.2em] text-white/30 uppercase" htmlFor="password">{passwordLabel}</label>
-                <input
-                    className="bg-white/5 border border-white/10 px-6 py-4 text-sm text-white placeholder-white/20 rounded-2xl focus:outline-none focus:border-brand-500/50 focus:bg-white/10 transition-all shadow-inner"
+                <PasswordInput
                     id="password"
                     name="password"
-                    type="password"
                     placeholder={passwordPlaceholder}
                     minLength={6}
                     required
                 />
             </div>
+
 
             {/* Terms */}
             <div className="flex items-start gap-4 p-5 bg-white/5 border border-white/10 rounded-2xl mt-2 shadow-inner">

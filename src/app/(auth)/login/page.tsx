@@ -11,13 +11,15 @@ import { AlertCircle, ArrowRight } from 'lucide-react';
 import { login } from '../actions';
 import { cookies } from 'next/headers';
 
+import { PasswordInput } from '@/components/ui/password-input';
+
 const translations = {
     pt: {
         title: 'ACESSO AO SISTEMA',
         subtitle: 'Autentique sua sessão de gerenciamento.',
         emailLabel: 'IDENTIFICADOR (EMAIL)',
         emailPlaceholder: 'agente@mentor-crm.com',
-        passwordLabel: 'CHAVE DE ACESSO (SENHA)',
+        passwordLabel: 'CHAVE DE ACESO (SENHA)',
         forgotPassword: 'RECUPERAR ACESSO',
         passwordPlaceholder: '••••••••',
         submit: 'INICIAR SESSÃO',
@@ -44,7 +46,7 @@ const translations = {
         emailLabel: 'IDENTIFICADOR (EMAIL)',
         emailPlaceholder: 'agente@mentor-crm.com',
         passwordLabel: 'CLAVE DE ACCESO (CONTRASEÑA)',
-        forgotPassword: 'RECUPERAR ACCESO',
+        forgotPassword: 'RECUPERAR ACESSO',
         passwordPlaceholder: '••••••••',
         submit: 'INICIAR SESIÓN',
         noAccount: '¿NO TIENE LICENCIA?',
@@ -106,15 +108,15 @@ export default async function LoginPage({
                         <label className="text-[10px] font-display font-black tracking-[0.2em] text-white/30 uppercase" htmlFor="password">{t.passwordLabel}</label>
                         <Link href="#" className="text-[9px] font-display font-black tracking-widest text-white/30 hover:text-brand-300 transition-colors uppercase">{t.forgotPassword}</Link>
                     </div>
-                    <input
-                        className="bg-white/5 border border-white/10 px-6 py-5 text-sm text-white placeholder-white/20 rounded-2xl focus:outline-none focus:border-brand-500/50 focus:bg-white/10 transition-all shadow-inner"
+                    <PasswordInput
+                        className="py-5"
                         id="password"
                         name="password"
-                        type="password"
                         placeholder={t.passwordPlaceholder}
                         required
                     />
                 </div>
+
 
                 <div className="pt-4">
                     <button
