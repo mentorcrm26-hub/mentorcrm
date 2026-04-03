@@ -106,7 +106,7 @@ export default async function LoginPage({
                 <div className="flex flex-col gap-3">
                     <div className="flex justify-between items-end">
                         <label className="text-[10px] font-display font-black tracking-[0.2em] text-white/30 uppercase" htmlFor="password">{t.passwordLabel}</label>
-                        <Link href="#" className="text-[9px] font-display font-black tracking-widest text-white/30 hover:text-brand-300 transition-colors uppercase">{t.forgotPassword}</Link>
+                        <Link href="/recuperar-senha" className="text-[9px] font-display font-black tracking-widest text-white/30 hover:text-brand-300 transition-colors uppercase">{t.forgotPassword}</Link>
                     </div>
                     <PasswordInput
                         className="py-5"

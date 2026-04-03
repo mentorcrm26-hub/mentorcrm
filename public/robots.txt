@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /demo
+Disallow: /api/
+Disallow: /auth/
+Disallow: /configurar-senha
+Allow: /
+
+Sitemap: https://www.mentorcrm.site/sitemap.xml
