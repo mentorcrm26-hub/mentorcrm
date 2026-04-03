@@ -1,5 +1,7 @@
 import { KeyRound, AlertCircle, ArrowRight } from 'lucide-react'
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
 import { setPassword } from './actions'
 
 type Locale = 'en' | 'pt' | 'es'
@@ -42,6 +44,10 @@ export default async function ConfigurarSenhaPage({
     searchParams: Promise<{ error?: string }>
 }) {
     const { error } = await searchParams
+
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) redirect('/login')
 
     const cookieStore = await cookies()
     const locale = (cookieStore.get('NEXT_LOCALE')?.value ?? 'en') as Locale

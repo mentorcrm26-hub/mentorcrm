@@ -5,10 +5,19 @@
  * *************** contact@inovamkt.io ******************
  */
 
-import { type NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
+const AUTH_ROUTES = ['/login', '/signup', '/forgot-password', '/reset-password', '/configurar-senha']
+const ALLOWED_METHODS = new Set(['GET', 'POST', 'HEAD', 'OPTIONS'])
+
 export async function middleware(request: NextRequest) {
+    const { pathname } = request.nextUrl
+
+    if (AUTH_ROUTES.some(route => pathname === route) && !ALLOWED_METHODS.has(request.method)) {
+        return new NextResponse(null, { status: 405, headers: { Allow: 'GET, POST' } })
+    }
+
     return await updateSession(request)
 }
 

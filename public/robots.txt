@@ -5,6 +5,8 @@ Disallow: /demo
 Disallow: /api/
 Disallow: /auth/
 Disallow: /configurar-senha
+Disallow: /forgot-password
+Disallow: /reset-password
 Allow: /
 
 Sitemap: https://www.mentorcrm.site/sitemap.xml

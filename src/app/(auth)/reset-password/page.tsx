@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { AlertCircle } from 'lucide-react'
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
 import { updatePassword } from './actions'
 import { PasswordInput } from '@/components/ui/password-input'
 
@@ -48,6 +50,10 @@ export default async function ResetPasswordPage({
     searchParams: Promise<{ error?: string; msg?: string }>
 }) {
     const p = await searchParams
+
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) redirect('/login')
 
     const cookieStore = await cookies()
     const localeCookie = cookieStore.get('NEXT_LOCALE')?.value as Language | undefined
