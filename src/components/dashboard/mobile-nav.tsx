@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, Settings, Menu, X, LogOut, Gift, MessageSquare, Calendar as CalendarIcon, Archive, TrendingUp, PenLine, Tag, ShieldCheck } from 'lucide-react'
+import { LayoutDashboard, Users, Settings, Menu, X, LogOut, Gift, MessageSquare, Calendar as CalendarIcon, Archive, TrendingUp, PenLine, Tag, ShieldCheck, PhoneCall, Variable, Zap } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 export function MobileNav({ role, tenantName, tenantId, isSuperAdmin }: { role: string | null, tenantName: string | null, tenantId: string | null, isSuperAdmin?: boolean }) {
@@ -98,6 +98,7 @@ export function MobileNav({ role, tenantName, tenantId, isSuperAdmin }: { role: 
                             {[
                                 { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
                                 { href: '/dashboard/leads', label: 'Leads (CRM)', icon: Users },
+                                { href: '/dashboard/cold-call', label: 'Cold Call', icon: PhoneCall },
                                 { href: '/dashboard/chat', label: 'Live Chat', icon: MessageSquare },
                                 { href: '/dashboard/calendar', label: 'Calendar', icon: CalendarIcon },
                                 { href: '/dashboard/birthdays', label: 'Birthdays', icon: Gift },
@@ -139,10 +140,12 @@ export function MobileNav({ role, tenantName, tenantId, isSuperAdmin }: { role: 
                             
                             {role === 'admin' && (
                                 <>
-                                    <div className="pt-4 pb-2 px-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Administration</div>
+                                    <div className="pt-4 pb-2 px-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Automation</div>
                                     {[
                                         { href: '/dashboard/analytics', label: 'Overview & Stats', icon: TrendingUp },
-                                        { href: '/dashboard/settings', label: 'Settings', icon: Settings },
+                                        { href: '/dashboard/settings/templates', label: 'Message Templates', icon: Variable },
+                                        { href: '/dashboard/settings/automations', label: 'Smart Automations', icon: Zap },
+                                        { href: '/dashboard/settings', label: 'Settings & API', icon: Settings },
                                     ].map((link) => {
                                         const active = pathname?.startsWith(link.href)
                                         return (
