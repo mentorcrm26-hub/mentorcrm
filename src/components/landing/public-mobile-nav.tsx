@@ -11,6 +11,7 @@ import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { Menu, X, Facebook, Instagram, LogIn, Sparkles } from 'lucide-react'
+import { LocaleSelector } from './locale-selector'
 
 interface PublicMobileNavProps {
   t: any;
@@ -116,6 +117,11 @@ export function PublicMobileNav({ t, lang }: PublicMobileNavProps) {
                     <LogIn className="w-5 h-5" />
                     {t.login}
                   </Link>
+              </div>
+
+              <div className="pt-8 border-t border-white/5">
+                <p className="text-[10px] font-display font-black text-white/30 uppercase tracking-[0.3em] mb-4">Language</p>
+                <LocaleSelector />
               </div>
             </div>
 
